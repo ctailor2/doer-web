@@ -8,7 +8,7 @@ describe('App', () => {
     let tree;
 
     beforeEach(() => {
-        let tree = shallow(<App />);
+        tree = shallow(<App />);
     });
 
     it('renders', () => {
