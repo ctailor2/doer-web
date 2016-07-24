@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { Router, Route, browserHistory } from 'react-router';
 import App from './components/App';
 import './styles/index.css';
 
@@ -10,7 +11,10 @@ let store = createStore(() => {});
 
 render(
   <Provider store={store}>
-    <App />
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+      </Route>
+    </Router>
   </Provider>,
   document.getElementById('root')
 );
