@@ -14,4 +14,8 @@ describe('App', () => {
     it('renders', () => {
         expect(tree.length).toBe(1);
     });
+
+    it('has a header', () => {
+        expect(tree.find('Header').length).toBe(1);
+    });
 });
