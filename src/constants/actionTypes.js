@@ -1,0 +1,1 @@
+export const PING_API_ACTION = 'PING_API_ACTION';
