@@ -15,6 +15,7 @@ export default class SignupView extends Component {
     }
 
     render() {
+        // TODO: Add password strength rules
         return(
             <div>
                 <Header />
@@ -30,10 +31,12 @@ export default class SignupView extends Component {
                             <FormControl type="password"
                                          onChange={this.handleChange.bind(this, 'password')}/>
                         </FormGroup>
-                        <FormGroup controlId="passwordConfirmation">
+                        <FormGroup controlId="passwordConfirmation"
+                                   validationState={this.getPasswordConfirmationValidationState()}>
                             <ControlLabel>Password Confirmation</ControlLabel>
                             <FormControl type="password"
                                          onChange={this.handleChange.bind(this, 'passwordConfirmation')}/>
+                            <FormControl.Feedback />
                         </FormGroup>
                         <Button bsStyle="primary" type="submit" disabled={this.disableFormSubmit()}>
                             Submit
@@ -51,8 +54,28 @@ export default class SignupView extends Component {
     }
 
     disableFormSubmit() {
-        return !_.every(this.state, (value, key) => {
+        return !this.enableFormSubmit();
+    }
+
+    enableFormSubmit() {
+        return _.every(this.state, (value, key) => {
             return value.length > 0;
-        });
+        }) && this.passwordIsConfirmed();
+    }
+
+    passwordIsConfirmed() {
+        let passwordConfirmation = this.state.passwordConfirmation;
+        return passwordConfirmation === this.state.password;
+    }
+
+    getPasswordConfirmationValidationState() {
+        let passwordConfirmation = this.state.passwordConfirmation;
+        if(passwordConfirmation.length > 0) {
+            if(this.passwordIsConfirmed()) {
+                return 'success';
+            } else {
+                return 'error';
+            }
+        }
     }
 }

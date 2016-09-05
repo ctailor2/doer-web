@@ -137,7 +137,7 @@ describe('SignupView', () => {
                 expect(formGroup.prop('controlId')).toBe('passwordConfirmation');
             });
 
-            it('has an Password Confirmation label', () => {
+            it('has a Password Confirmation label', () => {
                 let label = formGroup.find('ControlLabel');
                 expect(label.length).toBe(1);
                 expect(label.childAt(0).text()).toBe('Password Confirmation');
@@ -160,6 +160,29 @@ describe('SignupView', () => {
                     expect(tree.state().passwordConfirmation).toBe('password');
                 });
             });
+
+            it('shows feedback', () => {
+                let feedback = formGroup.find('FormControlFeedback');
+                expect(feedback.length).toBe(1);
+            });
+
+            it('has no validation state by default', () => {
+                expect(formGroup.prop('validationState')).toBeUndefined();
+            });
+
+            describe('when data is entered', () => {
+                it('has success validation state when entry matches password', () => {
+                    tree.setState({password: 'bananas', passwordConfirmation: 'bananas'});
+                    formGroup = tree.find('FormGroup').at(2);
+                    expect(formGroup.prop('validationState')).toBe('success');
+                });
+
+                it('has error validation state when entry does not match password', () => {
+                    tree.setState({passwordConfirmation: 'bananas'});
+                    formGroup = tree.find('FormGroup').at(2);
+                    expect(formGroup.prop('validationState')).toBe('error');
+                });
+            });
         });
 
         describe('submit button', () => {
@@ -177,14 +200,21 @@ describe('SignupView', () => {
             });
 
             it('is disabled by default', () => {
-                console.log(tree.instance().disableFormSubmit());
                 expect(button.prop('disabled')).toBe(true);
             });
 
-            it('enables when all fields are entered', () => {
-                tree.setState({email:'email', password:'password', passwordConfirmation: 'passwordConfirmation'});
-                button = tree.find('Button');
-                expect(button.prop('disabled')).toBe(false);
+            describe('when all fields are entered', () => {
+                it('stays disabled if password confirmation does not match password ', () => {
+                    tree.setState({email:'email', password:'password', passwordConfirmation: 'passwordConfirmation'});
+                    button = tree.find('Button');
+                    expect(button.prop('disabled')).toBe(true);
+                });
+
+                it('enables if password confirmation matches password ', () => {
+                    tree.setState({email:'email', password:'password', passwordConfirmation: 'password'});
+                    button = tree.find('Button');
+                    expect(button.prop('disabled')).toBe(false);
+                });
             });
         });
     });
