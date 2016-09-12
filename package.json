@@ -39,13 +39,16 @@
     "react-addons-test-utils": "~0.14.0"
   },
   "dependencies": {
+    "axios": "^0.14.0",
+    "babel-polyfill": "^6.13.0",
     "lodash": "^4.15.0",
     "react": "^15.2.1",
     "react-bootstrap": "^0.30.3",
     "react-dom": "^15.2.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.6.0",
-    "redux": "^3.5.2"
+    "redux": "^3.5.2",
+    "redux-saga": "^0.11.1"
   },
   "scripts": {
     "start": "node ./scripts/start.js",
@@ -63,9 +66,11 @@
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-dom",
       "<rootDir>/node_modules/react-addons-test-utils",
+      "<rootDir>/node_modules/redux-saga",
       "<rootDir>/node_modules/fbjs",
       "<rootDir>/node_modules/enzyme",
-      "<rootDir>/node_modules/lodash"
+      "<rootDir>/node_modules/lodash",
+      "<rootDir>/node_modules/axios"
     ]
   }
 }
