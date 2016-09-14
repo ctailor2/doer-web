@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Col, FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap';
 import Header from './Header';
 import _ from 'lodash';
+import {signupRequestAction} from '../actions/sessionActions';
 
-export default class SignupView extends Component {
+export class SignupView extends Component {
     constructor(props) {
         super(props);
+
+        this.handleClick = this.handleClick.bind(this);
 
         this.state = {
             email: '',
@@ -38,7 +42,10 @@ export default class SignupView extends Component {
                                          onChange={this.handleChange.bind(this, 'passwordConfirmation')}/>
                             <FormControl.Feedback />
                         </FormGroup>
-                        <Button bsStyle="primary" type="submit" disabled={this.disableFormSubmit()}>
+                        <Button bsStyle="primary"
+                                type="button"
+                                onClick={this.handleClick}
+                                disabled={this.disableFormSubmit()}>
                             Submit
                         </Button>
                     </form>
@@ -78,4 +85,10 @@ export default class SignupView extends Component {
             }
         }
     }
+
+    handleClick() {
+        this.props.signupRequestAction(this.state);
+    }
 }
+
+export default connect(null, {signupRequestAction})(SignupView);

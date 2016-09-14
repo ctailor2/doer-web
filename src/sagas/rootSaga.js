@@ -1,8 +1,8 @@
-import {watchPingApi} from './apiSaga';
+import {watchSignupRequest} from './sessionSaga';
 import {fork} from 'redux-saga/effects';
 
 export default function* rootSaga() {
     yield [
-        fork(watchPingApi)
+        fork(watchSignupRequest)
     ];
 }

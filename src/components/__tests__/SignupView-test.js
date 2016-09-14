@@ -1,14 +1,15 @@
 jest.unmock('../SignupView');
 
-import SignupView from '../SignupView';
+import {SignupView} from '../SignupView';
 import {shallow} from 'enzyme';
 import React from 'react';
 
 describe('SignupView', () => {
-    let tree;
+    let tree, signupRequestActionFn;
 
     beforeEach(() => {
-        tree = shallow(<SignupView />);
+        signupRequestActionFn = jest.fn();
+        tree = shallow(<SignupView signupRequestAction={signupRequestActionFn}/>);
     });
 
     it('renders', () => {
@@ -195,7 +196,7 @@ describe('SignupView', () => {
             it('renders', () => {
                 expect(button.length).toBe(1);
                 expect(button.childAt(0).text()).toBe('Submit');
-                expect(button.prop('type')).toBe('submit');
+                expect(button.prop('type')).toBe('button');
                 expect(button.prop('bsStyle')).toBe('primary');
             });
 
@@ -215,6 +216,17 @@ describe('SignupView', () => {
                     button = tree.find('Button');
                     expect(button.prop('disabled')).toBe(false);
                 });
+            });
+
+            it('fires signup request action with form data on click', () => {
+                let formData = {
+                    email: 'test@email.com',
+                    password: 'password',
+                    passwordConfirmation: 'password'
+                }
+                tree.setState(formData);
+                button.simulate('click');
+                expect(signupRequestActionFn).toBeCalledWith(formData);
             });
         });
     });

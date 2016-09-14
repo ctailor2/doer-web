@@ -8,12 +8,12 @@ import App from './components/App';
 import SignupView from './components/SignupView';
 import './styles/index.css';
 import rootSaga from './sagas/rootSaga';
+import rootReducer from './reducers/rootReducer';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-// Replace the noop function with rootReducer once a reducer is added
-    () => {},
+    rootReducer,
     applyMiddleware(sagaMiddleware)
 );
 

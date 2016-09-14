@@ -12,3 +12,9 @@ export function fetchData(url) {
         .then((response) => ({response}))
         .catch((error) => ({error}));
 }
+
+export function postData(url, data) {
+    return client.post(url, data)
+        .then((response) => ({response}))
+        .catch((error) => ({error}));
+}
