@@ -1,7 +1,7 @@
 jest.unmock('../sagaHelper');
 jest.unmock('../sessionSaga');
 
-import {watchSignupRequest, signupRequest} from '../sessionSaga';
+import {watchSignupRequest, signupRequest, watchLoginRequest, loginRequest} from '../sessionSaga';
 import {takeLatest} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {postData} from '../sagaHelper';
@@ -24,8 +24,8 @@ describe('signupRequest', () => {
     };
 
     beforeEach(() => {
-        redirectFn = jest.fn();
-        browserHistory.push = redirectFn;
+        localStorage.setItem = jest.fn();
+        browserHistory.push = jest.fn();
         iterator = signupRequest(action);
     });
 
@@ -34,16 +34,59 @@ describe('signupRequest', () => {
     });
 
     describe('on request success', () => {
-        it('fires signup response action with response on success', () => {
+        it('sets token on localStorage', () => {
+            iterator.next();
+            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
+            expect(localStorage.setItem).toBeCalledWith('sessionToken', 'tokenz');
+        });
+
+        it('redirects to the root', () => {
+            iterator.next();
+            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
+            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
+            expect(browserHistory.push).toBeCalledWith('/');
+        });
+    });
+});
+
+describe('watchLoginRequest', () => {
+    let iterator = watchLoginRequest();
+
+    it('calls login request saga with latest login request action', () => {
+        expect(iterator.next().value).toEqual(takeLatest('LOGIN_REQUEST_ACTION', loginRequest).next().value);
+    });
+});
+
+describe('loginRequest', () => {
+    let iterator, redirectFn;
+
+    let action = {
+        type: 'LOGIN_REQUEST_ACTION',
+        data: {cool: 'beans'}
+    };
+
+    beforeEach(() => {
+        localStorage.setItem = jest.fn();
+        browserHistory.push = jest.fn();
+        iterator = loginRequest(action);
+    });
+
+    it('calls login endpoint with action data', () => {
+        expect(iterator.next().value).toEqual(call(postData, '/v1/login', action.data));
+    });
+
+    describe('on request success', () => {
+        it('sets token on localStorage', () => {
             iterator.next()
-            expect(iterator.next({response: {data: 'daterz'}}).value).toEqual(put({type: 'SIGNUP_RESPONSE_ACTION', data: 'daterz'}));
+            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
+            expect(localStorage.setItem).toBeCalledWith('sessionToken', 'tokenz');
         });
 
         it('redirects to the root', () => {
             iterator.next()
-            iterator.next({response: {data: 'daterz'}});
-            iterator.next({response: {data: 'daterz'}});
-            expect(redirectFn).toBeCalledWith('/');
+            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
+            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
+            expect(browserHistory.push).toBeCalledWith('/');
         });
     });
 });

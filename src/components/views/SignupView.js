@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Col, FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap';
-import Header from './Header';
+import Header from '../Header';
 import _ from 'lodash';
-import {signupRequestAction} from '../actions/sessionActions';
+import {signupRequestAction} from '../../actions/sessionActions';
 
 export class SignupView extends Component {
     constructor(props) {

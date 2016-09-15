@@ -6,3 +6,10 @@ export function signupRequestAction(data = {}) {
         data: data
     }
 }
+
+export function loginRequestAction(data = {}) {
+    return {
+        type: actionTypes.LOGIN_REQUEST_ACTION,
+        data: data
+    }
+}

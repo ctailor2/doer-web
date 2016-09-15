@@ -5,7 +5,8 @@ import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { Router, Route, browserHistory } from 'react-router';
 import App from './components/App';
-import SignupView from './components/SignupView';
+import SignupView from './components/views/SignupView';
+import LoginView from './components/views/LoginView';
 import './styles/index.css';
 import rootSaga from './sagas/rootSaga';
 import rootReducer from './reducers/rootReducer';
@@ -24,6 +25,7 @@ render(
     <Router history={browserHistory}>
       <Route path="/" component={App}></Route>
       <Route path="/signup" component={SignupView}></Route>
+      <Route path="/login" component={LoginView}></Route>
     </Router>
   </Provider>,
   document.getElementById('root')

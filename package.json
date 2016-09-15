@@ -71,6 +71,7 @@
       "<rootDir>/node_modules/enzyme",
       "<rootDir>/node_modules/lodash",
       "<rootDir>/node_modules/axios"
-    ]
+    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/config/jestSetup.js"
   }
 }
