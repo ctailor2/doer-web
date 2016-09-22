@@ -3,6 +3,7 @@ jest.unmock('../App');
 import App from '../App';
 import React from 'react';
 import {shallow} from 'enzyme';
+import Header from '../Header';
 
 describe('App', () => {
     let tree;
@@ -16,6 +17,6 @@ describe('App', () => {
     });
 
     it('has a header', () => {
-        expect(tree.find('Header').length).toBe(1);
+        expect(tree.find(Header).length).toBe(1);
     });
 });

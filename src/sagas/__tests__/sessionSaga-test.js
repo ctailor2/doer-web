@@ -1,7 +1,14 @@
 jest.unmock('../sagaHelper');
 jest.unmock('../sessionSaga');
 
-import {watchSignupRequest, signupRequest, watchLoginRequest, loginRequest} from '../sessionSaga';
+import {
+    watchSignupRequest,
+    signupRequest,
+    watchLoginRequest,
+    loginRequest,
+    watchLogoutRequest,
+    logoutRequest
+} from '../sessionSaga';
 import {takeLatest} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {postData} from '../sagaHelper';
@@ -88,5 +95,39 @@ describe('loginRequest', () => {
             iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
             expect(browserHistory.push).toBeCalledWith('/');
         });
+    });
+});
+
+describe('logoutRequest', () => {
+    let iterator, redirectFn;
+
+    let action = {
+        type: 'LOGOUT_REQUEST_ACTION'
+    };
+
+    beforeEach(() => {
+        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        browserHistory.push = jest.fn();
+        iterator = logoutRequest(action);
+    });
+
+    it('calls logout endpoint with session token header', () => {
+        expect(iterator.next().value).toEqual(call(postData, '/v1/logout', {}, {headers: {'Session-Token': 'socooltoken'}}));
+    });
+
+    describe('on request success', () => {
+        it('redirects to login', () => {
+            iterator.next()
+            iterator.next({response: {}});
+            expect(browserHistory.push).toBeCalledWith('/login');
+        });
+    });
+});
+
+describe('watchLogoutRequest', () => {
+    let iterator = watchLogoutRequest();
+
+    it('calls logout request saga with latest logout request action', () => {
+        expect(iterator.next().value).toEqual(takeLatest('LOGOUT_REQUEST_ACTION', logoutRequest).next().value);
     });
 });

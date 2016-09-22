@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Col, FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap';
+import {Row, Col, FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap';
 import Header from '../Header';
 import _ from 'lodash';
 import {signupRequestAction} from '../../actions/sessionActions';
+import {browserHistory} from 'react-router';
 
 export class SignupView extends Component {
     constructor(props) {
@@ -23,35 +24,49 @@ export class SignupView extends Component {
         return(
             <div>
                 <Header />
-                <Col lg={4} lgOffset={4}>
-                    <form>
-                        <FormGroup controlId="email">
-                            <ControlLabel>Email</ControlLabel>
-                            <FormControl type="text"
-                                         onChange={this.handleChange.bind(this, 'email')}/>
-                        </FormGroup>
-                        <FormGroup controlId="password">
-                            <ControlLabel>Password</ControlLabel>
-                            <FormControl type="password"
-                                         onChange={this.handleChange.bind(this, 'password')}/>
-                        </FormGroup>
-                        <FormGroup controlId="passwordConfirmation"
-                                   validationState={this.getPasswordConfirmationValidationState()}>
-                            <ControlLabel>Password Confirmation</ControlLabel>
-                            <FormControl type="password"
-                                         onChange={this.handleChange.bind(this, 'passwordConfirmation')}/>
-                            <FormControl.Feedback />
-                        </FormGroup>
-                        <Button bsStyle="primary"
-                                type="button"
-                                onClick={this.handleClick}
-                                disabled={this.disableFormSubmit()}>
-                            Submit
-                        </Button>
-                    </form>
-                </Col>
+                <Row>
+                    <Col lg={4} lgOffset={4}>
+                        <form>
+                            <FormGroup controlId="email">
+                                <ControlLabel>Email</ControlLabel>
+                                <FormControl type="text"
+                                             onChange={this.handleChange.bind(this, 'email')}/>
+                            </FormGroup>
+                            <FormGroup controlId="password">
+                                <ControlLabel>Password</ControlLabel>
+                                <FormControl type="password"
+                                             onChange={this.handleChange.bind(this, 'password')}/>
+                            </FormGroup>
+                            <FormGroup controlId="passwordConfirmation"
+                                       validationState={this.getPasswordConfirmationValidationState()}>
+                                <ControlLabel>Password Confirmation</ControlLabel>
+                                <FormControl type="password"
+                                             onChange={this.handleChange.bind(this, 'passwordConfirmation')}/>
+                                <FormControl.Feedback />
+                            </FormGroup>
+                            <Button bsStyle="primary"
+                                    type="button"
+                                    onClick={this.handleClick}
+                                    disabled={this.disableFormSubmit()}>
+                                Submit
+                            </Button>
+                        </form>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col lg={4} lgOffset={4}>
+                        <div className="leading-link">
+                            <div>Already registered?</div>
+                            <a href="#" onClick={this.handleLoginClick}>Login</a>
+                        </div>
+                    </Col>
+                </Row>
             </div>
         );
+    }
+
+    handleLoginClick() {
+        browserHistory.push('/login');
     }
 
     handleChange(field, event) {

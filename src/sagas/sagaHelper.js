@@ -13,8 +13,8 @@ export function fetchData(url) {
         .catch((error) => ({error}));
 }
 
-export function postData(url, data) {
-    return client.post(url, data)
+export function postData(url, data, configs) {
+    return client.post(url, data, configs)
         .then((response) => ({response}))
         .catch((error) => ({error}));
 }

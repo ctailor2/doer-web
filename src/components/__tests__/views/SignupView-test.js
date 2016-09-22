@@ -3,6 +3,8 @@ jest.unmock('../../views/SignupView');
 import {SignupView} from '../../views/SignupView';
 import {shallow} from 'enzyme';
 import React from 'react';
+import Header from '../../Header';
+import {browserHistory} from 'react-router';
 
 describe('SignupView', () => {
     let tree, signupRequestActionFn;
@@ -17,7 +19,7 @@ describe('SignupView', () => {
     });
 
     it('has a Header', () => {
-        expect(tree.find('Header').length).toBe(1);
+        expect(tree.find(Header).length).toBe(1);
     });
 
     it('has default state', () => {
@@ -25,6 +27,44 @@ describe('SignupView', () => {
             email: '',
             password: '',
             passwordConfirmation: ''
+        });
+    });
+
+    describe('leading link', () => {
+        let leadingLink
+
+        beforeEach(() => {
+            leadingLink = tree.find('.leading-link');
+        });
+
+        it('renders', () => {
+            expect(leadingLink.length).toBe(1);
+        });
+
+        it('leads with a question', () => {
+            expect(leadingLink.text()).toContain('Already registered?');
+        });
+
+        describe('link', () => {
+            let link;
+
+            beforeEach(() => {
+                browserHistory.push = jest.fn();
+                link = leadingLink.find('a');
+            });
+
+            it('renders', () => {
+                expect(link.length).toBe(1);
+            });
+
+            it('links to login', () => {
+                expect(link.text()).toBe('Login');
+            });
+
+            it('redirects to the login page on click', () => {
+                link.simulate('click');
+                expect(browserHistory.push).toBeCalledWith('/login');
+            });
         });
     });
 

@@ -1,6 +1,6 @@
 jest.unmock('../sessionActions');
 
-import {signupRequestAction, loginRequestAction} from '../sessionActions';
+import {signupRequestAction, loginRequestAction, logoutRequestAction} from '../sessionActions';
 
 describe('signupRequestAction', () => {
     it('creates a signup request action with empty data by default', () => {
@@ -32,6 +32,14 @@ describe('loginRequestAction', () => {
         expect(loginRequestAction(data)).toEqual({
             type: 'LOGIN_REQUEST_ACTION',
             data: data
+        });
+    });
+});
+
+describe('logoutRequestAction', () => {
+    it('creates a logout request action', () => {
+        expect(logoutRequestAction()).toEqual({
+            type: 'LOGOUT_REQUEST_ACTION'
         });
     });
 });

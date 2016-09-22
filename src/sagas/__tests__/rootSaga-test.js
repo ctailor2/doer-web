@@ -3,7 +3,7 @@ jest.unmock('../sessionSaga');
 
 import rootSaga from '../rootSaga';
 import {fork} from 'redux-saga/effects';
-import {watchSignupRequest, watchLoginRequest} from '../sessionSaga';
+import {watchSignupRequest, watchLoginRequest, watchLogoutRequest} from '../sessionSaga';
 
 describe('rootSaga', () => {
     let iterator = rootSaga();
@@ -11,7 +11,8 @@ describe('rootSaga', () => {
     it('forks the watch sagas', () => {
         expect(iterator.next().value).toEqual([
             fork(watchSignupRequest),
-            fork(watchLoginRequest)
+            fork(watchLoginRequest),
+            fork(watchLogoutRequest)
         ]);
     });
 });

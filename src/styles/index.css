@@ -1,1 +1,10 @@
-@import './_SignupView.css';
+.leading-link {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+.leading-link > * {
+    margin-right: 5px;
+}

@@ -13,3 +13,9 @@ export function loginRequestAction(data = {}) {
         data: data
     }
 }
+
+export function logoutRequestAction() {
+    return {
+        type: actionTypes.LOGOUT_REQUEST_ACTION
+    }
+}

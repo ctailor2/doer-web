@@ -33,3 +33,17 @@ export function* loginRequest(action) {
 export function* watchLoginRequest() {
     yield* takeLatest(actionTypes.LOGIN_REQUEST_ACTION, loginRequest);
 }
+
+export function* logoutRequest() {
+    const {response, error} = yield call(postData, '/v1/logout', {}, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+    if(response) {
+        // TODO: fire action to get todos
+        browserHistory.push('/login');
+    } else if (error) {
+        // TODO: handle error
+    }
+}
+
+export function* watchLogoutRequest() {
+    yield* takeLatest(actionTypes.LOGOUT_REQUEST_ACTION, logoutRequest);
+}
