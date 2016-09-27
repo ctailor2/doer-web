@@ -10,6 +10,7 @@ describe('SignupView', () => {
     let tree, signupRequestActionFn;
 
     beforeEach(() => {
+        localStorage.getItem = jest.fn();
         signupRequestActionFn = jest.fn();
         tree = shallow(<SignupView signupRequestAction={signupRequestActionFn}/>);
     });
@@ -28,6 +29,13 @@ describe('SignupView', () => {
             password: '',
             passwordConfirmation: ''
         });
+    });
+
+    it('redirects to the root if a sessionToken is present', () => {
+        localStorage.getItem = jest.fn(() => {return 'cooltoken'});
+        browserHistory.push = jest.fn();
+        tree = shallow(<SignupView signupRequestAction={signupRequestActionFn}/>);
+        expect(browserHistory.push).toBeCalledWith('/');
     });
 
     describe('leading link', () => {

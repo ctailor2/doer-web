@@ -18,6 +18,12 @@ export class LoginView extends Component {
         };
     }
 
+    componentWillMount() {
+        if(localStorage.getItem('sessionToken')) {
+            browserHistory.push('/');
+        }
+    }
+
     render() {
         return(
             <div>

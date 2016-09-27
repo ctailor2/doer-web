@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Navbar, Brand, Nav, NavDropdown, MenuItem} from 'react-bootstrap';
 import {logoutRequestAction} from '../actions/sessionActions';

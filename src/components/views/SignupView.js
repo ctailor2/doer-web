@@ -19,6 +19,12 @@ export class SignupView extends Component {
         };
     }
 
+    componentWillMount() {
+        if(localStorage.getItem('sessionToken')) {
+            browserHistory.push('/');
+        }
+    }
+
     render() {
         // TODO: Add password strength rules
         return(
