@@ -1,5 +1,7 @@
 jest.unmock('../sagaHelper');
 jest.unmock('../sessionSaga');
+jest.unmock('../../actions/sessionActions');
+jest.unmock('../../actions/todoActions');
 
 import {
     watchSignupRequest,
@@ -7,9 +9,11 @@ import {
     watchLoginRequest,
     loginRequest,
     watchLogoutRequest,
-    logoutRequest
+    logoutRequest,
+    watchStoreSession,
+    storeSession
 } from '../sessionSaga';
-import {takeLatest} from 'redux-saga';
+import {takeLatest, takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {postData} from '../sagaHelper';
 import {browserHistory} from 'react-router';
@@ -23,7 +27,7 @@ describe('watchSignupRequest', () => {
 });
 
 describe('signupRequest', () => {
-    let iterator, redirectFn;
+    let iterator;
 
     let action = {
         type: 'SIGNUP_REQUEST_ACTION',
@@ -31,8 +35,6 @@ describe('signupRequest', () => {
     };
 
     beforeEach(() => {
-        localStorage.setItem = jest.fn();
-        browserHistory.push = jest.fn();
         iterator = signupRequest(action);
     });
 
@@ -41,17 +43,10 @@ describe('signupRequest', () => {
     });
 
     describe('on request success', () => {
-        it('sets token on localStorage', () => {
+        it('fires store session action', () => {
             iterator.next();
-            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
-            expect(localStorage.setItem).toBeCalledWith('sessionToken', 'tokenz');
-        });
-
-        it('redirects to the root', () => {
-            iterator.next();
-            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
-            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
-            expect(browserHistory.push).toBeCalledWith('/');
+            expect(iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}}).value)
+                .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
     });
 });
@@ -65,7 +60,7 @@ describe('watchLoginRequest', () => {
 });
 
 describe('loginRequest', () => {
-    let iterator, redirectFn;
+    let iterator;
 
     let action = {
         type: 'LOGIN_REQUEST_ACTION',
@@ -73,8 +68,6 @@ describe('loginRequest', () => {
     };
 
     beforeEach(() => {
-        localStorage.setItem = jest.fn();
-        browserHistory.push = jest.fn();
         iterator = loginRequest(action);
     });
 
@@ -83,23 +76,16 @@ describe('loginRequest', () => {
     });
 
     describe('on request success', () => {
-        it('sets token on localStorage', () => {
-            iterator.next()
-            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
-            expect(localStorage.setItem).toBeCalledWith('sessionToken', 'tokenz');
-        });
-
-        it('redirects to the root', () => {
-            iterator.next()
-            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
-            iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}});
-            expect(browserHistory.push).toBeCalledWith('/');
+        it('fires store session action', () => {
+            iterator.next();
+            expect(iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}}).value)
+                .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
     });
 });
 
 describe('logoutRequest', () => {
-    let iterator, redirectFn;
+    let iterator;
 
     let action = {
         type: 'LOGOUT_REQUEST_ACTION'
@@ -130,4 +116,45 @@ describe('watchLogoutRequest', () => {
     it('calls logout request saga with latest logout request action', () => {
         expect(iterator.next().value).toEqual(takeLatest('LOGOUT_REQUEST_ACTION', logoutRequest).next().value);
     });
+});
+
+describe('storeSession', () => {
+    let iterator;
+
+    let action = {
+        type: 'STORE_SESSION_ACTION',
+        token: 'wowCoolToken'
+    };
+
+    beforeEach(() => {
+        localStorage.setItem = jest.fn();
+        browserHistory.push = jest.fn();
+        iterator = storeSession(action);
+    });
+
+    it('sets token on localStorage', () => {
+        iterator.next();
+        expect(localStorage.setItem).toBeCalledWith('sessionToken', 'wowCoolToken');
+    });
+
+    it('fires get todos request action', () => {
+        iterator.next();
+        expect(iterator.next().value)
+            .toEqual(put({type: 'GET_TODOS_REQUEST_ACTION'}));
+    });
+
+    it('redirects to the root', () => {
+        iterator.next();
+        iterator.next();
+        iterator.next();
+        expect(browserHistory.push).toBeCalledWith('/');
+    });
+});
+
+describe('watchStoreSession', () => {
+	let iterator = watchStoreSession();
+
+	it('calls store session saga with every store session action', () => {
+        expect(iterator.next().value).toEqual(takeEvery('STORE_SESSION_ACTION', storeSession).next().value);
+	});
 });

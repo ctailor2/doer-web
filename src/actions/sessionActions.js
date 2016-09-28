@@ -19,3 +19,10 @@ export function logoutRequestAction() {
         type: actionTypes.LOGOUT_REQUEST_ACTION
     }
 }
+
+export function storeSessionAction(token = '') {
+	return {
+		type: actionTypes.STORE_SESSION_ACTION,
+		token: token
+	}
+}
