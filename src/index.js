@@ -14,8 +14,7 @@ import rootReducer from './reducers/rootReducer';
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-    // TODO: replace with root reducer once a reducer is added
-    () => {},
+	rootReducer,
     applyMiddleware(sagaMiddleware)
 );
 

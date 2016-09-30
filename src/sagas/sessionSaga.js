@@ -35,6 +35,7 @@ export function* watchLoginRequest() {
 export function* logoutRequest() {
     const {response, error} = yield call(postData, '/v1/logout', {}, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
     if(response) {
+        localStorage.removeItem('sessionToken');
         browserHistory.push('/login');
     } else if (error) {
         // TODO: handle error

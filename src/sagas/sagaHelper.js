@@ -7,8 +7,8 @@ client.defaults.headers = {
     'Content-Type': 'application/json'
 }
 
-export function fetchData(url) {
-    return client.get(url)
+export function fetchData(url, configs) {
+    return client.get(url, configs)
         .then((response) => ({response}))
         .catch((error) => ({error}));
 }

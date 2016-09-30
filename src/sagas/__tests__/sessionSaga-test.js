@@ -93,6 +93,7 @@ describe('logoutRequest', () => {
 
     beforeEach(() => {
         localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.removeItem = jest.fn();
         browserHistory.push = jest.fn();
         iterator = logoutRequest(action);
     });
@@ -102,8 +103,16 @@ describe('logoutRequest', () => {
     });
 
     describe('on request success', () => {
+        // TODO: Maybe extract this to a different saga like storeSession
+        it('removes token from localStorage', () => {
+            iterator.next()
+            iterator.next({response: {}});
+            expect(localStorage.removeItem).toBeCalledWith('sessionToken');
+        });
+
         it('redirects to login', () => {
             iterator.next()
+            iterator.next({response: {}});
             iterator.next({response: {}});
             expect(browserHistory.push).toBeCalledWith('/login');
         });
