@@ -44,7 +44,9 @@ export class App extends Component {
 	renderList() {
 		return(<ListGroup>
 			{this.props.todos.map((todo, index) => {
-                return(<ListGroupItem key={index}></ListGroupItem>);
+                return(<ListGroupItem key={index}>
+                    {todo.task}
+                </ListGroupItem>);
             })}
 		</ListGroup>);
 	}

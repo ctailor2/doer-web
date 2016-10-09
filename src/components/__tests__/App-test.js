@@ -89,15 +89,25 @@ describe('App', () => {
             let todo1, todo2;
 
             beforeEach(() => {
-                todo1 = {};
-                todo2 = {};
-                let todos = [todo1, todo2];
+                let todos = [{task: 'thing one'}, {task: 'thing two'}];
                 tree.setProps({todos: todos});
                 list = tree.find('ListGroup');
             });
 
 	        it('contains an item for each todo', () => {
 	            expect(list.find('ListGroupItem').length).toBe(2);
+	        });
+
+	        describe('each todo', () => {
+	            let todo
+
+	            beforeEach(() => {
+	                todo = list.find('ListGroupItem').at(0);
+	            });
+
+	            it('contains its task', () => {
+	                expect(todo.childAt(0).text()).toContain('thing one');
+	            });
 	        });
         });
     });
