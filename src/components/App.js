@@ -14,6 +14,11 @@ import {
 } from 'react-bootstrap';
 
 export class App extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {todo: {description: ''}};
+	}
+
 	render() {
 		return (<div>
 			<Header />
@@ -31,14 +36,25 @@ export class App extends Component {
 			<form>
                 <FormGroup controlId="todo" bsSize="large">
                     <InputGroup>
-                        <FormControl type="text" />
+                        <FormControl type="text" onChange={this.handleTodoDescriptionOnChange.bind(this)}/>
                         <InputGroup.Button>
-                            <Button type="button" bsStyle="primary" bsSize="large" disabled={true}>Do!</Button>
+                            <Button type="button" bsStyle="primary" bsSize="large" disabled={this.submitButtonIsDisabled()}>Do!</Button>
                         </InputGroup.Button>
                     </InputGroup>
                 </FormGroup>
             </form>
 		);
+	}
+
+	handleTodoDescriptionOnChange(event) {
+		this.setState({todo: {description: event.target.value}});
+	}
+
+	submitButtonIsDisabled() {
+		if(this.state.todo.description.match(/\w+/)) {
+			return false;
+		}
+		return true;
 	}
 
 	renderList() {

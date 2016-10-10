@@ -21,6 +21,10 @@ describe('App', () => {
         expect(tree.find(Header).length).toBe(1);
     });
 
+    it('has default state', () => {
+        expect(tree.state().todo).toEqual({description: ''});
+    });
+
     describe('form', () => {
         let form;
 
@@ -46,6 +50,11 @@ describe('App', () => {
             it('has no value by default', () => {
                 expect(input.prop('value')).toBeUndefined();
             });
+
+            it('updates todo description state on change', () => {
+                input.simulate('change', {target: {value: 'things'}});
+                expect(tree.state().todo.description).toEqual('things');
+            });
         });
 
         describe('submit button', () => {
@@ -65,6 +74,20 @@ describe('App', () => {
             it('is disabled by default', () => {
                 expect(button.prop('disabled')).toBe(true);
             });
+
+            it('is disabled when the todo has a description consisting entirely of whitespace', () => {
+				tree.setState({todo: {description: '  '}});
+				form = tree.find('form');
+				button = form.find('Button');
+				expect(button.prop('disabled')).toBe(true);
+            });
+
+			it('is enabled when the todo has a description', () => {
+				tree.setState({todo: {description: 'hey'}});
+				form = tree.find('form');
+				button = form.find('Button');
+				expect(button.prop('disabled')).toBe(false);
+			});
         });
     });
 
