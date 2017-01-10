@@ -5,7 +5,8 @@ import {fetchData} from './sagaHelper';
 import {storeTodosAction} from '../actions/todoActions';
 
 export function* getTodosRequest(action) {
-	const {response, error} = yield call(fetchData, '/v1/todos', {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	let url = '/v1/todos?scheduling=' + action.scheduling
+	const {response, error} = yield call(fetchData, url, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(storeTodosAction(response.data));
 	} else  if (error) {

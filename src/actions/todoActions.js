@@ -1,8 +1,9 @@
 import * as actionTypes from '../constants/actionTypes';
 
-export function getTodosRequestAction() {
+export function getTodosRequestAction(scheduling) {
 	return {
-		type: actionTypes.GET_TODOS_REQUEST_ACTION
+		type: actionTypes.GET_TODOS_REQUEST_ACTION,
+		scheduling: scheduling
 	}
 }
 

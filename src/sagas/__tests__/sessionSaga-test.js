@@ -45,7 +45,7 @@ describe('signupRequest', () => {
     describe('on request success', () => {
         it('fires store session action', () => {
             iterator.next();
-            expect(iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}}).value)
+            expect(iterator.next({response: {data: {token: 'tokenz'}}}).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
     });
@@ -78,7 +78,7 @@ describe('loginRequest', () => {
     describe('on request success', () => {
         it('fires store session action', () => {
             iterator.next();
-            expect(iterator.next({response: {data: {sessionToken: {token: 'tokenz'}}}}).value)
+            expect(iterator.next({response: {data: {token: 'tokenz'}}}).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
     });
@@ -98,22 +98,15 @@ describe('logoutRequest', () => {
         iterator = logoutRequest(action);
     });
 
-    it('calls logout endpoint with session token header', () => {
-        expect(iterator.next().value).toEqual(call(postData, '/v1/logout', {}, {headers: {'Session-Token': 'socooltoken'}}));
-    });
-
     describe('on request success', () => {
-        // TODO: Maybe extract this to a different saga like storeSession
         it('removes token from localStorage', () => {
             iterator.next()
-            iterator.next({response: {}});
             expect(localStorage.removeItem).toBeCalledWith('sessionToken');
         });
 
         it('redirects to login', () => {
             iterator.next()
-            iterator.next({response: {}});
-            iterator.next({response: {}});
+            iterator.next()
             expect(browserHistory.push).toBeCalledWith('/login');
         });
     });
@@ -146,10 +139,10 @@ describe('storeSession', () => {
         expect(localStorage.setItem).toBeCalledWith('sessionToken', 'wowCoolToken');
     });
 
-    it('fires get todos request action', () => {
+    it('fires get todos request action for immediately scheduled todos', () => {
         iterator.next();
         expect(iterator.next().value)
-            .toEqual(put({type: 'GET_TODOS_REQUEST_ACTION'}));
+            .toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', scheduling: 'now'}));
     });
 
     it('redirects to the root', () => {

@@ -9,7 +9,7 @@ import {getTodosRequestAction} from '../actions/todoActions';
 export function* signupRequest(action) {
     const {response, error} = yield call(postData, '/v1/signup', action.data);
     if(response) {
-        yield put(storeSessionAction(response.data.sessionToken.token));
+        yield put(storeSessionAction(response.data.token));
     } else if (error) {
         // TODO: handle error
     }
@@ -22,7 +22,7 @@ export function* watchSignupRequest() {
 export function* loginRequest(action) {
     const {response, error} = yield call(postData, '/v1/login', action.data);
     if(response) {
-        yield put(storeSessionAction(response.data.sessionToken.token));
+        yield put(storeSessionAction(response.data.token));
     } else if (error) {
         // TODO: handle error
     }
@@ -33,13 +33,8 @@ export function* watchLoginRequest() {
 }
 
 export function* logoutRequest() {
-    const {response, error} = yield call(postData, '/v1/logout', {}, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
-    if(response) {
-        localStorage.removeItem('sessionToken');
-        browserHistory.push('/login');
-    } else if (error) {
-        // TODO: handle error
-    }
+    localStorage.removeItem('sessionToken');
+    browserHistory.push('/login');
 }
 
 export function* watchLogoutRequest() {
@@ -48,7 +43,7 @@ export function* watchLogoutRequest() {
 
 export function* storeSession(action) {
     yield localStorage.setItem('sessionToken', action.token);
-    yield put(getTodosRequestAction());
+    yield put(getTodosRequestAction('now'));
     yield browserHistory.push('/');
 }
 

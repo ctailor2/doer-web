@@ -136,9 +136,9 @@ describe('App', () => {
     });
 
     it('maps state to props', () => {
-        let state = {todos: []};
+        let state = {todos: {active: [1], inactive: [3]}};
         expect(mapStateToProps(state)).toEqual({
-            todos: []
+            todos: [1]
         });
     });
 });

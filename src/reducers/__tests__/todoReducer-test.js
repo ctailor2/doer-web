@@ -4,14 +4,23 @@ import {todos} from '../todoReducer';
 
 describe('todos', () => {
 	it('has initial state', () => {
-		expect(todos()).toEqual([]);
+		expect(todos()).toEqual({active: [], inactive: []});
 	});
 
-	it('returns the stored todos from STORE_TODOS_ACTION', () => {
+	it('returns the todos from STORE_TODOS_ACTION separated by their active property', () => {
 		let action = {
 			type: 'STORE_TODOS_ACTION',
-			todos: [4, 5, 6]
+			todos: [
+				{task: 'this', scheduling: 'now'},
+				{task: 'that', scheduling: 'later'},
+				{task: 'other', scheduling: 'now'}
+			]
 		}
-		expect(todos([1, 2, 3], action)).toEqual([4, 5, 6]);
+		let todosState = todos([
+            {task: 'one', scheduling: 'later'}
+        ], action);
+        expect(todosState.active).toContain({task: 'this', scheduling: 'now'}, {task: 'other', scheduling: 'now'});
+        expect(todosState.inactive).toContain({task: 'that', scheduling: 'later'});
+        expect(todosState.inactive).not.toContain({task: 'one', scheduling: 'later'});
 	});
 });

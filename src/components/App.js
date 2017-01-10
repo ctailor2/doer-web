@@ -70,7 +70,7 @@ export class App extends Component {
 
 export const mapStateToProps = (state) => {
 	return {
-		todos: state.todos
+		todos: state.todos.active
 	};
 }
 
