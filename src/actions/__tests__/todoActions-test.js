@@ -11,17 +11,19 @@ describe('getTodosRequestAction', () => {
 });
 
 describe('storeTodosAction', () => {
-	it('creates a store todos action with empty todos by default', () => {
+	it('creates a store todos action with empty todos and anytime scheduling by default', () => {
 		expect(storeTodosAction()).toEqual({
 			type: 'STORE_TODOS_ACTION',
-			todos: []
+			todos: [],
+			scheduling: 'anytime'
 		});
 	});
 
-	it('creates a store todos action with supplied todos', () => {
-		expect(storeTodosAction([1, 2, 3])).toEqual({
+	it('creates a store todos action with supplied todos and scheduling', () => {
+		expect(storeTodosAction([1, 2, 3], 'someScheduling')).toEqual({
 			type: 'STORE_TODOS_ACTION',
-			todos: [1, 2, 3]
+			todos: [1, 2, 3],
+			scheduling: 'someScheduling'
 		});
 	});
 });

@@ -7,9 +7,17 @@ export function getTodosRequestAction(scheduling) {
 	}
 }
 
-export function storeTodosAction(todos = []) {
+export function storeTodosAction(todos = [], scheduling = 'anytime') {
 	return {
 		type: actionTypes.STORE_TODOS_ACTION,
-		todos: todos
+		todos: todos,
+		scheduling: scheduling
+	}
+}
+
+export function createTodoRequestAction(todo) {
+	return {
+		type: actionTypes.CREATE_TODO_REQUEST_ACTION,
+		todo: todo
 	}
 }
