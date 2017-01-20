@@ -5,11 +5,12 @@ import * as actionTypes from '../constants/actionTypes';
 import {browserHistory} from 'react-router';
 import {storeSessionAction} from '../actions/sessionActions';
 import {getTodosRequestAction} from '../actions/todoActions';
+import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
 
 export function* signupRequest(action) {
-    const {response, error} = yield call(postData, '/v1/signup', action.data);
+    const {response, error} = yield call(postData, action.link.href, action.data);
     if(response) {
-        yield put(storeSessionAction(response.data.token));
+        yield put(storeSessionAction(response.data.session.token));
     } else if (error) {
         // TODO: handle error
     }
@@ -20,9 +21,10 @@ export function* watchSignupRequest() {
 }
 
 export function* loginRequest(action) {
-    const {response, error} = yield call(postData, '/v1/login', action.data);
+    const {response, error} = yield call(postData, action.link.href, action.data);
     if(response) {
-        yield put(storeSessionAction(response.data.token));
+        yield put(storeSessionAction(response.data.session.token));
+        yield put(getHomeResourcesRequestAction(response.data._links.home));
     } else if (error) {
         // TODO: handle error
     }

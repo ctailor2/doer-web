@@ -1,18 +1,20 @@
 jest.unmock('../../views/LoginView');
 
-import {LoginView} from '../../views/LoginView';
-import {shallow} from 'enzyme';
+import {LoginView, mapStateToProps} from '../../views/LoginView';
+import {shallow, mount} from 'enzyme';
 import React from 'react';
 import Header from '../../Header';
 import {browserHistory} from 'react-router';
 
 describe('LoginView', () => {
-    let tree, loginRequestActionFn;
+    let tree, loginLink, loginRequestActionFn, getBaseResourcesRequestActionFn;
 
     beforeEach(() => {
+        loginLink = {href: 'http://some.api/login'};
         localStorage.getItem = jest.fn();
         loginRequestActionFn = jest.fn();
-        tree = shallow(<LoginView loginRequestAction={loginRequestActionFn}/>);
+        getBaseResourcesRequestActionFn = jest.fn();
+        tree = shallow(<LoginView loginLink={loginLink} loginRequestAction={loginRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
     });
 
     it('renders', () => {
@@ -28,6 +30,11 @@ describe('LoginView', () => {
             email: '',
             password: ''
         });
+    });
+
+    it('fires get base resources action when mounted', () => {
+        mount(<LoginView loginRequestAction={loginRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+        expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 
     it('redirects to the root if a sessionToken is present', () => {
@@ -194,15 +201,24 @@ describe('LoginView', () => {
                 expect(button.prop('disabled')).toBe(false);
             });
 
-            it('fires login request action with form data on click', () => {
+            it('fires login request action with form login link on click', () => {
                 let formData = {
                     email: 'test@email.com',
                     password: 'password'
                 }
                 tree.setState(formData);
                 button.simulate('click');
-                expect(loginRequestActionFn).toBeCalledWith(formData);
+                expect(loginRequestActionFn).toBeCalledWith(loginLink, formData);
             });
+        });
+    });
+
+    it('maps state to props', () => {
+        let loginLink = {href: 'http://some.api/login'};
+        let links = {login: loginLink, signup: {href: 'http://some.api/signup'}};
+        let state = {links: links};
+        expect(mapStateToProps(state)).toEqual({
+            loginLink: loginLink
         });
     });
 });

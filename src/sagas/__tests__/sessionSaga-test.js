@@ -2,6 +2,7 @@ jest.unmock('../sagaHelper');
 jest.unmock('../sessionSaga');
 jest.unmock('../../actions/sessionActions');
 jest.unmock('../../actions/todoActions');
+jest.unmock('../../actions/homeResourcesActions');
 
 import {
     watchSignupRequest,
@@ -15,7 +16,7 @@ import {
 } from '../sessionSaga';
 import {takeLatest, takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
-import {postData} from '../sagaHelper';
+import {postData, fetchData} from '../sagaHelper';
 import {browserHistory} from 'react-router';
 
 describe('watchSignupRequest', () => {
@@ -29,23 +30,25 @@ describe('watchSignupRequest', () => {
 describe('signupRequest', () => {
     let iterator;
 
+	let url = 'http://some.api/someLink';
     let action = {
         type: 'SIGNUP_REQUEST_ACTION',
-        data: {cool: 'beans'}
+        data: {cool: 'beans'},
+        link: {href: url}
     };
 
     beforeEach(() => {
         iterator = signupRequest(action);
     });
 
-    it('calls signup endpoint with action data', () => {
-        expect(iterator.next().value).toEqual(call(postData, '/v1/signup', action.data));
+    it('calls endpoint with action href and action data', () => {
+        expect(iterator.next().value).toEqual(call(postData, url, action.data));
     });
 
     describe('on request success', () => {
         it('fires store session action', () => {
             iterator.next();
-            expect(iterator.next({response: {data: {token: 'tokenz'}}}).value)
+            expect(iterator.next({response: {data: {session: {token: 'tokenz'}}}}).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
     });
@@ -62,24 +65,41 @@ describe('watchLoginRequest', () => {
 describe('loginRequest', () => {
     let iterator;
 
+	let url = 'http://some.api/someLink';
     let action = {
         type: 'LOGIN_REQUEST_ACTION',
-        data: {cool: 'beans'}
+        data: {cool: 'beans'},
+        link: {href: url}
     };
 
     beforeEach(() => {
         iterator = loginRequest(action);
     });
 
-    it('calls login endpoint with action data', () => {
-        expect(iterator.next().value).toEqual(call(postData, '/v1/login', action.data));
+    it('calls endpoint with action href and action data', () => {
+        expect(iterator.next().value).toEqual(call(postData, url, action.data));
     });
 
     describe('on request success', () => {
         it('fires store session action', () => {
             iterator.next();
-            expect(iterator.next({response: {data: {token: 'tokenz'}}}).value)
+            expect(iterator.next({response: {data: {session: {token: 'tokenz'}}}}).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
+        });
+
+        it('fires get home resources action', () => {
+            let homeLink = {href: 'http://some.api/home'};
+            let response = {response: {data: {
+                session: {
+                    token: 'tokenz'
+                },
+                _links: {
+                    home: homeLink
+                }
+            }}};
+            iterator.next();
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_HOME_RESOURCES_REQUEST_ACTION', link: homeLink}));
         });
     });
 });

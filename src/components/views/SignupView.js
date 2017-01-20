@@ -4,6 +4,7 @@ import {Row, Col, FormGroup, ControlLabel, FormControl, Button} from 'react-boot
 import Header from '../Header';
 import _ from 'lodash';
 import {signupRequestAction} from '../../actions/sessionActions';
+import {getBaseResourcesRequestAction} from '../../actions/linkActions'
 import {browserHistory} from 'react-router';
 
 export class SignupView extends Component {
@@ -23,6 +24,10 @@ export class SignupView extends Component {
         if(localStorage.getItem('sessionToken')) {
             browserHistory.push('/');
         }
+    }
+
+    componentDidMount() {
+        this.props.getBaseResourcesRequestAction();
     }
 
     render() {
@@ -108,8 +113,14 @@ export class SignupView extends Component {
     }
 
     handleClick() {
-        this.props.signupRequestAction(this.state);
+        this.props.signupRequestAction(this.props.signupLink, this.state);
     }
 }
 
-export default connect(null, {signupRequestAction})(SignupView);
+export const mapStateToProps = (state) => {
+	return {
+		signupLink: state.links.signup
+	};
+}
+
+export default connect(mapStateToProps, {signupRequestAction, getBaseResourcesRequestAction})(SignupView);

@@ -1,18 +1,20 @@
 jest.unmock('../../views/SignupView');
 
-import {SignupView} from '../../views/SignupView';
-import {shallow} from 'enzyme';
+import {SignupView, mapStateToProps} from '../../views/SignupView';
+import {shallow, mount} from 'enzyme';
 import React from 'react';
 import Header from '../../Header';
 import {browserHistory} from 'react-router';
 
 describe('SignupView', () => {
-    let tree, signupRequestActionFn;
+    let tree, signupLink, signupRequestActionFn, getBaseResourcesRequestActionFn;
 
     beforeEach(() => {
+        signupLink = {href: 'http://some.api/signup'};
         localStorage.getItem = jest.fn();
         signupRequestActionFn = jest.fn();
-        tree = shallow(<SignupView signupRequestAction={signupRequestActionFn}/>);
+        getBaseResourcesRequestActionFn = jest.fn();
+        tree = shallow(<SignupView signupLink={signupLink} signupRequestAction={signupRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
     });
 
     it('renders', () => {
@@ -29,6 +31,11 @@ describe('SignupView', () => {
             password: '',
             passwordConfirmation: ''
         });
+    });
+
+    it('fires get base resources action when mounted', () => {
+        mount(<SignupView signupRequestAction={signupRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+        expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 
     it('redirects to the root if a sessionToken is present', () => {
@@ -266,7 +273,7 @@ describe('SignupView', () => {
                 });
             });
 
-            it('fires signup request action with form data on click', () => {
+            it('fires signup request action with form data and signup link on click', () => {
                 let formData = {
                     email: 'test@email.com',
                     password: 'password',
@@ -274,8 +281,17 @@ describe('SignupView', () => {
                 }
                 tree.setState(formData);
                 button.simulate('click');
-                expect(signupRequestActionFn).toBeCalledWith(formData);
+                expect(signupRequestActionFn).toBeCalledWith(signupLink, formData);
             });
+        });
+    });
+
+    it('maps state to props', () => {
+        let signupLink = {href: 'http://some.api/signup'};
+        let links = {signup: signupLink, login: {href: 'http://some.api/login'}};
+        let state = {links: links};
+        expect(mapStateToProps(state)).toEqual({
+            signupLink: signupLink
         });
     });
 });

@@ -5,6 +5,7 @@ import Header from '../Header';
 import _ from 'lodash';
 import {loginRequestAction} from '../../actions/sessionActions';
 import {browserHistory} from 'react-router';
+import {getBaseResourcesRequestAction} from '../../actions/linkActions'
 
 export class LoginView extends Component {
     constructor(props) {
@@ -22,6 +23,10 @@ export class LoginView extends Component {
         if(localStorage.getItem('sessionToken')) {
             browserHistory.push('/');
         }
+    }
+
+    componentDidMount() {
+        this.props.getBaseResourcesRequestAction();
     }
 
     render() {
@@ -83,8 +88,14 @@ export class LoginView extends Component {
     }
 
     handleClick() {
-        this.props.loginRequestAction(this.state);
+        this.props.loginRequestAction(this.props.loginLink, this.state);
     }
 }
 
-export default connect(null, {loginRequestAction})(LoginView);
+export const mapStateToProps = (state) => {
+	return {
+		loginLink: state.links.login
+	};
+}
+
+export default connect(mapStateToProps, {loginRequestAction, getBaseResourcesRequestAction})(LoginView);

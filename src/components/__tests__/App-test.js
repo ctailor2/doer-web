@@ -29,6 +29,7 @@ describe('App', () => {
     });
 
     it('fires get todos request action for immediately scheduled todos when mounted', () => {
+        mount(<App todos={todos} createTodoRequestAction={mockCreateTodoActionFn} getTodosRequestAction={mockGetTodosActionFn}/>);
         expect(mockGetTodosActionFn).toBeCalledWith('now');
     });
 
@@ -194,18 +195,6 @@ describe('App', () => {
 					});
 	            });
             });
-
-//				it('fires the create todo action', () => {
-//					expect(mockCreateTodoActionFn).toBeCalledWith({task: 'hey'});
-//				});
-
-//				it('clears the todo task state', () => {
-//					expect(tree.state().todo.task).toEqual('');
-//				});
-
-//				it('clears the todo input value', () => {
-//					// TODO: Figure out how to assert on input value
-//				});
         });
     });
 

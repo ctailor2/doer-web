@@ -1,15 +1,17 @@
 import * as actionTypes from '../constants/actionTypes';
 
-export function signupRequestAction(data = {}) {
+export function signupRequestAction(link = {}, data = {}) {
     return {
         type: actionTypes.SIGNUP_REQUEST_ACTION,
+        link: link,
         data: data
     }
 }
 
-export function loginRequestAction(data = {}) {
+export function loginRequestAction(link = {}, data = {}) {
     return {
         type: actionTypes.LOGIN_REQUEST_ACTION,
+        link: link,
         data: data
     }
 }
