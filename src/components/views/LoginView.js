@@ -5,7 +5,7 @@ import Header from '../Header';
 import _ from 'lodash';
 import {loginRequestAction} from '../../actions/sessionActions';
 import {browserHistory} from 'react-router';
-import {getBaseResourcesRequestAction} from '../../actions/linkActions'
+import {getBaseResourcesRequestAction} from '../../actions/baseResourcesActions'
 
 export class LoginView extends Component {
     constructor(props) {

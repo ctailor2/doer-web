@@ -243,9 +243,11 @@ describe('App', () => {
     });
 
     it('maps state to props', () => {
-        let state = {todos: {active: [1], inactive: [3]}};
+        let todosLink = {href: 'http://some.api/todos'};
+        let state = {todos: {active: [1], inactive: [3]}, links: {todos: todosLink}};
         expect(mapStateToProps(state)).toEqual({
-            todos: [1]
+            todos: [1],
+            todosLink: todosLink
         });
     });
 });

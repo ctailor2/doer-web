@@ -4,7 +4,7 @@ import {Row, Col, FormGroup, ControlLabel, FormControl, Button} from 'react-boot
 import Header from '../Header';
 import _ from 'lodash';
 import {signupRequestAction} from '../../actions/sessionActions';
-import {getBaseResourcesRequestAction} from '../../actions/linkActions'
+import {getBaseResourcesRequestAction} from '../../actions/baseResourcesActions'
 import {browserHistory} from 'react-router';
 
 export class SignupView extends Component {

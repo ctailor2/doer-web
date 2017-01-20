@@ -114,7 +114,8 @@ export class App extends Component {
 
 export const mapStateToProps = (state) => {
 	return {
-		todos: state.todos.active
+		todos: state.todos.active,
+		todosLink: state.links.todos
 	};
 }
 
