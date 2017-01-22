@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Header from './Header';
 import {connect} from 'react-redux';
-import {createTodoRequestAction, getTodosRequestAction} from '../actions/todoActions';
+import {createTodoRequestAction} from '../actions/todoActions';
+import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
 import _ from 'lodash';
 import {
 	Row,
@@ -22,7 +23,7 @@ export class App extends Component {
 	}
 
 	componentDidMount() {
-		this.props.getTodosRequestAction('now');
+		this.props.getHomeResourcesRequestAction(localStorage.getItem('link'));
 	}
 
 	render() {
@@ -56,8 +57,8 @@ export class App extends Component {
 	renderFormButtonGroup() {
 		if(this.state.submitting) {
 			return(<InputGroup.Button>
-					<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, 'now')}>Now</Button>
-					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, 'later')}>Later</Button>
+					<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoNow)}>Now</Button>
+					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoLater)}>Later</Button>
 					<Button type="button" bsStyle="danger" bsSize="large" onClick={this.toggleSubmit.bind(this)}>
 						<Glyphicon glyph="remove"/>
 					</Button>
@@ -82,16 +83,15 @@ export class App extends Component {
 		}
 	}
 
-	submitTodo(scheduling) {
+	submitTodo(link) {
 		let todo = this.state.todo;
-		todo.scheduling = scheduling;
-		this.props.createTodoRequestAction(todo);
+		this.props.createTodoRequestAction(link, todo);
 		this.toggleSubmit();
 		this.taskInput.value = '';
 	}
 
 	handleTodoDescriptionOnChange(event) {
-		this.setState({todo: {task: event.target.value, scheduling: 'now'}});
+		this.setState({todo: {task: event.target.value}});
 	}
 
 	submitButtonIsDisabled() {
@@ -115,8 +115,8 @@ export class App extends Component {
 export const mapStateToProps = (state) => {
 	return {
 		todos: state.todos.active,
-		todosLink: state.links.todos
+		links: state.links
 	};
 }
 
-export default connect(mapStateToProps, {createTodoRequestAction, getTodosRequestAction})(App);
+export default connect(mapStateToProps, {createTodoRequestAction, getHomeResourcesRequestAction})(App);

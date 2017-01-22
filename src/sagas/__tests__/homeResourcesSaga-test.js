@@ -1,5 +1,5 @@
 jest.unmock('../homeResourcesSaga');
-jest.unmock('../../actions/linkActions');
+jest.unmock('../../actions/todoActions');
 
 import {getHomeResourcesRequest, watchGetHomeResourcesRequest} from '../homeResourcesSaga';
 import {fetchData} from '../sagaHelper';
@@ -12,7 +12,7 @@ describe('getHomeResourcesRequest', () => {
 	let url = 'http://some.api/someLink';
     let action = {
         type: 'GET_HOME_RESOURCES_REQUEST_ACTION',
-        link: {href: url}
+        url: url
     };
 
 	beforeEach(() => {
@@ -20,16 +20,18 @@ describe('getHomeResourcesRequest', () => {
         localStorage.getItem = jest.fn(() => {return 'socooltoken'});
 	});
 
-    it('calls endpoint with action href', () => {
+    it('calls endpoint with action url', () => {
         expect(iterator.next().value).toEqual(call(fetchData, url, {headers: {'Session-Token': 'socooltoken'}}));
     });
 
     describe('on request success', () => {
-        it('fires store links action', () => {
+        let todosLink = {href: "http://some.api/todos"};
+        let links = {self: {href: "http://some.api/home"}, todos: todosLink};
+        let response = {response: {data: {_links: links}}};
+
+        it('calls get todos request action', () => {
             iterator.next();
-            let links = [{rel: "this", href: "tisket"}, {rel: "that", href: "tasket"}];
-            expect(iterator.next({response: {data: {_links: links}}}).value)
-                .toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
         });
     });
 });

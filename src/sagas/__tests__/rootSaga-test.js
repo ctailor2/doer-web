@@ -3,6 +3,7 @@ jest.unmock('../sessionSaga');
 jest.unmock('../todoSaga');
 jest.unmock('../baseResourcesSaga');
 jest.unmock('../homeResourcesSaga');
+jest.unmock('../linksSaga');
 
 
 import rootSaga from '../rootSaga';
@@ -11,6 +12,7 @@ import {watchSignupRequest, watchLoginRequest, watchLogoutRequest, watchStoreSes
 import {watchGetTodosRequest, watchCreateTodoRequest} from '../todoSaga';
 import {watchGetBaseResourcesRequest} from '../baseResourcesSaga';
 import {watchGetHomeResourcesRequest} from '../homeResourcesSaga';
+import {watchPersistLink} from '../linksSaga';
 
 describe('rootSaga', () => {
     let iterator = rootSaga();
@@ -24,7 +26,8 @@ describe('rootSaga', () => {
             fork(watchGetTodosRequest),
             fork(watchCreateTodoRequest),
             fork(watchGetBaseResourcesRequest),
-            fork(watchGetHomeResourcesRequest)
+            fork(watchGetHomeResourcesRequest),
+            fork(watchPersistLink)
         ]);
     });
 });

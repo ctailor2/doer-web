@@ -1,9 +1,9 @@
 import * as actionTypes from '../constants/actionTypes';
 
-export function getTodosRequestAction(scheduling) {
+export function getTodosRequestAction(link = {}) {
 	return {
 		type: actionTypes.GET_TODOS_REQUEST_ACTION,
-		scheduling: scheduling
+		link: link
 	}
 }
 
@@ -15,9 +15,10 @@ export function storeTodosAction(todos = [], scheduling = 'anytime') {
 	}
 }
 
-export function createTodoRequestAction(todo) {
+export function createTodoRequestAction(link = {}, todo = {}) {
 	return {
 		type: actionTypes.CREATE_TODO_REQUEST_ACTION,
+		link: link,
 		todo: todo
 	}
 }

@@ -6,13 +6,17 @@ import {mount} from 'enzyme';
 import Header from '../Header';
 
 describe('App', () => {
-    let tree, input, todos, mockCreateTodoActionFn, mockGetTodosActionFn;
+    let tree, input, todos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockGetHomeResourcesRequestActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
-        mockGetTodosActionFn = jest.fn();
+        mockGetHomeResourcesRequestActionFn = jest.fn();
+        localStorage.getItem = jest.fn(() => {return 'http://some.api/endpoint'});
         todos = [];
-        tree = mount(<App todos={todos} createTodoRequestAction={mockCreateTodoActionFn} getTodosRequestAction={mockGetTodosActionFn}/>);
+        todoNowLink = {href: 'http://some.api/todoNow'};
+        todoLaterLink = {href: 'http://some.api/todoLater'};
+        links = {todos: {href: 'http://some.api/todos'}, todoNow: todoNowLink, todoLater: todoLaterLink};
+        tree = mount(<App todos={todos} links={links} createTodoRequestAction={mockCreateTodoActionFn} getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
         input = tree.node.taskInput;
     });
 
@@ -28,9 +32,9 @@ describe('App', () => {
         expect(tree.state()).toEqual({todo: {task: ''}, submitting: false});
     });
 
-    it('fires get todos request action for immediately scheduled todos when mounted', () => {
-        mount(<App todos={todos} createTodoRequestAction={mockCreateTodoActionFn} getTodosRequestAction={mockGetTodosActionFn}/>);
-        expect(mockGetTodosActionFn).toBeCalledWith('now');
+    it('fires get home resources request action with link from localStorage when mounted', () => {
+        mount(<App todos={todos} links={links} createTodoRequestAction={mockCreateTodoActionFn} getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
+        expect(mockGetHomeResourcesRequestActionFn).toBeCalledWith('http://some.api/endpoint');
     });
 
     describe('form', () => {
@@ -66,7 +70,6 @@ describe('App', () => {
             it('updates todo task state on change', () => {
                 formControl.simulate('change', {target: {value: 'things'}});
                 expect(tree.state().todo.task).toEqual('things');
-                expect(tree.state().todo.scheduling).toEqual('now');
             });
 
             describe('when submitting state is true', () => {
@@ -139,8 +142,8 @@ describe('App', () => {
 	                    buttons.at(0).simulate('click');
 	                });
 
-		            it('fires create todo action with immediate scheduling', () => {
-		                expect(mockCreateTodoActionFn).toBeCalledWith({task: 'something', scheduling: 'now'});
+		            it('fires create todo action with todoNowLink', () => {
+		                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'});
 		            });
 
 		            it('toggles submitting state to false', () => {
@@ -162,8 +165,8 @@ describe('App', () => {
 	                    buttons.at(1).simulate('click');
 	                });
 
-		            it('fires create todo action with immediate scheduling', () => {
-		                expect(mockCreateTodoActionFn).toBeCalledWith({task: 'something', scheduling: 'later'});
+		            it('fires create todo action with todoLaterLink', () => {
+		                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'});
 		            });
 
 		            it('toggles submitting state to false', () => {
@@ -243,11 +246,11 @@ describe('App', () => {
     });
 
     it('maps state to props', () => {
-        let todosLink = {href: 'http://some.api/todos'};
-        let state = {todos: {active: [1], inactive: [3]}, links: {todos: todosLink}};
+        let links = {todos: {href: 'http://some.api/todos'}};
+        let state = {todos: {active: [1], inactive: [3]}, links: links};
         expect(mapStateToProps(state)).toEqual({
             todos: [1],
-            todosLink: todosLink
+            links: links
         });
     });
 });

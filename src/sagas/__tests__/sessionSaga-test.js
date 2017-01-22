@@ -3,6 +3,7 @@ jest.unmock('../sessionSaga');
 jest.unmock('../../actions/sessionActions');
 jest.unmock('../../actions/todoActions');
 jest.unmock('../../actions/homeResourcesActions');
+jest.unmock('../../actions/linkActions');
 
 import {
     watchSignupRequest,
@@ -39,6 +40,7 @@ describe('signupRequest', () => {
 
     beforeEach(() => {
         iterator = signupRequest(action);
+        browserHistory.push = jest.fn();
     });
 
     it('calls endpoint with action href and action data', () => {
@@ -46,11 +48,36 @@ describe('signupRequest', () => {
     });
 
     describe('on request success', () => {
+        let homeLink = {href: 'http://some.api/home'};
+        let response = {response: {data: {
+            session: {
+                token: 'tokenz'
+            },
+            _links: {
+                home: homeLink
+            }
+        }}};
+
         it('fires store session action', () => {
             iterator.next();
-            expect(iterator.next({response: {data: {session: {token: 'tokenz'}}}}).value)
+            expect(iterator.next(response).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
+
+        it('fires persist link action', () => {
+            iterator.next();
+            iterator.next(response);
+            expect(iterator.next(response).value)
+                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: homeLink}));
+        });
+
+		it('redirects to the root', () => {
+			iterator.next();
+			iterator.next(response);
+			iterator.next(response);
+			iterator.next(response);
+			expect(browserHistory.push).toBeCalledWith('/');
+		});
     });
 });
 
@@ -74,6 +101,7 @@ describe('loginRequest', () => {
 
     beforeEach(() => {
         iterator = loginRequest(action);
+        browserHistory.push = jest.fn();
     });
 
     it('calls endpoint with action href and action data', () => {
@@ -81,26 +109,36 @@ describe('loginRequest', () => {
     });
 
     describe('on request success', () => {
+        let homeLink = {href: 'http://some.api/home'};
+        let response = {response: {data: {
+            session: {
+                token: 'tokenz'
+            },
+            _links: {
+                home: homeLink
+            }
+        }}};
+
         it('fires store session action', () => {
             iterator.next();
-            expect(iterator.next({response: {data: {session: {token: 'tokenz'}}}}).value)
+            expect(iterator.next(response).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
 
-        it('fires get home resources action', () => {
-            let homeLink = {href: 'http://some.api/home'};
-            let response = {response: {data: {
-                session: {
-                    token: 'tokenz'
-                },
-                _links: {
-                    home: homeLink
-                }
-            }}};
+        it('fires persist link action', () => {
             iterator.next();
             iterator.next(response);
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_HOME_RESOURCES_REQUEST_ACTION', link: homeLink}));
+            expect(iterator.next(response).value)
+                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: homeLink}));
         });
+
+		it('redirects to the root', () => {
+			iterator.next();
+			iterator.next(response);
+			iterator.next(response);
+			iterator.next(response);
+			expect(browserHistory.push).toBeCalledWith('/');
+		});
     });
 });
 
@@ -120,13 +158,20 @@ describe('logoutRequest', () => {
 
     describe('on request success', () => {
         it('removes token from localStorage', () => {
-            iterator.next()
+            iterator.next();
             expect(localStorage.removeItem).toBeCalledWith('sessionToken');
         });
 
+        it('removes link from localStorage', () => {
+            iterator.next();
+            iterator.next();
+            expect(localStorage.removeItem).toBeCalledWith('link');
+        });
+
         it('redirects to login', () => {
-            iterator.next()
-            iterator.next()
+            iterator.next();
+            iterator.next();
+            iterator.next();
             expect(browserHistory.push).toBeCalledWith('/login');
         });
     });
@@ -150,26 +195,12 @@ describe('storeSession', () => {
 
     beforeEach(() => {
         localStorage.setItem = jest.fn();
-        browserHistory.push = jest.fn();
         iterator = storeSession(action);
     });
 
     it('sets token on localStorage', () => {
         iterator.next();
         expect(localStorage.setItem).toBeCalledWith('sessionToken', 'wowCoolToken');
-    });
-
-    it('fires get todos request action for immediately scheduled todos', () => {
-        iterator.next();
-        expect(iterator.next().value)
-            .toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', scheduling: 'now'}));
-    });
-
-    it('redirects to the root', () => {
-        iterator.next();
-        iterator.next();
-        iterator.next();
-        expect(browserHistory.push).toBeCalledWith('/');
     });
 });
 

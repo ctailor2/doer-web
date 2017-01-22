@@ -3,22 +3,22 @@ import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {fetchData, postData} from './sagaHelper';
 import {storeTodosAction, getTodosRequestAction} from '../actions/todoActions';
+import {storeLinksAction} from '../actions/linkActions';
 
 export function* getTodosRequest(action) {
-	let url = '/v1/todos?scheduling=' + action.scheduling;
-	const {response, error} = yield call(fetchData, url, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(storeTodosAction(response.data, action.scheduling));
+		yield put(storeTodosAction(response.data.todos, action.scheduling));
+		yield put(storeLinksAction(response.data._links));
 	} else  if (error) {
 	}
 }
 
 export function* createTodoRequest(action) {
-	let url = '/v1/todos';
 	let todo = action.todo;
-	const {response, error} = yield call(postData, url, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(getTodosRequestAction(todo.scheduling));
+		yield put(getTodosRequestAction(response.data._links.todos));
 	} else if (error) {
 	}
 }
