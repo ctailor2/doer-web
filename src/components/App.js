@@ -40,24 +40,32 @@ export class App extends Component {
 
 	renderForm() {
 		return(
-			<form>
+			<div>
                 <FormGroup controlId="todo" bsSize="large">
                     <InputGroup>
                         <FormControl
+                            type="text"
                             disabled={this.state.submitting}
                             inputRef={ref => { this.taskInput = ref; }}
-                            type="text" onChange={this.handleTodoDescriptionOnChange.bind(this)}/>
+                            onChange={this.handleTodoDescriptionOnChange.bind(this)}
+                            onKeyPress={this.handleTodoDescriptionKeyPress.bind(this)}/>
                         {this.renderFormButtonGroup()}
                     </InputGroup>
                 </FormGroup>
-            </form>
+            </div>
 		);
+	}
+
+	handleTodoDescriptionKeyPress(event) {
+		if(event.key === 'Enter' && this.todoHasTask()) {
+			this.toggleSubmit();
+		}
 	}
 
 	renderFormButtonGroup() {
 		if(this.state.submitting) {
 			return(<InputGroup.Button>
-					<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoNow)}>Now</Button>
+					{this.renderNowButton()}
 					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoLater)}>Later</Button>
 					<Button type="button" bsStyle="danger" bsSize="large" onClick={this.toggleSubmit.bind(this)}>
 						<Glyphicon glyph="remove"/>
@@ -71,6 +79,12 @@ export class App extends Component {
 			                Do!
 					</Button>
 				</InputGroup.Button>);
+		}
+	}
+
+	renderNowButton() {
+		if(!_.isUndefined(this.props.links.todoNow)) {
+			return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoNow)}>Now</Button>);
 		}
 	}
 
@@ -95,10 +109,14 @@ export class App extends Component {
 	}
 
 	submitButtonIsDisabled() {
-		if(this.state.todo.task.match(/\w+/)) {
+		if(this.todoHasTask()) {
 			return false;
 		}
 		return true;
+	}
+
+	todoHasTask() {
+		return this.state.todo.task.match(/\w+/);
 	}
 
 	renderList() {

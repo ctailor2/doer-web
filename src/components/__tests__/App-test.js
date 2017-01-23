@@ -37,166 +37,166 @@ describe('App', () => {
         expect(mockGetHomeResourcesRequestActionFn).toBeCalledWith('http://some.api/endpoint');
     });
 
-    describe('form', () => {
-        let form;
+    describe('text input', () => {
+        let formControl;
 
         beforeEach(() => {
-            form = tree.find('form');
+            formControl = tree.find('FormControl');
         });
 
         it('renders', () => {
-            expect(form.length).toBe(1);
+            expect(formControl.length).toBe(1);
         });
 
-        describe('text input', () => {
-            let formControl;
+        it('is enabled by default', () => {
+            expect(formControl.prop('disabled')).toBe(false);
+        });
 
+        it('has no value by default', () => {
+            expect(input.value).toEqual('');
+        });
+
+        it('updates todo task state on change', () => {
+            formControl.simulate('change', {target: {value: 'things'}});
+            expect(tree.state().todo.task).toEqual('things');
+        });
+
+        describe('when todo has a task', () => {
             beforeEach(() => {
-                formControl = form.find('FormControl');
+                tree.setState({todo: {task: 'some task'}});
             });
 
-            it('renders', () => {
-                expect(formControl.length).toBe(1);
+            it('toggles the submitting state to true on pressing enter', () => {
+				formControl.simulate('keypress', {key: 'Enter'});
+				expect(tree.state().submitting).toBe(true);
+            });
+        })
+
+        describe('when submitting state is true', () => {
+            beforeEach(() => {
+                tree.setState({submitting: true});
+                formControl = tree.find('FormControl');
             });
 
-            it('is enabled by default', () => {
-                expect(formControl.prop('disabled')).toBe(false);
+            it('is disabled', () => {
+                expect(formControl.prop('disabled')).toBe(true);
+            });
+        });
+    });
+
+    describe('buttons', () => {
+        let buttons;
+
+        beforeEach(() => {
+            buttons = tree.find('Button');
+        });
+
+        it('renders 1 by default', () => {
+            expect(buttons.length).toBe(1);
+        });
+
+
+        describe('default button', () => {
+            it('is disabled by default', () => {
+                let button = buttons.at(0);
+                expect(button.prop('disabled')).toBe(true);
             });
 
-            it('has no value by default', () => {
-                expect(input.value).toEqual('');
+            it('is disabled when the todo has a task consisting entirely of whitespace', () => {
+				tree.setState({todo: {task: '  '}});
+				let button = tree.find('Button').at(0);
+				expect(button.prop('disabled')).toBe(true);
             });
 
-            it('updates todo task state on change', () => {
-                formControl.simulate('change', {target: {value: 'things'}});
-                expect(tree.state().todo.task).toEqual('things');
+			it('is enabled when the todo has a task', () => {
+				tree.setState({todo: {task: 'hey'}});
+				let button = tree.find('Button').at(0);
+				expect(button.prop('disabled')).toBe(false);
+			});
+
+			it('toggles the submitting state to true on click', () => {
+				tree.setState({todo: {task: 'hey'}});
+				let button = tree.find('Button').at(0);
+				button.simulate('click');
+				expect(tree.state().submitting).toBe(true);
+            });
+        });
+
+        describe('when submitting', () => {
+            beforeEach(() => {
+                tree.setState({todo: {task: 'something'}, submitting: true});
+                buttons = tree.find('Button');
             });
 
-            describe('when submitting state is true', () => {
+            it('renders 3 buttons when all links are present', () => {
+                expect(buttons.length).toBe(3);
+            });
+
+            it('renders 2 buttons when todoNow link is missing', () => {
+                tree.setProps({links: {todoLater: todoLaterLink}})
+                buttons = tree.find('Button');
+                expect(buttons.length).toBe(2);
+            });
+
+            describe('on clicking first button', () => {
                 beforeEach(() => {
-                    tree.setState({submitting: true});
-                    form = tree.find('form');
-                    formControl = form.find('FormControl');
+                    buttons.at(0).simulate('click');
                 });
 
-	            it('is disabled', () => {
-	                expect(formControl.prop('disabled')).toBe(true);
-	            });
-            });
-        });
-
-        describe('buttons', () => {
-            let buttons;
-
-            beforeEach(() => {
-                buttons = form.find('Button');
-            });
-
-            it('renders 1 by default', () => {
-                expect(buttons.length).toBe(1);
-            });
-
-
-            describe('default button', () => {
-	            it('is disabled by default', () => {
-	                let button = buttons.at(0);
-	                expect(button.prop('disabled')).toBe(true);
+	            it('fires create todo action with todoNowLink', () => {
+	                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'});
 	            });
 
-	            it('is disabled when the todo has a task consisting entirely of whitespace', () => {
-					tree.setState({todo: {task: '  '}});
-					form = tree.find('form');
-					let button = form.find('Button').at(0);
-					expect(button.prop('disabled')).toBe(true);
+	            it('toggles submitting state to false', () => {
+                    expect(tree.state().submitting).toBe(false);
 	            });
 
-				it('is enabled when the todo has a task', () => {
-					tree.setState({todo: {task: 'hey'}});
-					form = tree.find('form');
-					let button = form.find('Button').at(0);
-					expect(button.prop('disabled')).toBe(false);
+	            it('clears the todo input value', () => {
+					// TODO: Not sure how to test this
+	            });
+
+	            it('puts focus on the input', () => {
+					// TODO: Not sure how to test this
+					//	expect(document.activeElement).toEqual(input);
+	            });
+            });
+
+            describe('on clicking second button', () => {
+                beforeEach(() => {
+                    buttons.at(1).simulate('click');
+                });
+
+	            it('fires create todo action with todoLaterLink', () => {
+	                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'});
+	            });
+
+	            it('toggles submitting state to false', () => {
+                    expect(tree.state().submitting).toBe(false);
+	            });
+
+	            it('clears the todo input value', () => {
+					// TODO: Not sure how to test this
+	            });
+
+	            it('puts focus on the input', () => {
+					// TODO: Not sure how to test this
+					//	expect(document.activeElement).toEqual(input);
+	            });
+            });
+
+            describe('on clicking third button', () => {
+                beforeEach(() => {
+                    buttons.at(2).simulate('click');
+                });
+
+				it('toggles submitting state to false', () => {
+					expect(tree.state().submitting).toBe(false);
 				});
 
-				it('toggles the submitting state to true on click', () => {
-					tree.setState({todo: {task: 'hey'}});
-					form = tree.find('form');
-					let button = form.find('Button').at(0);
-					button.simulate('click');
-					expect(tree.state().submitting).toBe(true);
-                });
-            });
-
-            describe('when submitting', () => {
-                beforeEach(() => {
-	                tree.setState({todo: {task: 'something'}, submitting: true});
-	                form = tree.find('form');
-	                buttons = form.find('Button');
-                });
-
-	            it('renders 3', () => {
-	                expect(buttons.length).toBe(3);
-	            });
-
-	            describe('on clicking first button', () => {
-	                beforeEach(() => {
-	                    buttons.at(0).simulate('click');
-	                });
-
-		            it('fires create todo action with todoNowLink', () => {
-		                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'});
-		            });
-
-		            it('toggles submitting state to false', () => {
-                        expect(tree.state().submitting).toBe(false);
-		            });
-
-		            it('clears the todo input value', () => {
-						// TODO: Not sure how to test this
-		            });
-
-		            it('puts focus on the input', () => {
-						// TODO: Not sure how to test this
-						//	expect(document.activeElement).toEqual(input);
-		            });
-	            });
-
-	            describe('on clicking second button', () => {
-	                beforeEach(() => {
-	                    buttons.at(1).simulate('click');
-	                });
-
-		            it('fires create todo action with todoLaterLink', () => {
-		                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'});
-		            });
-
-		            it('toggles submitting state to false', () => {
-                        expect(tree.state().submitting).toBe(false);
-		            });
-
-		            it('clears the todo input value', () => {
-						// TODO: Not sure how to test this
-		            });
-
-		            it('puts focus on the input', () => {
-						// TODO: Not sure how to test this
-						//	expect(document.activeElement).toEqual(input);
-		            });
-	            });
-
-	            describe('on clicking third button', () => {
-	                beforeEach(() => {
-	                    buttons.at(2).simulate('click');
-	                });
-
-					it('toggles submitting state to false', () => {
-						expect(tree.state().submitting).toBe(false);
-					});
-
-					it('puts focus on the input', () => {
-						// TODO: Not sure how to test this
-						//	expect(document.activeElement).toEqual(input);
-					});
-	            });
+				it('puts focus on the input', () => {
+					// TODO: Not sure how to test this
+					//	expect(document.activeElement).toEqual(input);
+				});
             });
         });
     });
