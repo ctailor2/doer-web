@@ -10,6 +10,12 @@ import LoginView from './components/views/LoginView';
 import './styles/index.css';
 import rootSaga from './sagas/rootSaga';
 import rootReducer from './reducers/rootReducer';
+import {HotKeys} from 'react-hotkeys';
+
+const keyMap = {
+  submit: 'enter',
+  cancel: 'esc'
+};
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -21,12 +27,14 @@ const store = createStore(
 sagaMiddleware.run(rootSaga);
 
 render(
-  <Provider store={store}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}></Route>
-      <Route path="/signup" component={SignupView}></Route>
-      <Route path="/login" component={LoginView}></Route>
-    </Router>
-  </Provider>,
-  document.getElementById('root')
+	<HotKeys keyMap={keyMap}>
+	  <Provider store={store}>
+	    <Router history={browserHistory}>
+	      <Route path="/" component={App}></Route>
+	      <Route path="/signup" component={SignupView}></Route>
+	      <Route path="/login" component={LoginView}></Route>
+	    </Router>
+	  </Provider>
+	</HotKeys>,
+	document.getElementById('root')
 );

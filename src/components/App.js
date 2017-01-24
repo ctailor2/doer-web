@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {createTodoRequestAction} from '../actions/todoActions';
 import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
 import _ from 'lodash';
+import {HotKeys} from 'react-hotkeys';
 import {
 	Row,
 	Col,
@@ -27,7 +28,10 @@ export class App extends Component {
 	}
 
 	render() {
-		return (<div>
+		return (<HotKeys handlers={{
+				cancel: (event) => this.handleKeyDown(event),
+				submit: (event) => this.handleTodoDescriptionKeyPress(event)
+			}}>
 			<Header />
 	        <Row>
 				<Col lg={6} lgOffset={3}>
@@ -35,7 +39,7 @@ export class App extends Component {
 					{this.renderList()}
 				</Col>
 	        </Row>
-		</div>);
+		</HotKeys>);
 	}
 
 	renderForm() {
@@ -45,10 +49,8 @@ export class App extends Component {
                     <InputGroup>
                         <FormControl
                             type="text"
-                            disabled={this.state.submitting}
                             inputRef={ref => { this.taskInput = ref; }}
-                            onChange={this.handleTodoDescriptionOnChange.bind(this)}
-                            onKeyPress={this.handleTodoDescriptionKeyPress.bind(this)}/>
+                            onChange={this.handleTodoDescriptionOnChange.bind(this)}/>
                         {this.renderFormButtonGroup()}
                     </InputGroup>
                 </FormGroup>
@@ -56,8 +58,14 @@ export class App extends Component {
 		);
 	}
 
-	handleTodoDescriptionKeyPress(event) {
-		if(event.key === 'Enter' && this.todoHasTask()) {
+	handleKeyDown() {
+		if(this.state.submitting) {
+			this.toggleSubmit();
+		}
+	}
+
+	handleTodoDescriptionKeyPress() {
+		if(this.todoHasTask()) {
 			this.toggleSubmit();
 		}
 	}
@@ -83,18 +91,17 @@ export class App extends Component {
 	}
 
 	renderNowButton() {
-		if(!_.isUndefined(this.props.links.todoNow)) {
+		if(this.canScheduleForNow()) {
 			return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoNow)}>Now</Button>);
 		}
 	}
 
+	canScheduleForNow() {
+		return !_.isUndefined(this.props.links.todoNow);
+	}
+
 	toggleSubmit() {
-		let newState = !this.state.submitting;
-		this.setState({submitting: newState});
-		if (newState == false) {
-			// TODO: the input does not refocus bc of a timing issue with re-enabling the input
-			this.taskInput.focus();
-		}
+		this.setState({submitting: !this.state.submitting});
 	}
 
 	submitTodo(link) {

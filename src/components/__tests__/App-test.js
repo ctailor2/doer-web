@@ -48,10 +48,6 @@ describe('App', () => {
             expect(formControl.length).toBe(1);
         });
 
-        it('is enabled by default', () => {
-            expect(formControl.prop('disabled')).toBe(false);
-        });
-
         it('has no value by default', () => {
             expect(input.value).toEqual('');
         });
@@ -66,8 +62,8 @@ describe('App', () => {
                 tree.setState({todo: {task: 'some task'}});
             });
 
-            it('toggles the submitting state to true on pressing enter', () => {
-				formControl.simulate('keypress', {key: 'Enter'});
+            it('toggles the submitting state to true on pressing the "submit" hotkey', () => {
+                tree.find('HotKeys').props().handlers.submit();
 				expect(tree.state().submitting).toBe(true);
             });
         })
@@ -78,8 +74,9 @@ describe('App', () => {
                 formControl = tree.find('FormControl');
             });
 
-            it('is disabled', () => {
-                expect(formControl.prop('disabled')).toBe(true);
+            it('toggles the submitting state to false on pressing the "cancel" hotkey', () => {
+                tree.find('HotKeys').props().handlers.cancel();
+                expect(tree.state().submitting).toBe(false);
             });
         });
     });
