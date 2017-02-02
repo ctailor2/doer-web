@@ -1,7 +1,7 @@
 import * as actionTypes from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
-import {fetchData, postData} from './sagaHelper';
+import {fetchData, postData, deleteData} from './sagaHelper';
 import {storeTodosAction, getTodosRequestAction} from '../actions/todoActions';
 import {storeLinksAction} from '../actions/linkActions';
 
@@ -23,10 +23,22 @@ export function* createTodoRequest(action) {
 	}
 }
 
+export function* deleteTodoRequest(action) {
+	const {response, error} = yield call(deleteData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	if(response) {
+        yield put(getTodosRequestAction(response.data._links.todos));
+    } else if (error) {
+    }
+}
+
 export function* watchGetTodosRequest() {
 	yield* takeEvery(actionTypes.GET_TODOS_REQUEST_ACTION, getTodosRequest);
 }
 
 export function* watchCreateTodoRequest() {
 	yield* takeEvery(actionTypes.CREATE_TODO_REQUEST_ACTION, createTodoRequest);
+}
+
+export function* watchDeleteTodoRequest() {
+	yield* takeEvery(actionTypes.DELETE_TODO_REQUEST_ACTION, deleteTodoRequest);
 }

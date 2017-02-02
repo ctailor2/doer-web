@@ -8,3 +8,13 @@
 .leading-link > * {
     margin-right: 5px;
 }
+
+a.icon-button {
+	color: black;
+	padding: 5px;
+	vertical-align: middle;
+}
+
+a.icon-button:hover {
+	cursor: pointer;
+}

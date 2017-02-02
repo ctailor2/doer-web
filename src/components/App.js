@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from './Header';
 import {connect} from 'react-redux';
-import {createTodoRequestAction} from '../actions/todoActions';
+import {createTodoRequestAction, deleteTodoRequestAction} from '../actions/todoActions';
 import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
@@ -28,10 +28,7 @@ export class App extends Component {
 	}
 
 	render() {
-		return (<HotKeys handlers={{
-				cancel: (event) => this.handleKeyDown(event),
-				submit: (event) => this.handleTodoDescriptionKeyPress(event)
-			}}>
+		return (<HotKeys handlers={{cancel: (event) => this.handleCancelTaskSubmit(event),}}>
 			<Header />
 	        <Row>
 				<Col lg={6} lgOffset={3}>
@@ -47,10 +44,12 @@ export class App extends Component {
 			<div>
                 <FormGroup controlId="todo" bsSize="large">
                     <InputGroup>
-                        <FormControl
-                            type="text"
-                            inputRef={ref => { this.taskInput = ref; }}
-                            onChange={this.handleTodoDescriptionOnChange.bind(this)}/>
+                        <HotKeys handlers={{submit: (event) => this.handleTaskSubmit(event)}}>
+	                        <FormControl
+	                            type="text"
+	                            inputRef={ref => { this.taskInput = ref; }}
+	                            onChange={this.handleTodoDescriptionOnChange.bind(this)}/>
+                        </HotKeys>
                         {this.renderFormButtonGroup()}
                     </InputGroup>
                 </FormGroup>
@@ -58,13 +57,13 @@ export class App extends Component {
 		);
 	}
 
-	handleKeyDown() {
+	handleCancelTaskSubmit() {
 		if(this.state.submitting) {
 			this.toggleSubmit();
 		}
 	}
 
-	handleTodoDescriptionKeyPress() {
+	handleTaskSubmit() {
 		if(this.todoHasTask()) {
 			this.toggleSubmit();
 		}
@@ -111,6 +110,10 @@ export class App extends Component {
 		this.taskInput.value = '';
 	}
 
+	deleteTodo(link) {
+		this.props.deleteTodoRequestAction(link);
+	}
+
 	handleTodoDescriptionOnChange(event) {
 		this.setState({todo: {task: event.target.value}});
 	}
@@ -130,7 +133,10 @@ export class App extends Component {
 		return(<ListGroup>
 			{this.props.todos.map((todo, index) => {
                 return(<ListGroupItem key={index}>
-                    {todo.task}
+                    <Row>
+	                    <Col lg={11}>{todo.task}</Col>
+	                    <Col lg={1}><a className="icon-button" onClick={this.deleteTodo.bind(this, todo._links.delete)}><Glyphicon glyph="remove"/></a></Col>
+                    </Row>
                 </ListGroupItem>);
             })}
 		</ListGroup>);
@@ -144,4 +150,8 @@ export const mapStateToProps = (state) => {
 	};
 }
 
-export default connect(mapStateToProps, {createTodoRequestAction, getHomeResourcesRequestAction})(App);
+export default connect(mapStateToProps, {
+	createTodoRequestAction,
+	deleteTodoRequestAction,
+	getHomeResourcesRequestAction
+})(App);

@@ -18,3 +18,9 @@ export function postData(url, data, configs) {
         .then((response) => ({response}))
         .catch((error) => ({error}));
 }
+
+export function deleteData(url, configs) {
+	return client.delete(url, configs)
+        .then((response) => ({response}))
+        .catch((error) => ({error}));
+}

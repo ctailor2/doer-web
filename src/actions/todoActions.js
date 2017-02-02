@@ -22,3 +22,10 @@ export function createTodoRequestAction(link = {}, todo = {}) {
 		todo: todo
 	}
 }
+
+export function deleteTodoRequestAction(link = {}) {
+	return {
+		type: actionTypes.DELETE_TODO_REQUEST_ACTION,
+		link: link
+	}
+}

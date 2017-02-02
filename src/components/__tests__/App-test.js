@@ -6,17 +6,22 @@ import {mount} from 'enzyme';
 import Header from '../Header';
 
 describe('App', () => {
-    let tree, input, todos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockGetHomeResourcesRequestActionFn;
+    let tree, input, todos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockDeleteTodoActionFn, mockGetHomeResourcesRequestActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
+        mockDeleteTodoActionFn = jest.fn();
         mockGetHomeResourcesRequestActionFn = jest.fn();
         localStorage.getItem = jest.fn(() => {return 'http://some.api/endpoint'});
         todos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
         links = {todos: {href: 'http://some.api/todos'}, todoNow: todoNowLink, todoLater: todoLaterLink};
-        tree = mount(<App todos={todos} links={links} createTodoRequestAction={mockCreateTodoActionFn} getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
+        tree = mount(<App todos={todos}
+                          links={links}
+                          createTodoRequestAction={mockCreateTodoActionFn}
+                          deleteTodoRequestAction={mockDeleteTodoActionFn}
+                          getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
         input = tree.node.taskInput;
     });
 
@@ -63,7 +68,7 @@ describe('App', () => {
             });
 
             it('toggles the submitting state to true on pressing the "submit" hotkey', () => {
-                tree.find('HotKeys').props().handlers.submit();
+                tree.find('HotKeys').at(1).props().handlers.submit();
 				expect(tree.state().submitting).toBe(true);
             });
         })
@@ -75,7 +80,7 @@ describe('App', () => {
             });
 
             it('toggles the submitting state to false on pressing the "cancel" hotkey', () => {
-                tree.find('HotKeys').props().handlers.cancel();
+                tree.find('HotKeys').at(0).props().handlers.cancel();
                 expect(tree.state().submitting).toBe(false);
             });
         });
@@ -216,10 +221,13 @@ describe('App', () => {
         });
 
         describe('with todos', () => {
-            let todo1, todo2;
+            let todo1, todo2, deleteLinkOne;
 
             beforeEach(() => {
-                let todos = [{task: 'thing one'}, {task: 'thing two'}];
+                deleteLinkOne = {href: 'http://some.api/deleteTodoOne'};
+                let todos = [
+                    {task: 'thing one', _links: {delete: deleteLinkOne}},
+                    {task: 'thing two', _links: {delete: {href: 'http://some.api/deleteTodoTwo'}}}];
                 tree.setProps({todos: todos});
                 list = tree.find('ListGroup');
             });
@@ -238,6 +246,24 @@ describe('App', () => {
 	            it('contains its task', () => {
 	                expect(todo.text()).toContain('thing one');
 	            });
+
+	            it('has an anchor tag', () => {
+	                expect(todo.find('a').length).toBe(1);
+	            });
+
+	            describe('anchor tag', () => {
+	                let anchorTag;
+
+	                beforeEach(() => {
+	                    anchorTag = todo.find('a');
+	                });
+
+		            it('fires delete todo action with deleteLink when its delete button is clicked', () => {
+		                anchorTag.simulate('click');
+		                expect(mockDeleteTodoActionFn).toBeCalledWith(deleteLinkOne);
+		            });
+	            });
+
 	        });
         });
     });
