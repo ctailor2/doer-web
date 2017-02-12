@@ -6,12 +6,13 @@ import {mount} from 'enzyme';
 import Header from '../Header';
 
 describe('App', () => {
-    let tree, input, todos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockDeleteTodoActionFn, mockGetHomeResourcesRequestActionFn;
+    let tree, input, todos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockDeleteTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
         mockDeleteTodoActionFn = jest.fn();
         mockGetHomeResourcesRequestActionFn = jest.fn();
+        mockDisplaceTodoActionFn = jest.fn();
         localStorage.getItem = jest.fn(() => {return 'http://some.api/endpoint'});
         todos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
@@ -21,6 +22,7 @@ describe('App', () => {
                           links={links}
                           createTodoRequestAction={mockCreateTodoActionFn}
                           deleteTodoRequestAction={mockDeleteTodoActionFn}
+                          displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
         input = tree.node.taskInput;
     });
@@ -225,9 +227,9 @@ describe('App', () => {
 
             beforeEach(() => {
                 deleteLinkOne = {href: 'http://some.api/deleteTodoOne'};
-                let todos = [
-                    {task: 'thing one', _links: {delete: deleteLinkOne}},
-                    {task: 'thing two', _links: {delete: {href: 'http://some.api/deleteTodoTwo'}}}];
+                todo1 = {task: 'thing one', _links: {delete: deleteLinkOne}};
+                todo2 = {task: 'thing two', _links: {delete: {href: 'http://some.api/deleteTodoTwo'}}};
+                let todos = [todo1, todo2];
                 tree.setProps({todos: todos});
                 list = tree.find('ListGroup');
             });
@@ -249,6 +251,60 @@ describe('App', () => {
 
 	            it('has an anchor tag', () => {
 	                expect(todo.find('a').length).toBe(1);
+	            });
+
+	            describe('when submitting a task', () => {
+	                let todoToSubmit = {task: 'someTask'};
+
+	                beforeEach(() => {
+	                    tree.setState({todo: todoToSubmit, submitting: true});
+	                    list = tree.find('ListGroup');
+	                    todo = list.find('ListGroupItem').at(0);
+	                });
+
+		            it('does not have an onClick handler by default', () => {
+	                    expect(todo.prop('onClick')).toBeUndefined();
+		            });
+
+		            describe('when the displace link is present', () => {
+	                    let displaceLink = {href: 'http://some.api/displaceTodo'};
+
+		                beforeEach(() => {
+	                        todo1._links.displace = displaceLink;
+		                    let todos = [todo1, todo2];
+	                        tree.setProps({todos: todos});
+	                        list = tree.find('ListGroup');
+							todo = list.find('ListGroupItem').at(0);
+		                });
+
+                        it('has an onClick handler', () => {
+                            expect(todo.prop('onClick')).toBeDefined();
+                        });
+
+                        describe('when clicked', () => {
+                            beforeEach(() => {
+	                            todo.simulate('click');
+                            });
+
+	                        it('fires displace todo action with todo displaceLink and task', () => {
+	                            expect(mockDisplaceTodoActionFn).toBeCalledWith(displaceLink, todoToSubmit);
+	                        });
+
+	                        it('toggles submitting state to false', () => {
+	                            expect(tree.state().submitting).toBe(false);
+	                        });
+
+	                        it('clears the todo input value', () => {
+	                            // TODO: Not sure how to test this
+	                        });
+
+	                        it('puts focus on the input', () => {
+	                            // TODO: Not sure how to test this
+	                            //	expect(document.activeElement).toEqual(input);
+	                        });
+                        });
+
+		            });
 	            });
 
 	            describe('anchor tag', () => {

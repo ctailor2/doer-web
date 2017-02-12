@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from './Header';
 import {connect} from 'react-redux';
-import {createTodoRequestAction, deleteTodoRequestAction} from '../actions/todoActions';
+import {createTodoRequestAction, deleteTodoRequestAction, displaceTodoRequestAction} from '../actions/todoActions';
 import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
@@ -132,14 +132,38 @@ export class App extends Component {
 	renderList() {
 		return(<ListGroup>
 			{this.props.todos.map((todo, index) => {
-                return(<ListGroupItem key={index}>
-                    <Row>
-	                    <Col lg={11}>{todo.task}</Col>
-	                    <Col lg={1}><a className="icon-button" onClick={this.deleteTodo.bind(this, todo._links.delete)}><Glyphicon glyph="remove"/></a></Col>
-                    </Row>
-                </ListGroupItem>);
+				{return this.renderListItem(todo, index)}
             })}
 		</ListGroup>);
+	}
+
+	canBeDisplaced(todo) {
+		return this.state.submitting && !_.isUndefined(todo._links.displace);
+	}
+
+	displaceTodo(link) {
+		let todo = this.state.todo;
+		this.props.displaceTodoRequestAction(link, todo);
+		this.toggleSubmit();
+        this.taskInput.value = '';
+	}
+
+	renderListItem(todo, index) {
+		if(this.canBeDisplaced(todo)) {
+		    return (<ListGroupItem key={index} onClick={this.displaceTodo.bind(this, todo._links.displace)}>
+		        <Row>
+		            <Col lg={11}>{todo.task}</Col>
+		            <Col lg={1}><a className="icon-button" onClick={this.deleteTodo.bind(this, todo._links.delete)}><Glyphicon glyph="remove"/></a></Col>
+		        </Row>
+		    </ListGroupItem>);
+		} else {
+	        return (<ListGroupItem key={index}>
+	            <Row>
+	                <Col lg={11}>{todo.task}</Col>
+	                <Col lg={1}><a className="icon-button" onClick={this.deleteTodo.bind(this, todo._links.delete)}><Glyphicon glyph="remove"/></a></Col>
+	            </Row>
+	        </ListGroupItem>);
+		}
 	}
 }
 
@@ -153,5 +177,6 @@ export const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
 	createTodoRequestAction,
 	deleteTodoRequestAction,
+	displaceTodoRequestAction,
 	getHomeResourcesRequestAction
 })(App);

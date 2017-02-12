@@ -29,3 +29,12 @@ export function deleteTodoRequestAction(link = {}) {
 		link: link
 	}
 }
+
+export function displaceTodoRequestAction(link = {}, todo = {}) {
+	return {
+		type: actionTypes.DISPLACE_TODO_REQUEST_ACTION,
+		link: link,
+		todo: todo
+	}
+}
+
