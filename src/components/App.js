@@ -107,6 +107,11 @@ export class App extends Component {
 		let todo = this.state.todo;
 		this.props.createTodoRequestAction(link, todo);
 		this.toggleSubmit();
+		this.resetTask();
+	}
+
+	resetTask() {
+		this.setState({todo: {task: ''}});
 		this.taskInput.value = '';
 	}
 
@@ -119,10 +124,7 @@ export class App extends Component {
 	}
 
 	submitButtonIsDisabled() {
-		if(this.todoHasTask()) {
-			return false;
-		}
-		return true;
+		return !this.todoHasTask();
 	}
 
 	todoHasTask() {
@@ -132,7 +134,9 @@ export class App extends Component {
 	renderList() {
 		return(<ListGroup>
 			{this.props.todos.map((todo, index) => {
-				{return this.renderListItem(todo, index)}
+				return (<ListGroupItem key={index}>
+					{this.renderListItem(todo)}
+				</ListGroupItem>);
             })}
 		</ListGroup>);
 	}
@@ -145,24 +149,20 @@ export class App extends Component {
 		let todo = this.state.todo;
 		this.props.displaceTodoRequestAction(link, todo);
 		this.toggleSubmit();
-        this.taskInput.value = '';
+        this.resetTask();
 	}
 
-	renderListItem(todo, index) {
+	renderListItem(todo) {
 		if(this.canBeDisplaced(todo)) {
-		    return (<ListGroupItem key={index} onClick={this.displaceTodo.bind(this, todo._links.displace)}>
-		        <Row>
+		    return (<Row>
+		            <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.displaceTodo.bind(this, todo._links.displace)}><Glyphicon glyph="menu-right"/></Button></Col>
 		            <Col lg={11}>{todo.task}</Col>
-		            <Col lg={1}><a className="icon-button" onClick={this.deleteTodo.bind(this, todo._links.delete)}><Glyphicon glyph="remove"/></a></Col>
-		        </Row>
-		    </ListGroupItem>);
+		        </Row>);
 		} else {
-	        return (<ListGroupItem key={index}>
-	            <Row>
+	        return (<Row>
 	                <Col lg={11}>{todo.task}</Col>
 	                <Col lg={1}><a className="icon-button" onClick={this.deleteTodo.bind(this, todo._links.delete)}><Glyphicon glyph="remove"/></a></Col>
-	            </Row>
-	        </ListGroupItem>);
+	            </Row>);
 		}
 	}
 }

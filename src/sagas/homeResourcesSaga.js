@@ -1,6 +1,5 @@
 import {fetchData} from './sagaHelper';
 import {call, put} from 'redux-saga/effects';
-import {storeLinksAction} from '../actions/linkActions';
 import {getTodosRequestAction} from '../actions/todoActions';
 import * as actionTypes from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';

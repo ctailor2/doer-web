@@ -4,7 +4,6 @@ import {postData} from './sagaHelper';
 import * as actionTypes from '../constants/actionTypes';
 import {browserHistory} from 'react-router';
 import {storeSessionAction} from '../actions/sessionActions';
-import {getTodosRequestAction} from '../actions/todoActions';
 import {persistLinkAction} from '../actions/linkActions';
 
 export function* signupRequest(action) {

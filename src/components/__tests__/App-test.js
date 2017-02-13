@@ -155,6 +155,10 @@ describe('App', () => {
                     expect(tree.state().submitting).toBe(false);
 	            });
 
+	            it('clears todo task state', () => {
+	                expect(tree.state().todo.task).toEqual('');
+	            });
+
 	            it('clears the todo input value', () => {
 					// TODO: Not sure how to test this
 	            });
@@ -176,6 +180,10 @@ describe('App', () => {
 
 	            it('toggles submitting state to false', () => {
                     expect(tree.state().submitting).toBe(false);
+	            });
+
+	            it('clears todo task state', () => {
+	                expect(tree.state().todo.task).toEqual('');
 	            });
 
 	            it('clears the todo input value', () => {
@@ -277,13 +285,14 @@ describe('App', () => {
 							todo = list.find('ListGroupItem').at(0);
 		                });
 
-                        it('has an onClick handler', () => {
-                            expect(todo.prop('onClick')).toBeDefined();
+                        it('has a button', () => {
+                            expect(todo.find('Button').length).toBe(1);
                         });
 
                         describe('when clicked', () => {
                             beforeEach(() => {
-	                            todo.simulate('click');
+                                let button = todo.find('Button');
+                                button.simulate('click');
                             });
 
 	                        it('fires displace todo action with todo displaceLink and task', () => {

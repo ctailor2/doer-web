@@ -3,7 +3,7 @@ import {watchGetTodosRequest, watchCreateTodoRequest, watchDeleteTodoRequest, wa
 import {watchGetBaseResourcesRequest} from './baseResourcesSaga';
 import {watchGetHomeResourcesRequest} from './homeResourcesSaga';
 import {watchPersistLink} from './linksSaga';
-import {call, fork} from 'redux-saga/effects';
+import {fork} from 'redux-saga/effects';
 
 export default function* rootSaga() {
     yield [
