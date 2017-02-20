@@ -308,93 +308,71 @@ describe('App', () => {
                 list = tree.find('ListGroup');
             });
 
-	        it('contains an item for each todo', () => {
-	            expect(list.find('ListGroupItem').length).toBe(2);
+	        it('contains a Todo for each todo', () => {
+	            expect(list.find('Todo').length).toBe(2);
 	        });
 
 	        describe('each todo', () => {
 	            let todo
 
 	            beforeEach(() => {
-	                todo = list.find('ListGroupItem').at(0);
+	                todo = list.find('Todo').at(0);
 	            });
 
-	            it('contains its task', () => {
-	                expect(todo.text()).toContain('thing one');
+	            it('is not readonly by default', () => {
+	                expect(todo.prop('readOnly')).toBe(false);
 	            });
 
-	            it('has an anchor tag', () => {
-	                expect(todo.find('a').length).toBe(1);
+	            it('is readonly when submitting', () => {
+	                tree.setState({submitting: true});
+                    list = tree.find('ListGroup');
+	                todo = list.find('Todo').at(0);
+	                expect(todo.prop('readOnly')).toBe(true);
 	            });
 
-	            describe('when submitting a task', () => {
-	                let todoToSubmit = {task: 'someTask'};
+	            it('has props', () => {
+	                expect(todo.prop('task')).toEqual('thing one');
+	                expect(todo.prop('links')).toEqual({delete: deleteLinkOne});
+	            });
+
+	            describe('displace handler', () => {
+                    let todoToSubmit = {task: 'someTask'};
+                    let displaceLink = {href: 'http://some.api/displaceTodo'};
 
 	                beforeEach(() => {
 	                    tree.setState({todo: todoToSubmit, submitting: true});
-	                    list = tree.find('ListGroup');
-	                    todo = list.find('ListGroupItem').at(0);
+                        list = tree.find('ListGroup');
+                        todo = list.find('Todo').at(0);
+	                    todo.prop('handleDisplace')(displaceLink);
 	                });
 
-		            it('does not have an onClick handler by default', () => {
-	                    expect(todo.prop('onClick')).toBeUndefined();
-		            });
+                    it('fires displace todo action with todo displaceLink and task', () => {
+                        expect(mockDisplaceTodoActionFn).toBeCalledWith(displaceLink, todoToSubmit);
+                    });
 
-		            describe('when the displace link is present', () => {
-	                    let displaceLink = {href: 'http://some.api/displaceTodo'};
+                    it('toggles submitting state to false', () => {
+                        expect(tree.state().submitting).toBe(false);
+                    });
 
-		                beforeEach(() => {
-	                        todo1._links.displace = displaceLink;
-		                    let todos = [todo1, todo2];
-	                        tree.setProps({nowTodos: todos});
-	                        list = tree.find('ListGroup');
-							todo = list.find('ListGroupItem').at(0);
-		                });
+                    it('clears the todo input value', () => {
+                        // TODO: Not sure how to test this
+                    });
 
-                        it('has a button', () => {
-                            expect(todo.find('Button').length).toBe(1);
-                        });
-
-                        describe('when clicked', () => {
-                            beforeEach(() => {
-                                let button = todo.find('Button');
-                                button.simulate('click');
-                            });
-
-	                        it('fires displace todo action with todo displaceLink and task', () => {
-	                            expect(mockDisplaceTodoActionFn).toBeCalledWith(displaceLink, todoToSubmit);
-	                        });
-
-	                        it('toggles submitting state to false', () => {
-	                            expect(tree.state().submitting).toBe(false);
-	                        });
-
-	                        it('clears the todo input value', () => {
-	                            // TODO: Not sure how to test this
-	                        });
-
-	                        it('puts focus on the input', () => {
-	                            // TODO: Not sure how to test this
-	                            //	expect(document.activeElement).toEqual(input);
-	                        });
-                        });
-
-		            });
+                    it('puts focus on the input', () => {
+                        // TODO: Not sure how to test this
+                        //	expect(document.activeElement).toEqual(input);
+                    });
 	            });
 
-	            describe('anchor tag', () => {
-	                let anchorTag;
-
+	            describe('delete handler', () => {
 	                beforeEach(() => {
-	                    anchorTag = todo.find('a');
+	                    todo.prop('handleDelete')(deleteLinkOne);
 	                });
 
-		            it('fires delete todo action with deleteLink when its delete button is clicked', () => {
-		                anchorTag.simulate('click');
-		                expect(mockDeleteTodoActionFn).toBeCalledWith(deleteLinkOne);
-		            });
+			        it('fires delete todo action with deleteLink', () => {
+			            expect(mockDeleteTodoActionFn).toBeCalledWith(deleteLinkOne);
+			        });
 	            });
-
 	        });
         });
     });

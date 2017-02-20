@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header from './Header';
+import Todo from './Todo';
 import {connect} from 'react-redux';
 import {createTodoRequestAction, deleteTodoRequestAction, displaceTodoRequestAction} from '../actions/todoActions';
 import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
@@ -172,17 +173,11 @@ export class App extends Component {
 	}
 
 	renderListItem(todo) {
-		if(this.canBeDisplaced(todo)) {
-		    return (<Row>
-		            <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.displaceTodo.bind(this, todo._links.displace)}><Glyphicon glyph="menu-right"/></Button></Col>
-		            <Col lg={11}>{todo.task}</Col>
-		        </Row>);
-		} else {
-	        return (<Row>
-	                <Col lg={11}>{todo.task}</Col>
-	                <Col lg={1}><a className="icon-button" onClick={this.deleteTodo.bind(this, todo._links.delete)}><Glyphicon glyph="remove"/></a></Col>
-	            </Row>);
-		}
+		return (<Todo readOnly={this.state.submitting}
+					  task={todo.task}
+					  links={todo._links}
+					  handleDisplace={this.displaceTodo.bind(this)}
+					  handleDelete={this.deleteTodo.bind(this)} />);
 	}
 }
 
