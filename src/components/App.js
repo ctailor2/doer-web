@@ -14,13 +14,15 @@ import {
 	InputGroup,
 	ListGroup,
 	ListGroupItem,
-	Glyphicon
+	Glyphicon,
+	Tabs,
+	Tab
 } from 'react-bootstrap';
 
 export class App extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {todo: {task: ''}, submitting: false};
+		this.state = {todo: {task: ''}, submitting: false, activeTab: 'now'};
 	}
 
 	componentDidMount() {
@@ -33,14 +35,14 @@ export class App extends Component {
 	        <Row>
 				<Col lg={6} lgOffset={3}>
 					{this.renderForm()}
-					{this.renderList()}
+					{this.renderTabs()}
 				</Col>
 	        </Row>
 		</HotKeys>);
 	}
 
 	renderForm() {
-		return(
+		return (
 			<div>
                 <FormGroup controlId="todo" bsSize="large">
                     <InputGroup>
@@ -54,6 +56,23 @@ export class App extends Component {
                     </InputGroup>
                 </FormGroup>
             </div>
+		);
+	}
+
+	handleSelectTab(tabKey) {
+		this.setState({activeTab: tabKey});
+	}
+
+	renderTabs() {
+		return (
+			<Tabs activeKey={this.state.activeTab} onSelect={this.handleSelectTab.bind(this)} id='tabs'>
+		        <Tab eventKey='now' title='Now'>
+					{this.renderList(this.props.nowTodos)}
+		        </Tab>
+		        <Tab eventKey='later' title='Later'>
+					{this.renderList(this.props.laterTodos)}
+                </Tab>
+            </Tabs>
 		);
 	}
 
@@ -131,9 +150,9 @@ export class App extends Component {
 		return this.state.todo.task.match(/\w+/);
 	}
 
-	renderList() {
+	renderList(todos) {
 		return(<ListGroup>
-			{this.props.todos.map((todo, index) => {
+			{todos.map((todo, index) => {
 				return (<ListGroupItem key={index}>
 					{this.renderListItem(todo)}
 				</ListGroupItem>);
@@ -169,7 +188,8 @@ export class App extends Component {
 
 export const mapStateToProps = (state) => {
 	return {
-		todos: state.todos.active,
+		nowTodos: state.todos.active,
+		laterTodos: state.todos.inactive,
 		links: state.links
 	};
 }

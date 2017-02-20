@@ -6,7 +6,7 @@ import {mount} from 'enzyme';
 import Header from '../Header';
 
 describe('App', () => {
-    let tree, input, todos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockDeleteTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn;
+    let tree, input, nowTodos, laterTodos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockDeleteTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
@@ -14,11 +14,13 @@ describe('App', () => {
         mockGetHomeResourcesRequestActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
         localStorage.getItem = jest.fn(() => {return 'http://some.api/endpoint'});
-        todos = [];
+        nowTodos = [];
+        laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
         links = {todos: {href: 'http://some.api/todos'}, todoNow: todoNowLink, todoLater: todoLaterLink};
-        tree = mount(<App todos={todos}
+        tree = mount(<App nowTodos={nowTodos}
+                          laterTodos={laterTodos}
                           links={links}
                           createTodoRequestAction={mockCreateTodoActionFn}
                           deleteTodoRequestAction={mockDeleteTodoActionFn}
@@ -36,11 +38,11 @@ describe('App', () => {
     });
 
     it('has default state', () => {
-        expect(tree.state()).toEqual({todo: {task: ''}, submitting: false});
+        expect(tree.state()).toEqual({todo: {task: ''}, submitting: false, activeTab: 'now'});
     });
 
     it('fires get home resources request action with link from localStorage when mounted', () => {
-        mount(<App todos={todos} links={links} createTodoRequestAction={mockCreateTodoActionFn} getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
+        mount(<App nowTodos={nowTodos} laterTodos={laterTodos} links={links} createTodoRequestAction={mockCreateTodoActionFn} getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
         expect(mockGetHomeResourcesRequestActionFn).toBeCalledWith('http://some.api/endpoint');
     });
 
@@ -213,6 +215,70 @@ describe('App', () => {
         });
     });
 
+    describe('tabs', () => {
+        let tabs;
+
+        beforeEach(() => {
+            tabs = tree.find('Tabs');
+        });
+
+        it('renders', () => {
+            expect(tabs.length).toBe(1);
+        });
+
+        it('contains 2', () => {
+            expect(tabs.find('Tab').length).toBe(2);
+        });
+
+        describe('for activeTab state', () => {
+            beforeEach(() => {
+                tree.setState({activeTab: 'somethingElse'});
+                tabs = tree.find('Tabs');
+            });
+
+            it('has the matching activeKey', () => {
+                expect(tabs.prop('activeKey')).toEqual('somethingElse');
+            });
+        });
+
+        describe('onSelect handler', () => {
+            let handler;
+
+            beforeEach(() => {
+                handler = tabs.prop('onSelect')
+            });
+
+            it('updates activeTab state to tabKey', () => {
+                handler('someTabKey');
+                expect(tree.state().activeTab).toEqual('someTabKey');
+            });
+        });
+
+        describe('first tab', () => {
+            let tab;
+
+            beforeEach(() => {
+                tab = tabs.find('Tab').at(0);
+            });
+
+            it('eventKey is now', () => {
+                expect(tab.prop('eventKey')).toEqual('now');
+            });
+        });
+
+        describe('second tab', () => {
+            let tab;
+
+            beforeEach(() => {
+                tab = tabs.find('Tab').at(1);
+            });
+
+            it('eventKey is later', () => {
+                expect(tab.prop('eventKey')).toEqual('later');
+            });
+        });
+    })
+
     describe('list', () => {
         let list;
 
@@ -220,8 +286,8 @@ describe('App', () => {
             list = tree.find('ListGroup');
         });
 
-        it('renders', () => {
-            expect(list.length).toBe(1);
+        it('renders for now and later todos', () => {
+            expect(list.length).toBe(2);
         });
 
         describe('without todos', () => {
@@ -238,7 +304,7 @@ describe('App', () => {
                 todo1 = {task: 'thing one', _links: {delete: deleteLinkOne}};
                 todo2 = {task: 'thing two', _links: {delete: {href: 'http://some.api/deleteTodoTwo'}}};
                 let todos = [todo1, todo2];
-                tree.setProps({todos: todos});
+                tree.setProps({nowTodos: todos});
                 list = tree.find('ListGroup');
             });
 
@@ -280,7 +346,7 @@ describe('App', () => {
 		                beforeEach(() => {
 	                        todo1._links.displace = displaceLink;
 		                    let todos = [todo1, todo2];
-	                        tree.setProps({todos: todos});
+	                        tree.setProps({nowTodos: todos});
 	                        list = tree.find('ListGroup');
 							todo = list.find('ListGroupItem').at(0);
 		                });
@@ -337,7 +403,8 @@ describe('App', () => {
         let links = {todos: {href: 'http://some.api/todos'}};
         let state = {todos: {active: [1], inactive: [3]}, links: links};
         expect(mapStateToProps(state)).toEqual({
-            todos: [1],
+            nowTodos: [1],
+            laterTodos: [3],
             links: links
         });
     });
