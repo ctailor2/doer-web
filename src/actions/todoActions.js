@@ -38,3 +38,11 @@ export function displaceTodoRequestAction(link = {}, todo = {}) {
 	}
 }
 
+export function updateTodoRequestAction(link = {}, todo = {}) {
+	return {
+		type: actionTypes.UPDATE_TODO_REQUEST_ACTION,
+		link: link,
+		todo: todo
+	}
+}
+

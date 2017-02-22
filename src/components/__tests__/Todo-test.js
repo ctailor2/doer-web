@@ -1,20 +1,22 @@
 jest.unmock('../Todo');
-jest.unmock('react-bootstrap');
 
-import Todo from '../Todo';
+import {Todo} from '../Todo';
 import React from 'react';
-import {shallow} from 'enzyme';
+import {mount} from 'enzyme';
 
 describe('Todo', () => {
-	let tree, deleteLink, mockDisplaceHandler, mockDeleteHandler;
+	let tree, deleteLink, updateLink, mockDisplaceHandler, mockDeleteHandler, mockUpdateTodoActionFn;
 
 	beforeEach(() => {
 		deleteLink = {href: 'http://some.api/deleteTodo'};
+		updateLink = {href: 'http://some.api/updateTodo'};
 		mockDisplaceHandler = jest.fn();
 		mockDeleteHandler = jest.fn();
-		tree = shallow(<Todo readOnly={false}
-							 task={'some task'}
-							 links={{delete: deleteLink}}
+		mockUpdateTodoActionFn = jest.fn();
+		tree = mount(<Todo readOnly={false}
+							 task='some task'
+							 links={{delete: deleteLink, update: updateLink}}
+                             updateTodoRequestAction={mockUpdateTodoActionFn}
 							 handleDisplace={mockDisplaceHandler}
 							 handleDelete={mockDeleteHandler}/>)
 	});
@@ -23,23 +25,162 @@ describe('Todo', () => {
         expect(tree.length).toBe(1);
     });
 
+    it('has default state', () => {
+        expect(tree.state()).toEqual({editMode: false, task: 'some task'});
+    });
+
 	describe('when readOnly is false', () => {
-        describe('anchor tag', () => {
-            let anchorTag;
+		describe('by default', () => {
+	        describe('anchor tag', () => {
+	            let anchorTag;
 
-            beforeEach(() => {
-                anchorTag = tree.find('a');
-            });
+	            beforeEach(() => {
+	                anchorTag = tree.find('a');
+	            });
 
-            it('renders', () => {
-                expect(anchorTag.length).toBe(1);
-            });
+	            it('renders', () => {
+	                expect(anchorTag.length).toBe(1);
+	            });
 
-            it('calls handleDelete with deleteLink when clicked', () => {
-                anchorTag.simulate('click');
-                expect(mockDeleteHandler).toBeCalledWith(deleteLink);
-            });
-        });
+	            it('calls handleDelete with deleteLink when clicked', () => {
+	                anchorTag.simulate('click');
+	                expect(mockDeleteHandler).toBeCalledWith(deleteLink);
+	            });
+	        });
+
+	        describe('button', () => {
+	            let button;
+
+	            beforeEach(() => {
+	                button = tree.find('Button');
+	            });
+
+	            it('renders', () => {
+	                expect(button.length).toBe(1);
+	            });
+
+	            describe('when clicked', () => {
+	                let input;
+
+	                beforeEach(() => {
+						button.simulate('click');
+				        input = tree.node.taskInput;
+	                });
+
+		            it('toggles editMode on when clicked', () => {
+						expect(tree.state().editMode).toBe(true);
+		            });
+
+		            it('focuses the input', () => {
+						expect(document.activeElement).toEqual(input);
+		            });
+	            });
+	        });
+		});
+
+		describe('when in editMode', () => {
+			beforeEach(() => {
+				tree.setState({editMode: true});
+			});
+
+			describe('form group', () => {
+				let formGroup;
+
+				beforeEach(() => {
+					formGroup = tree.find('FormGroup');
+				});
+
+				it('renders', () => {
+					expect(formGroup.length).toBe(1);
+				});
+			});
+
+			describe('text input', () => {
+				let formControl;
+
+				beforeEach(() => {
+					formControl = tree.find('FormControl');
+				});
+
+				it('renders', () => {
+					expect(formControl.length).toBe(1);
+				});
+
+				it('value is the task state by default', () => {
+					expect(formControl.prop('value')).toEqual('some task');
+				});
+
+				it('updates task state on change', () => {
+					formControl.simulate('change', {target: {value: 'some other task'}});
+					expect(tree.state().task).toEqual('some other task');
+				});
+			});
+
+			describe('first button', () => {
+				let button;
+
+				beforeEach(() => {
+					button = tree.find('Button').at(0);
+				});
+
+				it('renders', () => {
+					expect(button.length).toBe(1);
+				});
+
+				it('is disabled by default', () => {
+					expect(button.prop('disabled')).toBe(true);
+				});
+
+				it('is enabled when task state is different from task props', () => {
+					tree.setState({task: 'some other task'});
+					button = tree.find('Button').at(0);
+					expect(button.prop('disabled')).toBe(false);
+				});
+
+				describe('when clicked', () => {
+					beforeEach(() => {
+						tree.setState({task: 'some other task'});
+						button = tree.find('Button').at(0);
+						button.simulate('click');
+					});
+
+					it('fires update todo action with link and task state', () => {
+						expect(mockUpdateTodoActionFn).toBeCalledWith(updateLink, {task: 'some other task'});
+					});
+
+					it('turns off editMode', () => {
+						expect(tree.state().editMode).toBe(false);
+					});
+				});
+			});
+
+			describe('second button', () => {
+				let button;
+
+				beforeEach(() => {
+					tree.setState({task: 'some other task'});
+					button = tree.find('Button').at(1);
+				});
+
+				it('renders', () => {
+					expect(button.length).toBe(1);
+				});
+
+				describe('on click', () => {
+					beforeEach(() => {
+						button.simulate('click');
+					});
+
+					it('turns off editMode', () => {
+						expect(tree.state().editMode).toBe(false);
+					});
+
+					it('resets task state to props', () => {
+						expect(tree.state().task).toBe('some task');
+					});
+				});
+			});
+		});
 	});
 
 	describe('when readOnly is true', () => {

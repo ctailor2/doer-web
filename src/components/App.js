@@ -45,7 +45,7 @@ export class App extends Component {
 	renderForm() {
 		return (
 			<div>
-                <FormGroup controlId="todo" bsSize="large">
+                <FormGroup bsSize="large">
                     <InputGroup>
                         <HotKeys handlers={{submit: (event) => this.handleTaskSubmit(event)}}>
 	                        <FormControl
@@ -80,6 +80,7 @@ export class App extends Component {
 	handleCancelTaskSubmit() {
 		if(this.state.submitting) {
 			this.toggleSubmit();
+			this.taskInput.focus();
 		}
 	}
 
@@ -94,7 +95,7 @@ export class App extends Component {
 			return(<InputGroup.Button>
 					{this.renderNowButton()}
 					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoLater)}>Later</Button>
-					<Button type="button" bsStyle="danger" bsSize="large" onClick={this.toggleSubmit.bind(this)}>
+					<Button type="button" bsStyle="danger" bsSize="large" onClick={this.handleCancelTaskSubmit.bind(this)}>
 						<Glyphicon glyph="remove"/>
 					</Button>
 				</InputGroup.Button>);
@@ -133,6 +134,7 @@ export class App extends Component {
 	resetTask() {
 		this.setState({todo: {task: ''}});
 		this.taskInput.value = '';
+		this.taskInput.focus();
 	}
 
 	deleteTodo(link) {

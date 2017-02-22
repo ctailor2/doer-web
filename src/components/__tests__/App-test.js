@@ -1,6 +1,7 @@
 jest.unmock('../App');
 
 import {App, mapStateToProps} from '../App';
+import Todo from '../Todo';
 import React from 'react';
 import {mount} from 'enzyme';
 import Header from '../Header';
@@ -131,6 +132,7 @@ describe('App', () => {
         describe('when submitting', () => {
             beforeEach(() => {
                 tree.setState({todo: {task: 'something'}, submitting: true});
+				input.value = 'something';
                 buttons = tree.find('Button');
             });
 
@@ -162,12 +164,12 @@ describe('App', () => {
 	            });
 
 	            it('clears the todo input value', () => {
-					// TODO: Not sure how to test this
+					expect(input.value).toEqual('');
 	            });
 
 	            it('puts focus on the input', () => {
-					// TODO: Not sure how to test this
-					//	expect(document.activeElement).toEqual(input);
+					// TODO: Cannot get this test to fail
+					expect(document.activeElement).toEqual(input);
 	            });
             });
 
@@ -189,12 +191,12 @@ describe('App', () => {
 	            });
 
 	            it('clears the todo input value', () => {
-					// TODO: Not sure how to test this
+					expect(input.value).toEqual('');
 	            });
 
 	            it('puts focus on the input', () => {
-					// TODO: Not sure how to test this
-					//	expect(document.activeElement).toEqual(input);
+					// TODO: Cannot get this test to fail
+					expect(document.activeElement).toEqual(input);
 	            });
             });
 
@@ -208,8 +210,7 @@ describe('App', () => {
 				});
 
 				it('puts focus on the input', () => {
-					// TODO: Not sure how to test this
-					//	expect(document.activeElement).toEqual(input);
+					expect(document.activeElement).toEqual(input);
 				});
             });
         });
@@ -309,14 +310,14 @@ describe('App', () => {
             });
 
 	        it('contains a Todo for each todo', () => {
-	            expect(list.find('Todo').length).toBe(2);
+	            expect(list.find(Todo).length).toBe(2);
 	        });
 
 	        describe('each todo', () => {
 	            let todo
 
 	            beforeEach(() => {
-	                todo = list.find('Todo').at(0);
+	                todo = list.find(Todo).at(0);
 	            });
 
 	            it('is not readonly by default', () => {
@@ -326,7 +327,7 @@ describe('App', () => {
 	            it('is readonly when submitting', () => {
 	                tree.setState({submitting: true});
                     list = tree.find('ListGroup');
-	                todo = list.find('Todo').at(0);
+	                todo = list.find(Todo).at(0);
 	                expect(todo.prop('readOnly')).toBe(true);
 	            });
 
@@ -336,13 +337,16 @@ describe('App', () => {
 	            });
 
 	            describe('displace handler', () => {
-                    let todoToSubmit = {task: 'someTask'};
+	                let task = 'someTask';
+                    let todoToSubmit = {task: task};
                     let displaceLink = {href: 'http://some.api/displaceTodo'};
 
 	                beforeEach(() => {
 	                    tree.setState({todo: todoToSubmit, submitting: true});
+                        input.value = task;
+
                         list = tree.find('ListGroup');
-                        todo = list.find('Todo').at(0);
+                        todo = list.find(Todo).at(0);
 	                    todo.prop('handleDisplace')(displaceLink);
 	                });
 
@@ -355,12 +359,12 @@ describe('App', () => {
                     });
 
                     it('clears the todo input value', () => {
-                        // TODO: Not sure how to test this
+                        expect(input.value).toEqual('');
                     });
 
                     it('puts focus on the input', () => {
-                        // TODO: Not sure how to test this
-                        //	expect(document.activeElement).toEqual(input);
+						// TODO: Cannot get this test to fail
+                        expect(document.activeElement).toEqual(input);
                     });
 	            });
 

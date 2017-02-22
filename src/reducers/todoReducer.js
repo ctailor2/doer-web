@@ -7,7 +7,7 @@ export function todos(state = {active: [], inactive: []}, action = {}) {
 		case actionTypes.STORE_TODOS_ACTION:
 			let todos = {};
 			[todos.active, todos.inactive] = _.partition(action.todos, function (todo) {
-				return todo.scheduling == 'now';
+				return todo.scheduling === 'now';
 			});
 			// TODO: This complexity may be indicative of an issue using the API
 			// TODO: Constantize or Enumify the scheduling types

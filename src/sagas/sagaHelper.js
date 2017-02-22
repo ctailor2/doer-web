@@ -24,3 +24,9 @@ export function deleteData(url, configs) {
         .then((response) => ({response}))
         .catch((error) => ({error}));
 }
+
+export function putData(url, data, configs) {
+	return client.put(url, data, configs)
+        .then((response) => ({response}))
+        .catch((error) => ({error}));
+}

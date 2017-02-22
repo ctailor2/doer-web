@@ -8,6 +8,7 @@ import App from './components/App';
 import SignupView from './components/views/SignupView';
 import LoginView from './components/views/LoginView';
 import './styles/index.css';
+import './styles/bootstrap-overrides.css';
 import rootSaga from './sagas/rootSaga';
 import rootReducer from './reducers/rootReducer';
 import {HotKeys} from 'react-hotkeys';

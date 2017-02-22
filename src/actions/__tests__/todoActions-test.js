@@ -1,6 +1,13 @@
 jest.unmock('../todoActions');
 
-import {getTodosRequestAction, storeTodosAction, createTodoRequestAction, deleteTodoRequestAction, displaceTodoRequestAction} from '../todoActions';
+import {
+	getTodosRequestAction,
+	storeTodosAction,
+	createTodoRequestAction,
+	deleteTodoRequestAction,
+	displaceTodoRequestAction,
+	updateTodoRequestAction
+} from '../todoActions';
 
 describe('getTodosRequestAction', () => {
 	it('creates a get todos request action with empty link by default', () => {
@@ -91,5 +98,25 @@ describe('displaceTodoRequestAction', () => {
             link: link,
             todo: todo
         });
+	});
+});
+
+describe('updateTodoRequestAction', () => {
+	it('creates a update todo request action with empty link and todo by default', () => {
+		expect(updateTodoRequestAction()).toEqual({
+			type: 'UPDATE_TODO_REQUEST_ACTION',
+			link: {},
+			todo: {}
+		});
+	});
+
+	it('creates a update todo request action with supplied link and todo', () => {
+		let link = {href: 'http://some.api/todo'};
+		let todo = {a: 1, b: 2};
+		expect(updateTodoRequestAction(link, todo)).toEqual({
+			type: 'UPDATE_TODO_REQUEST_ACTION',
+			link: link,
+			todo: todo
+		});
 	});
 });

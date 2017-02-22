@@ -5,8 +5,19 @@ jest.unmock('../../actions/linkActions');
 
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
-import {watchGetTodosRequest, getTodosRequest, watchCreateTodoRequest, createTodoRequest, watchDeleteTodoRequest, deleteTodoRequest, watchDisplaceTodoRequest, displaceTodoRequest} from '../todoSaga';
-import {fetchData, postData, deleteData} from '../sagaHelper'
+import {
+	watchGetTodosRequest,
+	getTodosRequest,
+	watchCreateTodoRequest,
+	createTodoRequest,
+	watchDeleteTodoRequest,
+	deleteTodoRequest,
+	watchDisplaceTodoRequest,
+	displaceTodoRequest,
+	watchUpdateTodoRequest,
+	updateTodoRequest
+} from '../todoSaga';
+import {fetchData, postData, deleteData, putData} from '../sagaHelper'
 
 describe('getTodosRequest', () => {
 	let iterator;
@@ -118,6 +129,32 @@ describe('displaceTodoRequest', () => {
     });
 });
 
+describe('updateTodoRequest', () => {
+	let todo = {task: 'task'};
+	let link = {href: 'http://some.api/todo'};
+	let action = {type: 'UPDATE_TODO_REQUEST_ACTION', link: link, todo: todo};
+	let iterator;
+
+	beforeEach(() => {
+		iterator = updateTodoRequest(action);
+	});
+
+	it('calls endpoint with action link href and todo', () => {
+		expect(iterator.next().value).toEqual(call(putData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
+	});
+
+    it('fires get todos action on success', () => {
+        let todosLink = {href: 'http://some.api/todos'};
+        let response = {response: {data: {
+            _links: {
+                todos: todosLink
+            }
+        }}};
+        iterator.next();
+        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+    });
+});
+
 describe('watchGetTodosRequest', () => {
 	let iterator = watchGetTodosRequest();
 
@@ -147,5 +184,13 @@ describe('watchDisplaceTodoRequest', () => {
 
 	it('calls displace todo request saga with every displace todo request action', () => {
 		expect(iterator.next().value).toEqual(takeEvery('DISPLACE_TODO_REQUEST_ACTION', displaceTodoRequest).next().value);
+	});
+});
+
+describe('watchUpdateTodoRequest', () => {
+	let iterator = watchUpdateTodoRequest();
+
+	it('calls update todo request saga with every update todo request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('UPDATE_TODO_REQUEST_ACTION', updateTodoRequest).next().value);
 	});
 });
