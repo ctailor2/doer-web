@@ -8,9 +8,9 @@ import {
 	Glyphicon,
 	FormControl,
 	FormGroup,
-	InputGroup,
+	InputGroup
 } from 'react-bootstrap';
-import {updateTodoRequestAction} from '../actions/todoActions';
+import {updateTodoRequestAction, deleteTodoRequestAction, completeTodoRequestAction} from '../actions/todoActions';
 
 export class Todo extends Component {
 	constructor(props) {
@@ -28,13 +28,17 @@ export class Todo extends Component {
 
 	render() {
 		if(this.canBeDisplaced()) {
-		    return (<Row>
-	            <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.callDisplaceHandler.bind(this)}><Glyphicon glyph="menu-right"/></Button></Col>
-	            <Col lg={11}>{this.props.task}</Col>
-	        </Row>);
+			return this.displaceableTodo();
 		} else {
-			return this.editableTodo()
+			return this.editableTodo();
 		}
+	}
+
+	displaceableTodo() {
+	    return (<Row>
+            <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.callDisplaceHandler.bind(this)}><Glyphicon glyph="menu-right"/></Button></Col>
+            <Col lg={11}>{this.props.task}</Col>
+        </Row>);
 	}
 
 	componentDidUpdate() {
@@ -81,15 +85,22 @@ export class Todo extends Component {
             </Row>);
         } else {
             return (<Row>
-                <Col lg={10}>{this.props.task}</Col>
+                <Col lg={1}><input type="checkbox"
+                                   checked={false}
+                                   onChange={this.handleComplete.bind(this)}/></Col>
+                <Col lg={9}>{this.props.task}</Col>
                 <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.handleEditClick.bind(this)}><Glyphicon glyph="pencil"/></Button></Col>
-                <Col lg={1}><a className="icon-button" onClick={this.callDeleteHandler.bind(this)}><Glyphicon glyph="remove"/></a></Col>
+                <Col lg={1}><a className="icon-button" onClick={this.handleDelete.bind(this)}><Glyphicon glyph="remove"/></a></Col>
             </Row>);
         }
 	}
 
-	callDeleteHandler() {
-		this.props.handleDelete(this.props.links.delete);
+	handleComplete() {
+		this.props.completeTodoRequestAction(this.props.links.complete);
+	}
+
+	handleDelete() {
+		this.props.deleteTodoRequestAction(this.props.links.delete);
 	}
 
 	callDisplaceHandler() {
@@ -98,5 +109,7 @@ export class Todo extends Component {
 }
 
 export default connect(null, {
-	updateTodoRequestAction
+	updateTodoRequestAction,
+	deleteTodoRequestAction,
+	completeTodoRequestAction
 })(Todo);

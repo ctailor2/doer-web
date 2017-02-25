@@ -46,3 +46,9 @@ export function updateTodoRequestAction(link = {}, todo = {}) {
 	}
 }
 
+export function completeTodoRequestAction(link = {}) {
+	return {
+		type: actionTypes.COMPLETE_TODO_REQUEST_ACTION,
+		link: link
+	}
+}

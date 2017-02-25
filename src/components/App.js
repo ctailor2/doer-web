@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from './Header';
 import Todo from './Todo';
 import {connect} from 'react-redux';
-import {createTodoRequestAction, deleteTodoRequestAction, displaceTodoRequestAction} from '../actions/todoActions';
+import {createTodoRequestAction, displaceTodoRequestAction} from '../actions/todoActions';
 import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
@@ -137,10 +137,6 @@ export class App extends Component {
 		this.taskInput.focus();
 	}
 
-	deleteTodo(link) {
-		this.props.deleteTodoRequestAction(link);
-	}
-
 	handleTodoDescriptionOnChange(event) {
 		this.setState({todo: {task: event.target.value}});
 	}
@@ -178,8 +174,7 @@ export class App extends Component {
 		return (<Todo readOnly={this.state.submitting}
 					  task={todo.task}
 					  links={todo._links}
-					  handleDisplace={this.displaceTodo.bind(this)}
-					  handleDelete={this.deleteTodo.bind(this)} />);
+					  handleDisplace={this.displaceTodo.bind(this)} />);
 	}
 }
 
@@ -193,7 +188,6 @@ export const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 	createTodoRequestAction,
-	deleteTodoRequestAction,
 	displaceTodoRequestAction,
 	getHomeResourcesRequestAction
 })(App);

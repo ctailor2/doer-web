@@ -49,6 +49,14 @@ export function* updateTodoRequest(action) {
 	}
 }
 
+export function* completeTodoRequest(action) {
+	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	if(response) {
+        yield put(getTodosRequestAction(response.data._links.todos));
+    } else if (error) {
+    }
+}
+
 export function* watchGetTodosRequest() {
 	yield* takeEvery(actionTypes.GET_TODOS_REQUEST_ACTION, getTodosRequest);
 }
@@ -67,4 +75,8 @@ export function* watchDisplaceTodoRequest() {
 
 export function* watchUpdateTodoRequest() {
 	yield* takeEvery(actionTypes.UPDATE_TODO_REQUEST_ACTION, updateTodoRequest);
+}
+
+export function* watchCompleteTodoRequest() {
+	yield* takeEvery(actionTypes.COMPLETE_TODO_REQUEST_ACTION, completeTodoRequest);
 }

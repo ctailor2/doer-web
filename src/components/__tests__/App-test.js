@@ -7,11 +7,10 @@ import {mount} from 'enzyme';
 import Header from '../Header';
 
 describe('App', () => {
-    let tree, input, nowTodos, laterTodos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockDeleteTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn;
+    let tree, input, nowTodos, laterTodos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
-        mockDeleteTodoActionFn = jest.fn();
         mockGetHomeResourcesRequestActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
         localStorage.getItem = jest.fn(() => {return 'http://some.api/endpoint'});
@@ -24,7 +23,6 @@ describe('App', () => {
                           laterTodos={laterTodos}
                           links={links}
                           createTodoRequestAction={mockCreateTodoActionFn}
-                          deleteTodoRequestAction={mockDeleteTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
         input = tree.node.taskInput;
@@ -366,16 +364,6 @@ describe('App', () => {
 						// TODO: Cannot get this test to fail
                         expect(document.activeElement).toEqual(input);
                     });
-	            });
-
-	            describe('delete handler', () => {
-	                beforeEach(() => {
-	                    todo.prop('handleDelete')(deleteLinkOne);
-	                });
-
-			        it('fires delete todo action with deleteLink', () => {
-			            expect(mockDeleteTodoActionFn).toBeCalledWith(deleteLinkOne);
-			        });
 	            });
 	        });
         });

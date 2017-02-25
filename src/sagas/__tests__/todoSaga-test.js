@@ -15,7 +15,9 @@ import {
 	watchDisplaceTodoRequest,
 	displaceTodoRequest,
 	watchUpdateTodoRequest,
-	updateTodoRequest
+	updateTodoRequest,
+	watchCompleteTodoRequest,
+	completeTodoRequest
 } from '../todoSaga';
 import {fetchData, postData, deleteData, putData} from '../sagaHelper'
 
@@ -155,6 +157,31 @@ describe('updateTodoRequest', () => {
     });
 });
 
+describe('completeTodoRequest', () => {
+	let link = {href: 'http://some.api/todo'};
+	let action = {type: 'COMPLETE_TODO_REQUEST_ACTION', link: link};
+	let iterator;
+
+	beforeEach(() => {
+		iterator = completeTodoRequest(action);
+	});
+
+	it('calls endpoint with action link href', () => {
+		expect(iterator.next().value).toEqual(call(postData, link.href, null, {headers: {'Session-Token': 'socooltoken'}}));
+	});
+
+    it('fires get todos action on success', () => {
+        let todosLink = {href: 'http://some.api/todos'};
+        let response = {response: {data: {
+            _links: {
+                todos: todosLink
+            }
+        }}};
+        iterator.next();
+        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+    });
+});
+
 describe('watchGetTodosRequest', () => {
 	let iterator = watchGetTodosRequest();
 
@@ -192,5 +219,13 @@ describe('watchUpdateTodoRequest', () => {
 
 	it('calls update todo request saga with every update todo request action', () => {
 		expect(iterator.next().value).toEqual(takeEvery('UPDATE_TODO_REQUEST_ACTION', updateTodoRequest).next().value);
+	});
+});
+
+describe('watchCompleteTodoRequest', () => {
+	let iterator = watchCompleteTodoRequest();
+
+	it('calls complete todo request saga with every complete todo request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('COMPLETE_TODO_REQUEST_ACTION', completeTodoRequest).next().value);
 	});
 });
