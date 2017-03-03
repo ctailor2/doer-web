@@ -6,15 +6,15 @@ describe('getHomeResourcesRequestAction', () => {
 	it('creates a get home resources request action with empty url by default', () => {
 		expect(getHomeResourcesRequestAction()).toEqual({
 			type: 'GET_HOME_RESOURCES_REQUEST_ACTION',
-			url: ''
+			link: {}
 		});
 	});
 
 	it('creates a home resources request action with supplied url', () => {
-		let url = 'http://some.api/home';
-        expect(getHomeResourcesRequestAction(url)).toEqual({
+		let link = {href: 'http://some.api/home'};
+        expect(getHomeResourcesRequestAction(link)).toEqual({
             type: 'GET_HOME_RESOURCES_REQUEST_ACTION',
-            url: url
+            link: link
         });
     });
 });

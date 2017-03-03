@@ -4,7 +4,6 @@ import {App, mapStateToProps} from '../App';
 import Todo from '../Todo';
 import React from 'react';
 import {mount} from 'enzyme';
-import Header from '../Header';
 
 describe('App', () => {
     let tree, input, nowTodos, laterTodos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn;
@@ -13,12 +12,11 @@ describe('App', () => {
         mockCreateTodoActionFn = jest.fn();
         mockGetHomeResourcesRequestActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
-        localStorage.getItem = jest.fn(() => {return 'http://some.api/endpoint'});
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
-        links = {todos: {href: 'http://some.api/todos'}, todoNow: todoNowLink, todoLater: todoLaterLink};
+        links = {todoNow: todoNowLink, todoLater: todoLaterLink};
         tree = mount(<App nowTodos={nowTodos}
                           laterTodos={laterTodos}
                           links={links}
@@ -32,17 +30,8 @@ describe('App', () => {
         expect(tree.length).toBe(1);
     });
 
-    it('has a header', () => {
-        expect(tree.find(Header).length).toBe(1);
-    });
-
     it('has default state', () => {
         expect(tree.state()).toEqual({todo: {task: ''}, submitting: false, activeTab: 'now'});
-    });
-
-    it('fires get home resources request action with link from localStorage when mounted', () => {
-        mount(<App nowTodos={nowTodos} laterTodos={laterTodos} links={links} createTodoRequestAction={mockCreateTodoActionFn} getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
-        expect(mockGetHomeResourcesRequestActionFn).toBeCalledWith('http://some.api/endpoint');
     });
 
     describe('text input', () => {

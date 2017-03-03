@@ -1,5 +1,5 @@
 jest.unmock('../homeResourcesSaga');
-jest.unmock('../../actions/todoActions');
+jest.unmock('../../actions/linkActions');
 
 import {getHomeResourcesRequest, watchGetHomeResourcesRequest} from '../homeResourcesSaga';
 import {fetchData} from '../sagaHelper';
@@ -9,10 +9,10 @@ import {takeEvery} from 'redux-saga';
 describe('getHomeResourcesRequest', () => {
 	let iterator;
 
-	let url = 'http://some.api/someLink';
+	let link = {href: 'http://some.api/someLink'};
     let action = {
         type: 'GET_HOME_RESOURCES_REQUEST_ACTION',
-        url: url
+        link: link
     };
 
 	beforeEach(() => {
@@ -21,7 +21,7 @@ describe('getHomeResourcesRequest', () => {
 	});
 
     it('calls endpoint with action url', () => {
-        expect(iterator.next().value).toEqual(call(fetchData, url, {headers: {'Session-Token': 'socooltoken'}}));
+        expect(iterator.next().value).toEqual(call(fetchData, link.href, {headers: {'Session-Token': 'socooltoken'}}));
     });
 
     describe('on request success', () => {
@@ -29,9 +29,9 @@ describe('getHomeResourcesRequest', () => {
         let links = {self: {href: "http://some.api/home"}, todos: todosLink};
         let response = {response: {data: {_links: links}}};
 
-        it('calls get todos request action', () => {
+        it('fires store links action', () => {
             iterator.next();
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+            expect(iterator.next(response).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
         });
     });
 });

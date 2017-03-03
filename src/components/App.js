@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import Header from './Header';
+import React, {Component} from 'react';
 import Todo from './Todo';
 import {connect} from 'react-redux';
 import {createTodoRequestAction, displaceTodoRequestAction} from '../actions/todoActions';
-import {getHomeResourcesRequestAction} from '../actions/homeResourcesActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
 import {
@@ -26,13 +24,8 @@ export class App extends Component {
 		this.state = {todo: {task: ''}, submitting: false, activeTab: 'now'};
 	}
 
-	componentDidMount() {
-		this.props.getHomeResourcesRequestAction(localStorage.getItem('link'));
-	}
-
 	render() {
 		return (<HotKeys handlers={{cancel: (event) => this.handleCancelTaskSubmit(event),}}>
-			<Header />
 	        <Row>
 				<Col lg={6} lgOffset={3}>
 					{this.renderForm()}
@@ -188,6 +181,5 @@ export const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 	createTodoRequestAction,
-	displaceTodoRequestAction,
-	getHomeResourcesRequestAction
+	displaceTodoRequestAction
 })(App);

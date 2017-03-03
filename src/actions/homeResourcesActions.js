@@ -1,8 +1,8 @@
 import * as actionTypes from '../constants/actionTypes';
 
-export function getHomeResourcesRequestAction(url = '') {
+export function getHomeResourcesRequestAction(link = {}) {
 	return {
 		type: actionTypes.GET_HOME_RESOURCES_REQUEST_ACTION,
-		url: url
+		link: link
 	}
 }

@@ -4,6 +4,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import {Header} from '../Header';
 import {Navbar, Brand, Nav, NavDropdown} from 'react-bootstrap';
+import {browserHistory} from 'react-router';
 
 describe('Header', () => {
     let tree, logoutRequestActionFn;
@@ -92,6 +93,28 @@ describe('Header', () => {
                     it('fires logout request action on click', () => {
                         logoutOption.simulate('click');
                         expect(logoutRequestActionFn).toBeCalled();
+                    });
+                });
+
+                describe('history option', () => {
+                    let historyOption;
+
+                    beforeEach(() => {
+                        historyOption = dropdown.childAt(1);
+                    });
+
+                    it('renders', () => {
+                        expect(historyOption.length).toBe(1);
+                    });
+
+                    it('is for history', () => {
+                        expect(historyOption.childAt(0).text()).toBe('History');
+                    });
+
+                    it('navigates to history', () => {
+                        browserHistory.push = jest.fn();
+                        historyOption.simulate('click');
+                        expect(browserHistory.push).toBeCalledWith('/history');
                     });
                 });
             });
