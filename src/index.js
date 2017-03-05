@@ -7,6 +7,7 @@ import { Router, Route, browserHistory } from 'react-router';
 import SignupView from './components/views/SignupView';
 import LoginView from './components/views/LoginView';
 import TodosView from './components/views/TodosView';
+import HistoryView from './components/views/HistoryView';
 import './styles/index.css';
 import './styles/bootstrap-overrides.css';
 import rootSaga from './sagas/rootSaga';
@@ -34,6 +35,7 @@ render(
 	      <Route path="/" component={TodosView}></Route>
 	      <Route path="/signup" component={SignupView}></Route>
 	      <Route path="/login" component={LoginView}></Route>
+	      <Route path="/history" component={HistoryView}></Route>
 	    </Router>
 	  </Provider>
 	</HotKeys>,

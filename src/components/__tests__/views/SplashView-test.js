@@ -1,15 +1,15 @@
-jest.unmock('../../views/SplashView');
+jest.unmock('../../views/Loader');
 
 import {shallow} from 'enzyme';
 import React from 'react';
-import SplashView from '../../views/SplashView';
+import Loader from '../../views/Loader';
 import Header from '../../Header';
 
-describe('SplashView', () => {
+describe('Loader', () => {
 	let tree;
 
 	beforeEach(() => {
-		tree = shallow(<SplashView />);
+		tree = shallow(<Loader />);
 	});
 
 	it('renders', () => {

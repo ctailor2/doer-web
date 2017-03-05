@@ -2,7 +2,9 @@ jest.unmock('../todoActions');
 
 import {
 	getTodosRequestAction,
+	getCompletedTodosRequestAction,
 	storeTodosAction,
+	storeCompletedTodosAction,
 	createTodoRequestAction,
 	deleteTodoRequestAction,
 	displaceTodoRequestAction,
@@ -27,6 +29,23 @@ describe('getTodosRequestAction', () => {
 	});
 });
 
+describe('getCompletedTodosRequestAction', () => {
+	it('creates a get completed todos request action with empty link by default', () => {
+		expect(getCompletedTodosRequestAction()).toEqual({
+			type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
+			link: {}
+		});
+	});
+
+	it('creates a get completed todos request action with supplied link', () => {
+		let link = {href: 'http://some.api/todos'};
+		expect(getCompletedTodosRequestAction(link)).toEqual({
+			type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
+			link: link
+		});
+	});
+});
+
 describe('storeTodosAction', () => {
 	it('creates a store todos action with empty todos and anytime scheduling by default', () => {
 		expect(storeTodosAction()).toEqual({
@@ -41,6 +60,22 @@ describe('storeTodosAction', () => {
 			type: 'STORE_TODOS_ACTION',
 			todos: [1, 2, 3],
 			scheduling: 'someScheduling'
+		});
+	});
+});
+
+describe('storeCompletedTodosAction', () => {
+	it('creates a store completed todos action with empty todos by default', () => {
+		expect(storeCompletedTodosAction()).toEqual({
+			type: 'STORE_COMPLETED_TODOS_ACTION',
+			todos: []
+		});
+	});
+
+	it('creates a store completed todos action with supplied todos', () => {
+		expect(storeCompletedTodosAction([1, 2, 3])).toEqual({
+			type: 'STORE_COMPLETED_TODOS_ACTION',
+			todos: [1, 2, 3]
 		});
 	});
 });

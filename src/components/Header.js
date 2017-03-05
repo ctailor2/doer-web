@@ -27,8 +27,8 @@ export class Header extends Component {
             return(
                 <Nav pullRight>
                     <NavDropdown title='Menu' id='header-menu-dropdown'>
-                        <MenuItem onClick={this.handleLogoutClick.bind(this)}>Logout</MenuItem>
                         <MenuItem onClick={this.handleHistoryClick.bind(this)}>History</MenuItem>
+                        <MenuItem onClick={this.handleLogoutClick.bind(this)}>Logout</MenuItem>
                     </NavDropdown>
                 </Nav>
             );

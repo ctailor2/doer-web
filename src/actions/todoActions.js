@@ -7,11 +7,25 @@ export function getTodosRequestAction(link = {}) {
 	}
 }
 
+export function getCompletedTodosRequestAction(link = {}) {
+	return {
+		type: actionTypes.GET_COMPLETED_TODOS_REQUEST_ACTION,
+		link: link
+	}
+}
+
 export function storeTodosAction(todos = [], scheduling = 'anytime') {
 	return {
 		type: actionTypes.STORE_TODOS_ACTION,
 		todos: todos,
 		scheduling: scheduling
+	}
+}
+
+export function storeCompletedTodosAction(todos = []) {
+	return {
+		type: actionTypes.STORE_COMPLETED_TODOS_ACTION,
+		todos: todos
 	}
 }
 

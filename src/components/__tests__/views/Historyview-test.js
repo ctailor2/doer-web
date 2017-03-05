@@ -1,23 +1,23 @@
-jest.unmock('../../views/TodosView');
+jest.unmock('../../views/HistoryView');
 
 import {shallow} from 'enzyme';
 import React from 'react';
-import {TodosView, mapStateToProps} from '../../views/TodosView';
+import {HistoryView, mapStateToProps} from '../../views/HistoryView';
 import Header from '../../Header';
-import App from '../../App';
+import History from '../../History';
 
-describe('TodosView', () => {
-	let tree, mockLoadTodosViewActionFn;
+describe('HistoryView', () => {
+	let tree, mockLoadHistoryViewActionFn;
 
 	beforeEach(() => {
-		mockLoadTodosViewActionFn = jest.fn();
+		mockLoadHistoryViewActionFn = jest.fn();
 	    localStorage.getItem = jest.fn(() => {return 'http://some.api/endpoint'});
-		tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />,
+		tree = shallow(<HistoryView viewLoaded={false} loadHistoryViewAction={mockLoadHistoryViewActionFn} />,
                        {lifecycleExperimental: true});
 	});
 
-    it('fires load todos view action when mounted', () => {
-        expect(mockLoadTodosViewActionFn).toBeCalled();
+    it('fires load history view action when mounted', () => {
+        expect(mockLoadHistoryViewActionFn).toBeCalled();
     });
 
 	it('renders', () => {
@@ -32,13 +32,13 @@ describe('TodosView', () => {
         expect(tree.find('Loader').length).toBe(1);
     });
 
-    it('renders the app when view is loaded', () => {
+    it('renders the history when view is loaded', () => {
         tree.setProps({viewLoaded: true});
-        expect(tree.find(App).length).toBe(1);
+        expect(tree.find(History).length).toBe(1);
     });
 
 	it('maps state to props', () => {
-	    let state = {loadView: {todosViewLoaded: true}};
+	    let state = {loadView: {historyViewLoaded: true}};
 	    expect(mapStateToProps(state)).toEqual({
 	        viewLoaded: true
 	    });

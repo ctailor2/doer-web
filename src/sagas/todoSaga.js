@@ -2,13 +2,22 @@ import * as actionTypes from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {fetchData, postData, deleteData, putData} from './sagaHelper';
-import {storeTodosAction, getTodosRequestAction} from '../actions/todoActions';
+import {storeTodosAction, getTodosRequestAction, storeCompletedTodosAction} from '../actions/todoActions';
 import {storeLinksAction} from '../actions/linkActions';
 
 export function* getTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(storeTodosAction(response.data.todos, action.scheduling));
+		yield put(storeLinksAction(response.data._links));
+	} else  if (error) {
+	}
+}
+
+export function* getCompletedTodosRequest(action) {
+	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	if(response) {
+		yield put(storeCompletedTodosAction(response.data.todos, action.scheduling));
 		yield put(storeLinksAction(response.data._links));
 	} else  if (error) {
 	}
@@ -59,6 +68,10 @@ export function* completeTodoRequest(action) {
 
 export function* watchGetTodosRequest() {
 	yield* takeEvery(actionTypes.GET_TODOS_REQUEST_ACTION, getTodosRequest);
+}
+
+export function* watchGetCompletedTodosRequest() {
+	yield* takeEvery(actionTypes.GET_COMPLETED_TODOS_REQUEST_ACTION, getCompletedTodosRequest);
 }
 
 export function* watchCreateTodoRequest() {

@@ -8,6 +8,8 @@ import {call, put} from 'redux-saga/effects';
 import {
 	watchGetTodosRequest,
 	getTodosRequest,
+	watchGetCompletedTodosRequest,
+	getCompletedTodosRequest,
 	watchCreateTodoRequest,
 	createTodoRequest,
 	watchDeleteTodoRequest,
@@ -44,6 +46,39 @@ describe('getTodosRequest', () => {
         iterator.next();
         expect(iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}}).value)
             .toEqual(put({type: 'STORE_TODOS_ACTION', todos: [1, 2, 3], scheduling: 'anytime'}));
+    });
+
+    it('fires store links action', () => {
+        iterator.next();
+        iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}});
+        expect(iterator.next({response: {data: {_links: links}}}).value)
+            .toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+    });
+});
+
+describe('getCompletedTodosRequest', () => {
+	let iterator;
+
+	let url = 'http://some.api/someLink';
+    let action = {
+        type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
+        link: {href: url}
+    };
+    let links = [{rel: "this", href: "tisket"}, {rel: "that", href: "tasket"}];
+
+	beforeEach(() => {
+        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+		iterator = getCompletedTodosRequest(action);
+	});
+
+	it('calls endpoint with action href', () => {
+        expect(iterator.next().value).toEqual(call(fetchData, url, {headers: {'Session-Token': 'socooltoken'}}));
+	});
+
+	it('fires store completed todos action', () => {
+        iterator.next();
+        expect(iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}}).value)
+            .toEqual(put({type: 'STORE_COMPLETED_TODOS_ACTION', todos: [1, 2, 3]}));
     });
 
     it('fires store links action', () => {
@@ -187,6 +222,14 @@ describe('watchGetTodosRequest', () => {
 
 	it('calls get todos request saga with every get todos request action', () => {
 		expect(iterator.next().value).toEqual(takeEvery('GET_TODOS_REQUEST_ACTION', getTodosRequest).next().value);
+	});
+});
+
+describe('watchGetCompletedTodosRequest', () => {
+	let iterator = watchGetCompletedTodosRequest();
+
+	it('calls get completed todos request saga with every get completed todos request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('GET_COMPLETED_TODOS_REQUEST_ACTION', getCompletedTodosRequest).next().value);
 	});
 });
 

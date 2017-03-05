@@ -75,32 +75,11 @@ describe('Header', () => {
                     expect(dropdown.prop('title')).toBe('Menu');
                 });
 
-                describe('logout option', () => {
-                    let logoutOption;
-
-                    beforeEach(() => {
-                        logoutOption = dropdown.childAt(0);
-                    });
-
-                    it('renders', () => {
-                        expect(logoutOption.length).toBe(1);
-                    });
-
-                    it('is for logout', () => {
-                        expect(logoutOption.childAt(0).text()).toBe('Logout');
-                    });
-
-                    it('fires logout request action on click', () => {
-                        logoutOption.simulate('click');
-                        expect(logoutRequestActionFn).toBeCalled();
-                    });
-                });
-
                 describe('history option', () => {
                     let historyOption;
 
                     beforeEach(() => {
-                        historyOption = dropdown.childAt(1);
+                        historyOption = dropdown.childAt(0);
                     });
 
                     it('renders', () => {
@@ -115,6 +94,27 @@ describe('Header', () => {
                         browserHistory.push = jest.fn();
                         historyOption.simulate('click');
                         expect(browserHistory.push).toBeCalledWith('/history');
+                    });
+                });
+
+                describe('logout option', () => {
+                    let logoutOption;
+
+                    beforeEach(() => {
+                        logoutOption = dropdown.childAt(1);
+                    });
+
+                    it('renders', () => {
+                        expect(logoutOption.length).toBe(1);
+                    });
+
+                    it('is for logout', () => {
+                        expect(logoutOption.childAt(0).text()).toBe('Logout');
+                    });
+
+                    it('fires logout request action on click', () => {
+                        logoutOption.simulate('click');
+                        expect(logoutRequestActionFn).toBeCalled();
                     });
                 });
             });

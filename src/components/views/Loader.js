@@ -5,7 +5,7 @@ import {
 	ProgressBar
 } from 'react-bootstrap';
 
-export default class SplashView extends Component {
+export default class Loader extends Component {
 	render() {
 		return (<Row>
 	        <Col lg={6} lgOffset={3}>

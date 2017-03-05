@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {loadTodosViewAction} from '../../actions/loadViewActions';
+import {loadHistoryViewAction} from '../../actions/loadViewActions';
 import Header from '../Header';
-import App from '../App';
+import History from '../History';
 import Loader from '../views/Loader';
 
-export class TodosView extends Component {
+export class HistoryView extends Component {
 	componentDidMount() {
-		this.props.loadTodosViewAction();
+		this.props.loadHistoryViewAction();
 	}
 
 	render() {
@@ -19,7 +19,7 @@ export class TodosView extends Component {
 
 	renderView() {
 		if(this.props.viewLoaded) {
-			return (<App />);
+			return (<History />);
 		}
 		return (<Loader />)
 	}
@@ -27,10 +27,10 @@ export class TodosView extends Component {
 
 export const mapStateToProps = (state) => {
 	return {
-		viewLoaded: state.loadView.todosViewLoaded
+		viewLoaded: state.loadView.historyViewLoaded
 	};
 }
 
 export default connect(mapStateToProps, {
-	loadTodosViewAction
-})(TodosView);
+	loadHistoryViewAction
+})(HistoryView);
