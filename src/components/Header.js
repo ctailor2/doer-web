@@ -5,17 +5,11 @@ import {logoutRequestAction} from '../actions/sessionActions';
 import {browserHistory} from 'react-router';
 
 export class Header extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleLogoutClick = this.handleLogoutClick.bind(this);
-    }
-
     render() {
         return(
             <div>
                 <Navbar>
-                    <Navbar.Brand>Doer</Navbar.Brand>
+                    <Navbar.Brand onClick={this.handleBrandClick.bind(this)}>Doer</Navbar.Brand>
                     {this.renderNav()}
                 </Navbar>
             </div>
@@ -25,7 +19,7 @@ export class Header extends Component {
     renderNav() {
         if(localStorage.getItem('sessionToken')) {
             return(
-                <Nav pullRight>
+                <Nav pullRight={true}>
                     <NavDropdown title='Menu' id='header-menu-dropdown'>
                         <MenuItem onClick={this.handleHistoryClick.bind(this)}>History</MenuItem>
                         <MenuItem onClick={this.handleLogoutClick.bind(this)}>Logout</MenuItem>
@@ -41,6 +35,10 @@ export class Header extends Component {
 
     handleHistoryClick() {
         browserHistory.push('/history');
+    }
+
+    handleBrandClick() {
+        browserHistory.push('/');
     }
 }
 

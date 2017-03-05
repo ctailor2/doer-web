@@ -30,10 +30,22 @@ describe('Header', () => {
             expect(navbar.length).toBe(1);
         });
 
-        it('has brand', () => {
-            let brand = navbar.find(Navbar.Brand);
-            expect(brand.length).toBe(1);
-            expect(brand.childAt(0).text()).toBe('Doer');
+        describe('brand', () => {
+            let brand;
+
+            beforeEach(() => {
+                brand = navbar.find(Navbar.Brand);
+            });
+
+            it('renders', () => {
+                expect(brand.length).toBe(1);
+            });
+
+            it('navigates to home on click', () => {
+                browserHistory.push = jest.fn();
+                brand.simulate('click');
+                expect(browserHistory.push).toBeCalledWith('/');
+            });
         });
     });
 

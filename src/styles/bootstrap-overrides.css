@@ -1,3 +1,7 @@
 .form-group-sm:only-child {
 	margin-bottom: 0px;
 }
+
+.navbar-brand:hover {
+	cursor: pointer;
+}
