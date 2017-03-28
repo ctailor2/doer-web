@@ -44,6 +44,13 @@ export function deleteTodoRequestAction(link = {}) {
 	}
 }
 
+export function moveTodoRequestAction(link = {}) {
+	return {
+		type: actionTypes.MOVE_TODO_REQUEST_ACTION,
+		link: link
+	}
+}
+
 export function displaceTodoRequestAction(link = {}, todo = {}) {
 	return {
 		type: actionTypes.DISPLACE_TODO_REQUEST_ACTION,

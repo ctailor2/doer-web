@@ -2,16 +2,18 @@ jest.unmock('../App');
 
 import {App, mapStateToProps} from '../App';
 import Todo from '../Todo';
+import DraggableListGroupItem from '../DraggableListGroupItem';
 import React from 'react';
 import {mount} from 'enzyme';
 
 describe('App', () => {
-    let tree, input, nowTodos, laterTodos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn;
+    let tree, input, nowTodos, laterTodos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn, mockMoveTodoActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
         mockGetHomeResourcesRequestActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
+        mockMoveTodoActionFn = jest.fn();
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
@@ -22,6 +24,7 @@ describe('App', () => {
                           links={links}
                           createTodoRequestAction={mockCreateTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
+                          moveTodoRequestAction={mockMoveTodoActionFn}
                           getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
         input = tree.node.taskInput;
     });
@@ -285,75 +288,110 @@ describe('App', () => {
         });
 
         describe('with todos', () => {
-            let todo1, todo2, deleteLinkOne;
+            let todo1, todo2, laterTodo1, laterTodo2, deleteLinkOne, moveLinkOneToSelf, moveLinkOneToTwo;
 
             beforeEach(() => {
                 deleteLinkOne = {href: 'http://some.api/deleteTodoOne'};
                 todo1 = {task: 'thing one', _links: {delete: deleteLinkOne}};
                 todo2 = {task: 'thing two', _links: {delete: {href: 'http://some.api/deleteTodoTwo'}}};
+                moveLinkOneToSelf = {href: 'http://some.api/moveOneToSelf'};
+                moveLinkOneToTwo = {href: 'http://some.api/moveOneToTwo'};
+                laterTodo1 = {task: 'later thing one', _links: {move: [
+					moveLinkOneToSelf,
+					moveLinkOneToTwo
+                ]}};
+                laterTodo2 = {task: 'later thing two'};
                 let todos = [todo1, todo2];
-                tree.setProps({nowTodos: todos});
+                let laterTodos = [laterTodo1, laterTodo2];
+                tree.setProps({nowTodos: todos, laterTodos: laterTodos});
                 list = tree.find('ListGroup');
             });
 
-	        it('contains a Todo for each todo', () => {
-	            expect(list.find(Todo).length).toBe(2);
+	        it('contains a DraggableListGroupItem for each todo', () => {
+	            expect(list.find(DraggableListGroupItem).length).toBe(4);
 	        });
 
-	        describe('each todo', () => {
-	            let todo
+	        describe('each list item', () => {
+	            let listItem;
 
 	            beforeEach(() => {
-	                todo = list.find(Todo).at(0);
+	                listItem = list.find(DraggableListGroupItem).at(0);
 	            });
 
-	            it('is not readonly by default', () => {
-	                expect(todo.prop('readOnly')).toBe(false);
+	            it('has an index', () => {
+	                expect(listItem.prop('index')).toEqual(0);
 	            });
 
-	            it('is readonly when submitting', () => {
-	                tree.setState({submitting: true});
-                    list = tree.find('ListGroup');
-	                todo = list.find(Todo).at(0);
-	                expect(todo.prop('readOnly')).toBe(true);
-	            });
-
-	            it('has props', () => {
-	                expect(todo.prop('task')).toEqual('thing one');
-	                expect(todo.prop('links')).toEqual({delete: deleteLinkOne});
-	            });
-
-	            describe('displace handler', () => {
-	                let task = 'someTask';
-                    let todoToSubmit = {task: task};
-                    let displaceLink = {href: 'http://some.api/displaceTodo'};
+	            describe('moveItem handler', () => {
+	                let moveHandler;
 
 	                beforeEach(() => {
-	                    tree.setState({todo: todoToSubmit, submitting: true});
-                        input.value = task;
-
-                        list = tree.find('ListGroup');
-                        todo = list.find(Todo).at(0);
-	                    todo.prop('handleDisplace')(displaceLink);
+						moveHandler = listItem.prop('moveItem');
 	                });
 
-                    it('fires displace todo action with todo displaceLink and task', () => {
-                        expect(mockDisplaceTodoActionFn).toBeCalledWith(displaceLink, todoToSubmit);
-                    });
-
-                    it('toggles submitting state to false', () => {
-                        expect(tree.state().submitting).toBe(false);
-                    });
-
-                    it('clears the todo input value', () => {
-                        expect(input.value).toEqual('');
-                    });
-
-                    it('puts focus on the input', () => {
-						// TODO: Cannot get this test to fail
-                        expect(document.activeElement).toEqual(input);
-                    });
+	                it('fires move todo action with link for the matching target', () => {
+	                    moveHandler(0, 1);
+	                    expect(mockMoveTodoActionFn).toBeCalledWith(moveLinkOneToTwo);
+	                });
 	            });
+
+				describe('child props', () => {
+					let childProps;
+
+					beforeEach(() => {
+						childProps = listItem.prop('children').props;
+					});
+
+		            it('is not readonly by default', () => {
+		                expect(childProps.readOnly).toBe(false);
+		            });
+
+		            it('is readonly when submitting', () => {
+		                tree.setState({submitting: true});
+	                    list = tree.find('ListGroup');
+		                listItem = list.find(DraggableListGroupItem).at(0);
+						childProps = listItem.prop('children').props;
+		                expect(childProps.readOnly).toBe(true);
+		            });
+
+		            it('has task and links', () => {
+		                expect(childProps.task).toEqual('thing one');
+		                expect(childProps.links).toEqual({delete: deleteLinkOne});
+		            });
+
+		            describe('displace handler', () => {
+		                let task = 'someTask';
+	                    let todoToSubmit = {task: task};
+	                    let displaceLink = {href: 'http://some.api/displaceTodo'};
+
+		                beforeEach(() => {
+		                    tree.setState({todo: todoToSubmit, submitting: true});
+	                        input.value = task;
+
+	                        list = tree.find('ListGroup');
+	                        listItem = list.find(DraggableListGroupItem).at(0);
+							childProps = listItem.prop('children').props;
+		                    childProps.handleDisplace(displaceLink);
+		                });
+
+	                    it('fires displace todo action with todo displaceLink and task', () => {
+	                        expect(mockDisplaceTodoActionFn).toBeCalledWith(displaceLink, todoToSubmit);
+	                    });
+
+	                    it('toggles submitting state to false', () => {
+	                        expect(tree.state().submitting).toBe(false);
+	                    });
+
+	                    it('clears the todo input value', () => {
+	                        expect(input.value).toEqual('');
+	                    });
+
+	                    it('puts focus on the input', () => {
+							// TODO: Cannot get this test to fail
+	                        expect(document.activeElement).toEqual(input);
+	                    });
+		            });
+				});
 	        });
         });
     });

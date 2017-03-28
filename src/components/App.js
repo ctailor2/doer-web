@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Todo from './Todo';
 import {connect} from 'react-redux';
-import {createTodoRequestAction, displaceTodoRequestAction} from '../actions/todoActions';
+import {createTodoRequestAction, displaceTodoRequestAction, moveTodoRequestAction} from '../actions/todoActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
 import {
@@ -12,11 +12,13 @@ import {
 	Button,
 	InputGroup,
 	ListGroup,
-	ListGroupItem,
 	Glyphicon,
 	Tabs,
 	Tab
 } from 'react-bootstrap';
+import DraggableListGroupItem from './DraggableListGroupItem';
+// TODO: May want to include this
+//import update from 'immutability-helper';
 
 export class App extends Component {
 	constructor(props) {
@@ -145,9 +147,7 @@ export class App extends Component {
 	renderList(todos) {
 		return(<ListGroup>
 			{todos.map((todo, index) => {
-				return (<ListGroupItem key={index}>
-					{this.renderListItem(todo)}
-				</ListGroupItem>);
+				return this.renderListItem(todo, index);
             })}
 		</ListGroup>);
 	}
@@ -163,11 +163,32 @@ export class App extends Component {
         this.resetTask();
 	}
 
-	renderListItem(todo) {
-		return (<Todo readOnly={this.state.submitting}
-					  task={todo.task}
-					  links={todo._links}
-					  handleDisplace={this.displaceTodo.bind(this)} />);
+	moveItem(fromIndex, toIndex) {
+		// TODO: Make this work for either now or later todos
+	    let originalTodo = this.props.laterTodos[fromIndex];
+	    this.props.moveTodoRequestAction(originalTodo._links.move[toIndex]);
+
+		// TODO: May want to include this
+//		this.setState(update(this.state, {
+//			laterTodos: {
+//				$splice: [
+//	              [fromIndex, 1],
+//	              [toIndex, 0, originalItem]
+//	            ]
+//			}
+//		}));
+	}
+
+	renderListItem(todo, index) {
+		// TODO: Only allow readOnly Todos to be moved
+		return (<DraggableListGroupItem key={index} index={index} moveItem={this.moveItem.bind(this)}>
+			<Todo key={index}
+				index={index}
+				readOnly={this.state.submitting}
+				task={todo.task}
+				links={todo._links}
+				handleDisplace={this.displaceTodo.bind(this)} />
+		</DraggableListGroupItem>);
 	}
 }
 
@@ -181,5 +202,6 @@ export const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
 	createTodoRequestAction,
-	displaceTodoRequestAction
+	displaceTodoRequestAction,
+	moveTodoRequestAction
 })(App);

@@ -40,6 +40,14 @@ export function* deleteTodoRequest(action) {
     }
 }
 
+export function* moveTodoRequest(action) {
+	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	if(response) {
+        yield put(getTodosRequestAction(response.data._links.todos));
+    } else if (error) {
+    }
+}
+
 export function* displaceTodoRequest(action) {
 	let todo = action.todo;
 	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
@@ -92,4 +100,8 @@ export function* watchUpdateTodoRequest() {
 
 export function* watchCompleteTodoRequest() {
 	yield* takeEvery(actionTypes.COMPLETE_TODO_REQUEST_ACTION, completeTodoRequest);
+}
+
+export function* watchMoveTodoRequest() {
+	yield* takeEvery(actionTypes.MOVE_TODO_REQUEST_ACTION, moveTodoRequest);
 }

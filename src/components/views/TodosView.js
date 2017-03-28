@@ -4,9 +4,12 @@ import {loadTodosViewAction} from '../../actions/loadViewActions';
 import Header from '../Header';
 import App from '../App';
 import Loader from '../views/Loader';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 export class TodosView extends Component {
 	componentDidMount() {
+		// TODO: May be able to optimize here by only firing this if the view is not loaded
 		this.props.loadTodosViewAction();
 	}
 
@@ -31,6 +34,6 @@ export const mapStateToProps = (state) => {
 	};
 }
 
-export default connect(mapStateToProps, {
+export default DragDropContext(HTML5Backend)(connect(mapStateToProps, {
 	loadTodosViewAction
-})(TodosView);
+})(TodosView));
