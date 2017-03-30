@@ -16,9 +16,6 @@ import {
 	Tabs,
 	Tab
 } from 'react-bootstrap';
-import DraggableListGroupItem from './DraggableListGroupItem';
-// TODO: May want to include this
-//import update from 'immutability-helper';
 
 export class App extends Component {
 	constructor(props) {
@@ -164,31 +161,23 @@ export class App extends Component {
 	}
 
 	moveItem(fromIndex, toIndex) {
-		// TODO: Make this work for either now or later todos
 	    let originalTodo = this.props.laterTodos[fromIndex];
+		// TODO: Make this work for either now or later todos
+	    // Only reason to specify the collection here is to get the appropriate link
+	    // but if this is being called by the Todo component itself, it could return
+	    // its link directly here
 	    this.props.moveTodoRequestAction(originalTodo._links.move[toIndex]);
-
-		// TODO: May want to include this
-//		this.setState(update(this.state, {
-//			laterTodos: {
-//				$splice: [
-//	              [fromIndex, 1],
-//	              [toIndex, 0, originalItem]
-//	            ]
-//			}
-//		}));
 	}
 
 	renderListItem(todo, index) {
-		// TODO: Only allow readOnly Todos to be moved
-		return (<DraggableListGroupItem key={index} index={index} moveItem={this.moveItem.bind(this)}>
-			<Todo key={index}
-				index={index}
-				readOnly={this.state.submitting}
-				task={todo.task}
-				links={todo._links}
-				handleDisplace={this.displaceTodo.bind(this)} />
-		</DraggableListGroupItem>);
+		// TODO: Later todos should not be displaceable
+		return (<Todo key={index}
+					index={index}
+					handleMove={this.moveItem.bind(this)}
+					readOnly={this.state.submitting}
+					task={todo.task}
+					links={todo._links}
+					handleDisplace={this.displaceTodo.bind(this)} />);
 	}
 }
 

@@ -8,9 +8,11 @@ import {
 	Glyphicon,
 	FormControl,
 	FormGroup,
-	InputGroup
+	InputGroup,
+	ListGroupItem
 } from 'react-bootstrap';
 import {updateTodoRequestAction, deleteTodoRequestAction, completeTodoRequestAction} from '../actions/todoActions';
+import DraggableListGroupItem from './DraggableListGroupItem';
 
 export class Todo extends Component {
 	constructor(props) {
@@ -35,10 +37,12 @@ export class Todo extends Component {
 	}
 
 	displaceableTodo() {
-	    return (<Row>
-            <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.callDisplaceHandler.bind(this)}><Glyphicon glyph="menu-right"/></Button></Col>
-            <Col lg={11}>{this.props.task}</Col>
-        </Row>);
+	    return (<ListGroupItem>
+		    <Row>
+	            <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.callDisplaceHandler.bind(this)}><Glyphicon glyph="menu-right"/></Button></Col>
+	            <Col lg={11}>{this.props.task}</Col>
+	        </Row>
+        </ListGroupItem>);
 	}
 
 	componentDidUpdate() {
@@ -67,31 +71,35 @@ export class Todo extends Component {
 
 	editableTodo() {
 		if(this.state.editMode) {
-            return (<Row>
-                <Col lg={12}>
-                    <FormGroup bsSize="small">
-                        <InputGroup>
-			                <FormControl type="text"
-                                         inputRef={ref => { this.taskInput = ref; }}
-			                             value={this.state.task}
-			                             onChange={this.handleChange.bind(this)}/>
-			                <InputGroup.Button>
-			                    <Button type="button" bsSize="small" bsStyle="primary" onClick={this.handleSave.bind(this)} disabled={this.saveButtonDisabled()}>Save</Button>
-			                    <Button type="button" bsSize="small" bsStyle="danger" onClick={this.handleEditCancel.bind(this)}>Cancel</Button>
-			                </InputGroup.Button>
-						</InputGroup>
-		            </FormGroup>
-                </Col>
-            </Row>);
+            return (<ListGroupItem>
+	            <Row>
+	                <Col lg={12}>
+	                    <FormGroup bsSize="small">
+	                        <InputGroup>
+				                <FormControl type="text"
+	                                         inputRef={ref => { this.taskInput = ref; }}
+				                             value={this.state.task}
+				                             onChange={this.handleChange.bind(this)}/>
+				                <InputGroup.Button>
+				                    <Button type="button" bsSize="small" bsStyle="primary" onClick={this.handleSave.bind(this)} disabled={this.saveButtonDisabled()}>Save</Button>
+				                    <Button type="button" bsSize="small" bsStyle="danger" onClick={this.handleEditCancel.bind(this)}>Cancel</Button>
+				                </InputGroup.Button>
+							</InputGroup>
+			            </FormGroup>
+	                </Col>
+	            </Row>
+            </ListGroupItem>);
         } else {
-            return (<Row>
-                <Col lg={1}><input type="checkbox"
-                                   checked={false}
-                                   onChange={this.handleComplete.bind(this)}/></Col>
-                <Col lg={9}>{this.props.task}</Col>
-                <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.handleEditClick.bind(this)}><Glyphicon glyph="pencil"/></Button></Col>
-                <Col lg={1}><a className="icon-button" onClick={this.handleDelete.bind(this)}><Glyphicon glyph="remove"/></a></Col>
-            </Row>);
+            return (<DraggableListGroupItem index={this.props.index} moveItem={this.props.handleMove}>
+	            <Row>
+	                <Col lg={1}><input type="checkbox"
+	                                   checked={false}
+	                                   onChange={this.handleComplete.bind(this)}/></Col>
+	                <Col lg={9}>{this.props.task}</Col>
+	                <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.handleEditClick.bind(this)}><Glyphicon glyph="pencil"/></Button></Col>
+	                <Col lg={1}><a className="icon-button" onClick={this.handleDelete.bind(this)}><Glyphicon glyph="remove"/></a></Col>
+	            </Row>
+            </DraggableListGroupItem>);
         }
 	}
 

@@ -32,6 +32,7 @@
     "opn": "4.0.2",
     "postcss-loader": "0.9.1",
     "react-addons-test-utils": "^15.2.1",
+    "react-dnd-test-backend": "^2.3.0",
     "rimraf": "2.5.3",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",

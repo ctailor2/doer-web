@@ -1,27 +1,35 @@
 jest.unmock('../Todo');
+jest.unmock('../DraggableListGroupItem');
 
 import {Todo} from '../Todo';
-import React from 'react';
-import {mount} from 'enzyme';
+import React, {Component} from 'react';
+import {mount, shallow} from 'enzyme';
+import DraggableListGroupItem from '../DraggableListGroupItem';
+import TestBackend from 'react-dnd-test-backend';
+import { DragDropContext } from 'react-dnd';
 
 describe('Todo', () => {
-	let tree, deleteLink, updateLink, completeLink, mockDisplaceHandler, mockDeleteTodoActionFn, mockUpdateTodoActionFn, mockCompleteTodoActionFn;
+	let tree, index, deleteLink, updateLink, completeLink, mockDisplaceHandler, mockDeleteTodoActionFn, mockUpdateTodoActionFn, mockCompleteTodoActionFn, mockMoveTodoHandler;
 
 	beforeEach(() => {
 		deleteLink = {href: 'http://some.api/deleteTodo'};
 		updateLink = {href: 'http://some.api/updateTodo'};
 		completeLink = {href: 'http://some.api/completeTodo'};
+		index = 17;
 		mockDisplaceHandler = jest.fn();
 		mockDeleteTodoActionFn = jest.fn();
 		mockUpdateTodoActionFn = jest.fn();
 		mockCompleteTodoActionFn = jest.fn();
-		tree = mount(<Todo readOnly={false}
+		mockMoveTodoHandler = jest.fn();
+		tree = shallow(<Todo readOnly={false}
 							 task='some task'
+							 index={index}
 							 links={{delete: deleteLink, update: updateLink, complete: completeLink}}
 							 handleDisplace={mockDisplaceHandler}
+							 handleMove={mockMoveTodoHandler}
                              updateTodoRequestAction={mockUpdateTodoActionFn}
                              completeTodoRequestAction={mockCompleteTodoActionFn}
-                             deleteTodoRequestAction={mockDeleteTodoActionFn}/>)
+                             deleteTodoRequestAction={mockDeleteTodoActionFn}/>);
 	});
 
     it('renders', () => {
@@ -33,85 +41,121 @@ describe('Todo', () => {
     });
 
 	describe('when readOnly is false', () => {
+		let unwrappedTree;
+
+		beforeEach(() => {
+			const TodoWithDndContext = wrapInTestContext(Todo);
+            let wrappedTree = mount(<TodoWithDndContext readOnly={false}
+                                 task='some task'
+                                 index={index}
+                                 links={{delete: deleteLink, update: updateLink, complete: completeLink}}
+                                 handleDisplace={mockDisplaceHandler}
+                                 handleMove={mockMoveTodoHandler}
+                                 updateTodoRequestAction={mockUpdateTodoActionFn}
+                                 completeTodoRequestAction={mockCompleteTodoActionFn}
+                                 deleteTodoRequestAction={mockDeleteTodoActionFn}/>);
+            unwrappedTree = wrappedTree.find(Todo);
+		});
+
 		describe('by default', () => {
-			describe('checkbox', () => {
-				let checkbox;
+			describe('DraggableListGroupItem', () => {
+				let draggableItem;
 
 				beforeEach(() => {
-					checkbox = tree.find('input[type="checkbox"]');
+					draggableItem = unwrappedTree.find(DraggableListGroupItem)
 				});
 
 				it('renders', () => {
-					expect(checkbox.length).toBe(1);
+					expect(draggableItem.length).toBe(1);
 				});
 
-				it('is unchecked by default', () => {
-					expect(checkbox.prop('checked')).toBe(false);
+				it('has a matching index', () => {
+					expect(draggableItem.prop('index')).toEqual(index);
 				});
 
-				it('fires complete todo action with completeLink on change', () => {
-					checkbox.simulate('change');
-					expect(mockCompleteTodoActionFn).toBeCalledWith(completeLink);
+				it('has matching move handler', () => {
+					expect(draggableItem.prop('moveItem')).toBe(mockMoveTodoHandler);
 				});
+
+				describe('checkbox', () => {
+					let checkbox;
+
+					beforeEach(() => {
+						checkbox = draggableItem.find('input[type="checkbox"]');
+					});
+
+					it('renders', () => {
+						expect(checkbox.length).toBe(1);
+					});
+
+					it('is unchecked by default', () => {
+						expect(checkbox.prop('checked')).toBe(false);
+					});
+
+					it('fires complete todo action with completeLink on change', () => {
+						checkbox.simulate('change');
+						expect(mockCompleteTodoActionFn).toBeCalledWith(completeLink);
+					});
+				});
+
+		        describe('anchor tag', () => {
+		            let anchorTag;
+
+		            beforeEach(() => {
+		                anchorTag = draggableItem.find('a');
+		            });
+
+		            it('renders', () => {
+		                expect(anchorTag.length).toBe(1);
+		            });
+
+		            it('fires delete todo action with deleteLink on click', () => {
+		                anchorTag.simulate('click');
+		                expect(mockDeleteTodoActionFn).toBeCalledWith(deleteLink);
+		            });
+		        });
+
+		        describe('button', () => {
+		            let button;
+
+		            beforeEach(() => {
+		                button = draggableItem.find('Button');
+		            });
+
+		            it('renders', () => {
+		                expect(button.length).toBe(1);
+		            });
+
+		            describe('when clicked', () => {
+		                let input;
+
+		                beforeEach(() => {
+							button.simulate('click');
+					        input = unwrappedTree.node.taskInput;
+		                });
+
+			            it('toggles editMode on when clicked', () => {
+							expect(unwrappedTree.node.state.editMode).toBe(true);
+			            });
+
+			            it('focuses the input', () => {
+							expect(document.activeElement).toEqual(input);
+			            });
+		            });
+		        });
 			});
-
-	        describe('anchor tag', () => {
-	            let anchorTag;
-
-	            beforeEach(() => {
-	                anchorTag = tree.find('a');
-	            });
-
-	            it('renders', () => {
-	                expect(anchorTag.length).toBe(1);
-	            });
-
-	            it('fires delete todo action with deleteLink on click', () => {
-	                anchorTag.simulate('click');
-	                expect(mockDeleteTodoActionFn).toBeCalledWith(deleteLink);
-	            });
-	        });
-
-	        describe('button', () => {
-	            let button;
-
-	            beforeEach(() => {
-	                button = tree.find('Button');
-	            });
-
-	            it('renders', () => {
-	                expect(button.length).toBe(1);
-	            });
-
-	            describe('when clicked', () => {
-	                let input;
-
-	                beforeEach(() => {
-						button.simulate('click');
-				        input = tree.node.taskInput;
-	                });
-
-		            it('toggles editMode on when clicked', () => {
-						expect(tree.state().editMode).toBe(true);
-		            });
-
-		            it('focuses the input', () => {
-						expect(document.activeElement).toEqual(input);
-		            });
-	            });
-	        });
 		});
 
 		describe('when in editMode', () => {
 			beforeEach(() => {
-				tree.setState({editMode: true});
+				unwrappedTree.node.setState({editMode: true});
 			});
 
 			describe('form group', () => {
 				let formGroup;
 
 				beforeEach(() => {
-					formGroup = tree.find('FormGroup');
+					formGroup = unwrappedTree.find('FormGroup');
 				});
 
 				it('renders', () => {
@@ -123,7 +167,7 @@ describe('Todo', () => {
 				let formControl;
 
 				beforeEach(() => {
-					formControl = tree.find('FormControl');
+					formControl = unwrappedTree.find('FormControl');
 				});
 
 				it('renders', () => {
@@ -136,7 +180,7 @@ describe('Todo', () => {
 
 				it('updates task state on change', () => {
 					formControl.simulate('change', {target: {value: 'some other task'}});
-					expect(tree.state().task).toEqual('some other task');
+					expect(unwrappedTree.node.state.task).toEqual('some other task');
 				});
 			});
 
@@ -144,7 +188,7 @@ describe('Todo', () => {
 				let button;
 
 				beforeEach(() => {
-					button = tree.find('Button').at(0);
+					button = unwrappedTree.find('Button').at(0);
 				});
 
 				it('renders', () => {
@@ -156,15 +200,15 @@ describe('Todo', () => {
 				});
 
 				it('is enabled when task state is different from task props', () => {
-					tree.setState({task: 'some other task'});
-					button = tree.find('Button').at(0);
+					unwrappedTree.node.setState({task: 'some other task'});
+					button = unwrappedTree.find('Button').at(0);
 					expect(button.prop('disabled')).toBe(false);
 				});
 
 				describe('when clicked', () => {
 					beforeEach(() => {
-						tree.setState({task: 'some other task'});
-						button = tree.find('Button').at(0);
+						unwrappedTree.node.setState({task: 'some other task'});
+						button = unwrappedTree.find('Button').at(0);
 						button.simulate('click');
 					});
 
@@ -173,7 +217,7 @@ describe('Todo', () => {
 					});
 
 					it('turns off editMode', () => {
-						expect(tree.state().editMode).toBe(false);
+						expect(unwrappedTree.node.state.editMode).toBe(false);
 					});
 				});
 			});
@@ -182,8 +226,8 @@ describe('Todo', () => {
 				let button;
 
 				beforeEach(() => {
-					tree.setState({task: 'some other task'});
-					button = tree.find('Button').at(1);
+					unwrappedTree.node.setState({task: 'some other task'});
+					button = unwrappedTree.find('Button').at(1);
 				});
 
 				it('renders', () => {
@@ -196,11 +240,11 @@ describe('Todo', () => {
 					});
 
 					it('turns off editMode', () => {
-						expect(tree.state().editMode).toBe(false);
+						expect(unwrappedTree.node.state.editMode).toBe(false);
 					});
 
 					it('resets task state to props', () => {
-						expect(tree.state().task).toBe('some task');
+						expect(unwrappedTree.node.state.task).toBe('some task');
 					});
 				});
 			});
@@ -238,3 +282,14 @@ describe('Todo', () => {
         });
 	});
 });
+
+
+function wrapInTestContext(DecoratedComponent) {
+	return DragDropContext(TestBackend)(
+	    class TestContextContainer extends Component {
+		    render() {
+		        return <DecoratedComponent {...this.props} />;
+		    }
+	    }
+	);
+}

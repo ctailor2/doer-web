@@ -11,7 +11,7 @@ export default class DraggableListGroupItem extends Component {
 										connectDragSource(domNode);
 										connectDropTarget(domNode);
 								   }}
-							   bsStyle={isOver ? 'info' : ''}
+							   bsStyle={isOver ? 'info' : null}
 							   style={{ opacity: isDragging ? 0.5 : 1 }}>
 			{this.props.children}
 		</ListGroupItem>);
