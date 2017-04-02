@@ -160,17 +160,11 @@ export class App extends Component {
         this.resetTask();
 	}
 
-	moveItem(fromIndex, toIndex) {
-	    let originalTodo = this.props.laterTodos[fromIndex];
-		// TODO: Make this work for either now or later todos
-	    // Only reason to specify the collection here is to get the appropriate link
-	    // but if this is being called by the Todo component itself, it could return
-	    // its link directly here
-	    this.props.moveTodoRequestAction(originalTodo._links.move[toIndex]);
+	moveItem(link) {
+	    this.props.moveTodoRequestAction(link);
 	}
 
 	renderListItem(todo, index) {
-		// TODO: Later todos should not be displaceable
 		return (<Todo key={index}
 					index={index}
 					handleMove={this.moveItem.bind(this)}

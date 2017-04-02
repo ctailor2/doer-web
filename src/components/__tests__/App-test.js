@@ -287,18 +287,13 @@ describe('App', () => {
         });
 
         describe('with todos', () => {
-            let todo1, todo2, laterTodo1, laterTodo2, deleteLinkOne, moveLinkOneToSelf, moveLinkOneToTwo;
+            let todo1, todo2, laterTodo1, laterTodo2, deleteLinkOne;
 
             beforeEach(() => {
                 deleteLinkOne = {href: 'http://some.api/deleteTodoOne'};
                 todo1 = {task: 'thing one', _links: {delete: deleteLinkOne}};
                 todo2 = {task: 'thing two', _links: {delete: {href: 'http://some.api/deleteTodoTwo'}}};
-                moveLinkOneToSelf = {href: 'http://some.api/moveOneToSelf'};
-                moveLinkOneToTwo = {href: 'http://some.api/moveOneToTwo'};
-                laterTodo1 = {task: 'later thing one', _links: {move: [
-					moveLinkOneToSelf,
-					moveLinkOneToTwo
-                ]}};
+                laterTodo1 = {task: 'later thing one'};
                 laterTodo2 = {task: 'later thing two'};
                 let todos = [todo1, todo2];
                 let laterTodos = [laterTodo1, laterTodo2];
@@ -329,8 +324,9 @@ describe('App', () => {
 	                });
 
 	                it('fires move todo action with link for the matching target', () => {
-	                    moveHandler(0, 1);
-	                    expect(mockMoveTodoActionFn).toBeCalledWith(moveLinkOneToTwo);
+	                    let moveLink = {href: 'http://some.api/moveTodo'};
+	                    moveHandler(moveLink);
+	                    expect(mockMoveTodoActionFn).toBeCalledWith(moveLink);
 	                });
 	            });
 

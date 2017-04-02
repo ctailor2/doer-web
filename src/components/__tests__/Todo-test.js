@@ -41,14 +41,23 @@ describe('Todo', () => {
     });
 
 	describe('when readOnly is false', () => {
-		let unwrappedTree;
+		let unwrappedTree, moveLinkOneToTwo;
 
 		beforeEach(() => {
 			const TodoWithDndContext = wrapInTestContext(Todo);
+            moveLinkOneToTwo = {href: 'http://some.api/moveOneToTwo'};
             let wrappedTree = mount(<TodoWithDndContext readOnly={false}
                                  task='some task'
                                  index={index}
-                                 links={{delete: deleteLink, update: updateLink, complete: completeLink}}
+                                 links={{
+                                    delete: deleteLink,
+                                    update: updateLink,
+                                    complete: completeLink,
+                                    move: [
+                                        {href: 'http://some.api/moveOneToSelf'},
+                                        moveLinkOneToTwo
+                                    ]
+                                 }}
                                  handleDisplace={mockDisplaceHandler}
                                  handleMove={mockMoveTodoHandler}
                                  updateTodoRequestAction={mockUpdateTodoActionFn}
@@ -73,8 +82,17 @@ describe('Todo', () => {
 					expect(draggableItem.prop('index')).toEqual(index);
 				});
 
-				it('has matching move handler', () => {
-					expect(draggableItem.prop('moveItem')).toBe(mockMoveTodoHandler);
+				describe('move handler', () => {
+					let moveHandler;
+
+					beforeEach(() => {
+						moveHandler = draggableItem.prop('moveItem');
+					});
+
+					it('calls the move handler with the matching link', () => {
+						moveHandler(1);
+						expect(mockMoveTodoHandler).toBeCalledWith(moveLinkOneToTwo);
+					});
 				});
 
 				describe('checkbox', () => {

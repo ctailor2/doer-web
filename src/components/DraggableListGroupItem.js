@@ -21,6 +21,10 @@ export default class DraggableListGroupItem extends Component {
 const dragSpec = {
     beginDrag(props) {
         return {index: props.index};
+    },
+    endDrag(props, monitor) {
+        let toIndex = monitor.getDropResult().index;
+		props.moveItem(toIndex);
     }
 };
 
@@ -32,10 +36,8 @@ function dragCollect(connect, monitor) {
 }
 
 const dropSpec = {
-	drop(props, monitor, component) {
-		let fromIndex = monitor.getItem().index;
-		let toIndex = props.index;
-		props.moveItem(fromIndex, toIndex);
+	drop(props) {
+		return {index: props.index};
 	}
 };
 

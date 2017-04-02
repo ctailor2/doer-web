@@ -90,7 +90,7 @@ export class Todo extends Component {
 	            </Row>
             </ListGroupItem>);
         } else {
-            return (<DraggableListGroupItem index={this.props.index} moveItem={this.props.handleMove}>
+            return (<DraggableListGroupItem index={this.props.index} moveItem={this.handleMove.bind(this)}>
 	            <Row>
 	                <Col lg={1}><input type="checkbox"
 	                                   checked={false}
@@ -101,6 +101,10 @@ export class Todo extends Component {
 	            </Row>
             </DraggableListGroupItem>);
         }
+	}
+
+	handleMove(toIndex) {
+		this.props.handleMove(this.props.links.move[toIndex]);
 	}
 
 	handleComplete() {
