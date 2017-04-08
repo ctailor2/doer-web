@@ -10,7 +10,8 @@ import {
 	displaceTodoRequestAction,
 	updateTodoRequestAction,
 	completeTodoRequestAction,
-	moveTodoRequestAction
+	moveTodoRequestAction,
+	pullTodosRequestAction
 } from '../todoActions';
 
 describe('getTodosRequestAction', () => {
@@ -187,6 +188,23 @@ describe('moveTodoRequestAction', () => {
 		let link = {href: 'http://some.api/moveTodo'}
 		expect(moveTodoRequestAction(link)).toEqual({
             type: 'MOVE_TODO_REQUEST_ACTION',
+            link: link
+        });
+	});
+});
+
+describe('pullTodosRequestAction', () => {
+	it('creates a move todo request action with empty link by default', () => {
+		expect(pullTodosRequestAction()).toEqual({
+			type: 'PULL_TODOS_REQUEST_ACTION',
+			link: {}
+		});
+	});
+
+	it('creates a move todo request action with supplied link', () => {
+		let link = {href: 'http://some.api/pullTodos'}
+		expect(pullTodosRequestAction(link)).toEqual({
+            type: 'PULL_TODOS_REQUEST_ACTION',
             link: link
         });
 	});

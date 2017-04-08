@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Todo from './Todo';
 import {connect} from 'react-redux';
-import {createTodoRequestAction, displaceTodoRequestAction, moveTodoRequestAction} from '../actions/todoActions';
+import {createTodoRequestAction, displaceTodoRequestAction, moveTodoRequestAction, pullTodosRequestAction} from '../actions/todoActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
 import {
@@ -14,7 +14,8 @@ import {
 	ListGroup,
 	Glyphicon,
 	Tabs,
-	Tab
+	Tab,
+	ListGroupItem,
 } from 'react-bootstrap';
 
 export class App extends Component {
@@ -60,13 +61,34 @@ export class App extends Component {
 		return (
 			<Tabs activeKey={this.state.activeTab} onSelect={this.handleSelectTab.bind(this)} id='tabs'>
 		        <Tab eventKey='now' title='Now'>
-					{this.renderList(this.props.nowTodos)}
+					<ListGroup>
+                        {this.props.nowTodos.map((todo, index) => {
+                            return this.renderListItem(todo, index);
+                        })}
+                        {this.renderReplenishButton()}
+                    </ListGroup>
 		        </Tab>
 		        <Tab eventKey='later' title='Later'>
-					{this.renderList(this.props.laterTodos)}
+					<ListGroup>
+                        {this.props.laterTodos.map((todo, index) => {
+                            return this.renderListItem(todo, index);
+                        })}
+                    </ListGroup>
                 </Tab>
             </Tabs>
 		);
+	}
+
+	renderReplenishButton() {
+		if(!_.isUndefined(this.props.links.pull)) {
+			return (<ListGroupItem onClick={this.handlePullClick.bind(this)} bsStyle="info">
+                Replenish <Glyphicon glyph="refresh" />
+            </ListGroupItem>);
+		}
+	}
+
+	handlePullClick() {
+		this.props.pullTodosRequestAction(this.props.links.pull);
 	}
 
 	handleCancelTaskSubmit() {
@@ -186,5 +208,6 @@ export const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
 	createTodoRequestAction,
 	displaceTodoRequestAction,
-	moveTodoRequestAction
+	moveTodoRequestAction,
+	pullTodosRequestAction
 })(App);

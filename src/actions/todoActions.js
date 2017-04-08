@@ -73,3 +73,10 @@ export function completeTodoRequestAction(link = {}) {
 		link: link
 	}
 }
+
+export function pullTodosRequestAction(link = {}) {
+	return {
+		type: actionTypes.PULL_TODOS_REQUEST_ACTION,
+		link: link
+	}
+}

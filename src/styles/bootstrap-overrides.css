@@ -5,3 +5,7 @@
 .navbar-brand:hover {
 	cursor: pointer;
 }
+
+button.list-group-item {
+	text-align: center;
+}

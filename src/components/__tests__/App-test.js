@@ -6,17 +6,31 @@ import React from 'react';
 import {mount} from 'enzyme';
 
 describe('App', () => {
-    let tree, input, nowTodos, laterTodos, links, todoNowLink, todoLaterLink, mockCreateTodoActionFn, mockGetHomeResourcesRequestActionFn, mockDisplaceTodoActionFn, mockMoveTodoActionFn;
+    let tree,
+    input,
+    nowTodos,
+    laterTodos,
+    links,
+    todoNowLink,
+    todoLaterLink,
+    pullLink,
+    mockCreateTodoActionFn,
+    mockGetHomeResourcesRequestActionFn,
+    mockDisplaceTodoActionFn,
+    mockPullTodosActionFn,
+    mockMoveTodoActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
         mockGetHomeResourcesRequestActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
+        mockPullTodosActionFn = jest.fn();
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
+        pullLink = {href: 'http://some.api/pullTodos'};
         links = {todoNow: todoNowLink, todoLater: todoLaterLink};
         tree = mount(<App nowTodos={nowTodos}
                           laterTodos={laterTodos}
@@ -24,6 +38,7 @@ describe('App', () => {
                           createTodoRequestAction={mockCreateTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
+                          pullTodosRequestAction={mockPullTodosActionFn}
                           getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
         input = tree.node.taskInput;
     });
@@ -253,6 +268,40 @@ describe('App', () => {
 
             it('eventKey is now', () => {
                 expect(tab.prop('eventKey')).toEqual('now');
+            });
+
+            describe('clickable list item', () => {
+                let item;
+
+                beforeEach(() => {
+                    item = tab.find('ListGroupItem').find('[onClick]');
+                });
+
+                it('does not render by default', () => {
+                    expect(item.length).toBe(0);
+                });
+
+                it('renders when the pull link is present', () => {
+                    tree.setProps({links: {pull: pullLink}});
+                    tabs = tree.find('Tabs');
+                    tab = tabs.find('Tab').at(0);
+                    item = tab.find('ListGroupItem').find('[onClick]');
+                    expect(item.length).toBe(1);
+                });
+
+                describe('when rendered', () => {
+                    beforeEach(() => {
+	                    tree.setProps({links: {pull: pullLink}});
+	                    tabs = tree.find('Tabs');
+	                    tab = tabs.find('Tab').at(0);
+	                    item = tab.find('ListGroupItem').find('[onClick]');
+                    });
+
+                    it('fires pull todos action with pullLink', () => {
+                        item.simulate('click');
+		                expect(mockPullTodosActionFn).toBeCalledWith(pullLink);
+                    });
+                });
             });
         });
 

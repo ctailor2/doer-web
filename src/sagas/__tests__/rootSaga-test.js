@@ -17,7 +17,8 @@ import {
 	watchDisplaceTodoRequest,
 	watchUpdateTodoRequest,
 	watchCompleteTodoRequest,
-	watchMoveTodoRequest
+	watchMoveTodoRequest,
+	watchPullTodosRequest
 } from '../todoSaga';
 import {watchGetBaseResourcesRequest} from '../baseResourcesSaga';
 import {watchGetHomeResourcesRequest} from '../homeResourcesSaga';
@@ -45,7 +46,8 @@ describe('rootSaga', () => {
             fork(watchMoveTodoRequest),
             fork(watchLoadTodosView),
             fork(watchLoadHistoryView),
-            fork(watchGetCompletedTodosRequest)
+            fork(watchGetCompletedTodosRequest),
+            fork(watchPullTodosRequest)
         ]);
     });
 });
