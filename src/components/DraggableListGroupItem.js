@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { ListGroupItem } from 'react-bootstrap';
 import { DragSource, DropTarget } from 'react-dnd';
 
-export default class DraggableListGroupItem extends Component {
+export class DraggableListGroupItem extends Component {
 	render() {
 		const {isDragging, connectDragSource, connectDropTarget, isOver} = this.props;
 		return (<ListGroupItem ref={instance => {
