@@ -6,11 +6,17 @@ import App from '../App';
 import Loader from '../views/Loader';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import _ from 'lodash';
+import {browserHistory} from 'react-router';
 
 export class TodosView extends Component {
 	componentDidMount() {
 		// TODO: May be able to optimize here by only firing this if the view is not loaded
-		this.props.loadTodosViewAction();
+        if(_.isNull(localStorage.getItem('sessionToken'))) {
+            browserHistory.push('/login');
+        } else {
+            this.props.loadTodosViewAction();
+        }
 	}
 
 	render() {
