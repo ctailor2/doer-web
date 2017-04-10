@@ -92,12 +92,12 @@ export class Todo extends Component {
         } else {
             return (<DraggableListGroupItem index={this.props.index} moveItem={this.handleMove.bind(this)}>
 	            <Row>
-	                <Col lg={1}><input type="checkbox"
+	                <Col lg={1} xs={1}><input type="checkbox"
 	                                   checked={false}
 	                                   onChange={this.handleComplete.bind(this)}/></Col>
-	                <Col lg={9}>{this.props.task}</Col>
-	                <Col lg={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.handleEditClick.bind(this)}><Glyphicon glyph="pencil"/></Button></Col>
-	                <Col lg={1}><a className="icon-button" onClick={this.handleDelete.bind(this)}><Glyphicon glyph="remove"/></a></Col>
+	                <Col lg={9} xs={9}>{this.props.task}</Col>
+	                <Col lg={1} xs={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.handleEditClick.bind(this)}><Glyphicon glyph="pencil"/></Button></Col>
+	                <Col lg={1} xs={1}><a className="icon-button" onClick={this.handleDelete.bind(this)}><Glyphicon glyph="remove"/></a></Col>
 	            </Row>
             </DraggableListGroupItem>);
         }
