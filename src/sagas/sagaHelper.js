@@ -2,11 +2,6 @@ import axios from 'axios';
 
 let client = axios.create();
 
-if(process.env.NODE_ENV === 'development') {
-	client.defaults.baseURL = 'http://localhost:8080';
-} else {
-	client.defaults.baseURL = 'https://blooming-brook-19745.herokuapp.com';
-}
 client.defaults.headers = {
     'Content-Type': 'application/json'
 }

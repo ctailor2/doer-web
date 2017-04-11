@@ -5,7 +5,7 @@
   "devDependencies": {
     "autoprefixer": "6.3.7",
     "babel-core": "6.10.4",
-    "babel-eslint": "6.1.2",
+    "babel-eslint": "7.1.1",
     "babel-jest": "^9.0.0",
     "babel-loader": "6.2.4",
     "babel-plugin-syntax-trailing-function-commas": "6.8.0",
@@ -19,10 +19,10 @@
     "cross-spawn": "4.0.0",
     "css-loader": "0.23.1",
     "enzyme": "^2.4.1",
-    "eslint": "3.1.1",
+    "eslint": "3.16.1",
     "eslint-loader": "1.4.1",
-    "eslint-plugin-import": "1.10.3",
-    "eslint-plugin-react": "5.2.2",
+    "eslint-plugin-import": "2.0.1",
+    "eslint-plugin-react": "6.4.1",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.9.0",
     "fs-extra": "^0.30.0",
@@ -57,7 +57,7 @@
     "redux-saga": "^0.11.1"
   },
   "scripts": {
-    "start": "node ./scripts/start.js",
+    "start": "react-scripts start",
     "build": "node ./scripts/build.js",
     "test": "jest --no-cache"
   },
@@ -67,6 +67,7 @@
       "react"
     ]
   },
+  "proxy": "http://localhost:8080",
   "jest": {
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
