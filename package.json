@@ -58,7 +58,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "node ./scripts/build.js",
+    "build": "react-scripts build",
     "test": "jest --no-cache"
   },
   "babel": {
