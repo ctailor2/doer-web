@@ -51,13 +51,6 @@ describe('getTodosRequest', () => {
         expect(iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}}).value)
             .toEqual(put({type: 'STORE_TODOS_ACTION', todos: [1, 2, 3], scheduling: 'anytime'}));
     });
-
-    it('fires store links action', () => {
-        iterator.next();
-        iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}});
-        expect(iterator.next({response: {data: {_links: links}}}).value)
-            .toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
-    });
 });
 
 describe('getCompletedTodosRequest', () => {

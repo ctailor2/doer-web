@@ -1,6 +1,7 @@
 jest.unmock('../loadViewSaga');
 jest.unmock('../../actions/loadViewActions');
 jest.unmock('../../actions/todoActions');
+jest.unmock('../../actions/linkActions');
 
 import {loadTodosView, watchLoadTodosView, loadHistoryView, watchLoadHistoryView} from '../loadViewSaga';
 import {takeLatest} from 'redux-saga';
@@ -45,11 +46,17 @@ describe('loadTodosView', () => {
 	        iterator.next();
         });
 
+        it('fires store links action with links from response', () => {
+	        expect(iterator.next(response).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+        });
+
 	    it('fires get todos request action with link from response', () => {
+	        iterator.next(response);
 	        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: links.todos}));
 	    });
 
 	    it('fires load todos view complete action on request success', () => {
+	        iterator.next(response);
 	        iterator.next(response);
 	        expect(iterator.next(response).value).toEqual(put({type: 'LOAD_TODOS_VIEW_COMPLETE_ACTION'}));
 	    });

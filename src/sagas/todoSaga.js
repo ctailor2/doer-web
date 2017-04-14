@@ -9,7 +9,6 @@ export function* getTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(storeTodosAction(response.data.todos, action.scheduling));
-		yield put(storeLinksAction(response.data._links));
 	} else  if (error) {
 	}
 }
