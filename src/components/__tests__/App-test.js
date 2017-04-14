@@ -38,8 +38,7 @@ describe('App', () => {
                           createTodoRequestAction={mockCreateTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
-                          pullTodosRequestAction={mockPullTodosActionFn}
-                          getHomeResourcesRequestAction={mockGetHomeResourcesRequestActionFn}/>);
+                          pullTodosRequestAction={mockPullTodosActionFn}/>);
         input = tree.node.taskInput;
     });
 
