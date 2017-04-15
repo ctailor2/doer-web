@@ -2,6 +2,7 @@ jest.unmock('../todoSaga');
 jest.unmock('../sessionSaga');
 jest.unmock('../../actions/todoActions');
 jest.unmock('../../actions/linkActions');
+jest.unmock('../../actions/resourcesActions');
 
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
@@ -100,15 +101,28 @@ describe('createTodoRequest', () => {
 		expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-    it('fires get todos action on success', () => {
+    describe('on request success', () => {
         let todosLink = {href: 'http://some.api/todos'};
+        let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink
+                todos: todosLink,
+                todoResources: todoResourcesLink
             }
         }}};
-        iterator.next();
-        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+
+        beforeEach(() => {
+            iterator.next();
+        });
+
+        it('fires get todos action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        });
+
+        it('fires get todo resources request action', () => {
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        });
     });
 });
 
@@ -125,15 +139,28 @@ describe('deleteTodoRequest', () => {
 		expect(iterator.next().value).toEqual(call(deleteData, link.href, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-    it('fires get todos action on success', () => {
+    describe('on request success', () => {
         let todosLink = {href: 'http://some.api/todos'};
+        let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink
+                todos: todosLink,
+                todoResources: todoResourcesLink
             }
         }}};
-        iterator.next();
-        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+
+        beforeEach(() => {
+            iterator.next();
+        });
+
+        it('fires get todos action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        });
+
+        it('fires get todo resources request action', () => {
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        });
     });
 });
 
@@ -150,15 +177,28 @@ describe('moveTodoRequest', () => {
 		expect(iterator.next().value).toEqual(call(postData, link.href, null, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-    it('fires get todos action on success', () => {
+    describe('on request success', () => {
         let todosLink = {href: 'http://some.api/todos'};
+        let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink
+                todos: todosLink,
+                todoResources: todoResourcesLink
             }
         }}};
-        iterator.next();
-        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+
+        beforeEach(() => {
+            iterator.next();
+        });
+
+        it('fires get todos action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        });
+
+        it('fires get todo resources request action', () => {
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        });
     });
 });
 
@@ -176,15 +216,28 @@ describe('displaceTodoRequest', () => {
 		expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-    it('fires get todos action on success', () => {
+    describe('on request success', () => {
         let todosLink = {href: 'http://some.api/todos'};
+        let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink
+                todos: todosLink,
+                todoResources: todoResourcesLink
             }
         }}};
-        iterator.next();
-        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+
+        beforeEach(() => {
+            iterator.next();
+        });
+
+        it('fires get todos action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        });
+
+        it('fires get todo resources request action', () => {
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        });
     });
 });
 
@@ -202,15 +255,28 @@ describe('updateTodoRequest', () => {
 		expect(iterator.next().value).toEqual(call(putData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-    it('fires get todos action on success', () => {
+    describe('on request success', () => {
         let todosLink = {href: 'http://some.api/todos'};
+        let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink
+                todos: todosLink,
+                todoResources: todoResourcesLink
             }
         }}};
-        iterator.next();
-        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+
+        beforeEach(() => {
+            iterator.next();
+        });
+
+        it('fires get todos action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        });
+
+        it('fires get todo resources request action', () => {
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        });
     });
 });
 
@@ -227,15 +293,28 @@ describe('completeTodoRequest', () => {
 		expect(iterator.next().value).toEqual(call(postData, link.href, null, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-    it('fires get todos action on success', () => {
+    describe('on request success', () => {
         let todosLink = {href: 'http://some.api/todos'};
+        let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink
+                todos: todosLink,
+                todoResources: todoResourcesLink
             }
         }}};
-        iterator.next();
-        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+
+        beforeEach(() => {
+            iterator.next();
+        });
+
+        it('fires get todos action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        });
+
+        it('fires get todo resources request action', () => {
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        });
     });
 });
 
@@ -252,15 +331,28 @@ describe('pullTodosRequest', () => {
 		expect(iterator.next().value).toEqual(call(postData, link.href, null, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-    it('fires get todos action on success', () => {
+    describe('on request success', () => {
         let todosLink = {href: 'http://some.api/todos'};
+        let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink
+                todos: todosLink,
+                todoResources: todoResourcesLink
             }
         }}};
-        iterator.next();
-        expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+
+        beforeEach(() => {
+            iterator.next();
+        });
+
+        it('fires get todos action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        });
+
+        it('fires get todo resources request action', () => {
+            iterator.next(response);
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        });
     });
 });
 

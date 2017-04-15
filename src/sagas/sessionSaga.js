@@ -10,7 +10,7 @@ export function* signupRequest(action) {
     const {response, error} = yield call(postData, action.link.href, action.data);
     if(response) {
         yield put(storeSessionAction(response.data.session.token));
-        yield put(persistLinkAction(response.data._links.home));
+        yield put(persistLinkAction(response.data._links.root));
         yield browserHistory.push('/');
     } else if (error) {
         // TODO: handle error
@@ -25,7 +25,7 @@ export function* loginRequest(action) {
     const {response, error} = yield call(postData, action.link.href, action.data);
     if(response) {
         yield put(storeSessionAction(response.data.session.token));
-        yield put(persistLinkAction(response.data._links.home));
+        yield put(persistLinkAction(response.data._links.root));
         yield browserHistory.push('/');
     } else if (error) {
         // TODO: handle error

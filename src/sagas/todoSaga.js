@@ -4,6 +4,7 @@ import {call, put} from 'redux-saga/effects';
 import {fetchData, postData, deleteData, putData} from './sagaHelper';
 import {storeTodosAction, getTodosRequestAction, storeCompletedTodosAction} from '../actions/todoActions';
 import {storeLinksAction} from '../actions/linkActions';
+import {getTodoResourcesRequestAction} from '../actions/resourcesActions';
 
 export function* getTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
@@ -27,6 +28,7 @@ export function* createTodoRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(getTodosRequestAction(response.data._links.todos));
+		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
 	} else if (error) {
 	}
 }
@@ -35,6 +37,7 @@ export function* deleteTodoRequest(action) {
 	const {response, error} = yield call(deleteData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }
 }
@@ -43,6 +46,7 @@ export function* moveTodoRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }
 }
@@ -52,6 +56,7 @@ export function* displaceTodoRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(getTodosRequestAction(response.data._links.todos));
+		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
 	} else if (error) {
 	}
 }
@@ -61,6 +66,7 @@ export function* updateTodoRequest(action) {
 	const {response, error} = yield call(putData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(getTodosRequestAction(response.data._links.todos));
+		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
 	} else if (error) {
 	}
 }
@@ -69,6 +75,7 @@ export function* completeTodoRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }
 }
@@ -77,6 +84,7 @@ export function* pullTodosRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }
 }

@@ -2,7 +2,7 @@ jest.unmock('../sagaHelper');
 jest.unmock('../sessionSaga');
 jest.unmock('../../actions/sessionActions');
 jest.unmock('../../actions/todoActions');
-jest.unmock('../../actions/homeResourcesActions');
+jest.unmock('../../actions/resourcesActions');
 jest.unmock('../../actions/linkActions');
 
 import {
@@ -48,13 +48,13 @@ describe('signupRequest', () => {
     });
 
     describe('on request success', () => {
-        let homeLink = {href: 'http://some.api/home'};
+        let rootLink = {href: 'http://some.api/root'};
         let response = {response: {data: {
             session: {
                 token: 'tokenz'
             },
             _links: {
-                home: homeLink
+                root: rootLink
             }
         }}};
 
@@ -68,7 +68,7 @@ describe('signupRequest', () => {
             iterator.next();
             iterator.next(response);
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: homeLink}));
+                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
         });
 
 		it('redirects to the root', () => {
@@ -109,13 +109,13 @@ describe('loginRequest', () => {
     });
 
     describe('on request success', () => {
-        let homeLink = {href: 'http://some.api/home'};
+        let rootLink = {href: 'http://some.api/root'};
         let response = {response: {data: {
             session: {
                 token: 'tokenz'
             },
             _links: {
-                home: homeLink
+                root: rootLink
             }
         }}};
 
@@ -129,7 +129,7 @@ describe('loginRequest', () => {
             iterator.next();
             iterator.next(response);
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: homeLink}));
+                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
         });
 
 		it('redirects to the root', () => {
