@@ -154,8 +154,8 @@ describe('App', () => {
                     buttons.at(0).simulate('click');
                 });
 
-	            it('fires create todo action with todoNowLink', () => {
-	                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'});
+	            it('fires create todo action with todoNowLink and "now" scheduling', () => {
+	                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'}, 'now');
 	            });
 
 	            it('toggles submitting state to false', () => {
@@ -181,8 +181,8 @@ describe('App', () => {
                     buttons.at(1).simulate('click');
                 });
 
-	            it('fires create todo action with todoLaterLink', () => {
-	                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'});
+	            it('fires create todo action with todoLaterLink and "later" scheduling', () => {
+	                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'}, 'later');
 	            });
 
 	            it('toggles submitting state to false', () => {

@@ -52,8 +52,8 @@ describe('loadTodosView', () => {
         });
 
         describe('on request success', () => {
-            let todosLink = {href: 'http://some.api/todos'};
-            let links = {todos: todosLink};
+            let nowTodosLink = {href: 'http://some.api/nowTodos'};
+            let links = {nowTodos: nowTodosLink};
             let todoResourcesResponse = {response: {data: {_links: links}}};
 
             beforeEach(() => {
@@ -64,9 +64,9 @@ describe('loadTodosView', () => {
                 expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
             });
 
-            it('fires get todos request action', () => {
+            it('fires get todos request action with nowTodos link and scheduling', () => {
                 iterator.next(todoResourcesResponse);
-                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
             });
 
     	    it('fires load todos view complete action on request success', () => {
@@ -129,7 +129,7 @@ describe('loadHistoryView', () => {
             expect(iterator.next(rootResourcesResponse).value).toEqual(call(fetchData, resourcesUrl, {headers: {'Session-Token': 'socooltoken'}}));
         });
 
-        describe('on request succes', () => {
+        describe('on request success', () => {
             let completedTodosLink = {href: 'http://some.api/completedTodos'};
             let links = {completedTodos: completedTodosLink};
             let historyResourcesResponse = {response: {data: {_links: links}}};
@@ -142,7 +142,7 @@ describe('loadHistoryView', () => {
                 expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
             });
 
-            it('fires get todos request action', () => {
+            it('fires get completed todos request action', () => {
                 iterator.next(historyResourcesResponse);
                 expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'GET_COMPLETED_TODOS_REQUEST_ACTION', link: completedTodosLink}));
             });

@@ -6,6 +6,8 @@ import {storeTodosAction, getTodosRequestAction, storeCompletedTodosAction} from
 import {storeLinksAction} from '../actions/linkActions';
 import {getTodoResourcesRequestAction} from '../actions/resourcesActions';
 
+// TODO: Lots of duplication in this file - DRY IT UP
+
 export function* getTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
@@ -27,7 +29,13 @@ export function* createTodoRequest(action) {
 	let todo = action.todo;
 	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(getTodosRequestAction(response.data._links.todos));
+	    let link;
+	    if (action.scheduling === 'now') {
+	        link = response.data._links.nowTodos;
+	    } else {
+	        link = response.data._links.laterTodos;
+	    }
+		yield put(getTodosRequestAction(link, action.scheduling));
 		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
 	} else if (error) {
 	}
@@ -36,7 +44,8 @@ export function* createTodoRequest(action) {
 export function* deleteTodoRequest(action) {
 	const {response, error} = yield call(deleteData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-        yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
+        yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
         yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }
@@ -45,7 +54,8 @@ export function* deleteTodoRequest(action) {
 export function* moveTodoRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-        yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
+        yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
         yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }
@@ -55,7 +65,8 @@ export function* displaceTodoRequest(action) {
 	let todo = action.todo;
 	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(getTodosRequestAction(response.data._links.todos));
+		yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
+		yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
 		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
 	} else if (error) {
 	}
@@ -65,7 +76,8 @@ export function* updateTodoRequest(action) {
 	let todo = action.todo;
 	const {response, error} = yield call(putData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(getTodosRequestAction(response.data._links.todos));
+		yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
+		yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
 		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
 	} else if (error) {
 	}
@@ -74,7 +86,8 @@ export function* updateTodoRequest(action) {
 export function* completeTodoRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-        yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
+        yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
         yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }
@@ -83,7 +96,8 @@ export function* completeTodoRequest(action) {
 export function* pullTodosRequest(action) {
 	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-        yield put(getTodosRequestAction(response.data._links.todos));
+        yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
+        yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
         yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
     } else if (error) {
     }

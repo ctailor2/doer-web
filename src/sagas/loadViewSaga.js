@@ -14,7 +14,7 @@ export function* loadTodosView() {
     	let {response: todoResourcesResponse, error: todoResourcesError} = yield call(fetchData, rootResourcesResponse.data._links.todoResources.href, {headers: {'Session-Token': sessionToken}});
     	if(todoResourcesResponse) {
     	    yield put(storeLinksAction(todoResourcesResponse.data._links));
-            yield put(getTodosRequestAction(todoResourcesResponse.data._links.todos));
+            yield put(getTodosRequestAction(todoResourcesResponse.data._links.nowTodos, 'now'));
             yield put(loadTodosViewCompleteAction());
     	} else if (todoResourcesError) {
             // TODO: handle error

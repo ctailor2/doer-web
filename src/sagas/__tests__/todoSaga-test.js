@@ -32,9 +32,11 @@ describe('getTodosRequest', () => {
 	let iterator;
 
 	let url = 'http://some.api/someLink';
+	let scheduling = 'someScheduling';
     let action = {
         type: 'GET_TODOS_REQUEST_ACTION',
-        link: {href: url}
+        link: {href: url},
+        scheduling: scheduling
     };
     let links = [{rel: "this", href: "tisket"}, {rel: "that", href: "tasket"}];
 
@@ -47,10 +49,10 @@ describe('getTodosRequest', () => {
         expect(iterator.next().value).toEqual(call(fetchData, url, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
-	it('fires store todos action with anytime scheduling', () => {
+	it('fires store todos action with matching scheduling', () => {
         iterator.next();
         expect(iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}}).value)
-            .toEqual(put({type: 'STORE_TODOS_ACTION', todos: [1, 2, 3], scheduling: 'anytime'}));
+            .toEqual(put({type: 'STORE_TODOS_ACTION', todos: [1, 2, 3], scheduling: scheduling}));
     });
 });
 
@@ -93,37 +95,68 @@ describe('createTodoRequest', () => {
 	let action = {type: 'CREATE_TODO_REQUEST_ACTION', link: link, todo: todo};
 	let iterator;
 
-	beforeEach(() => {
-		iterator = createTodoRequest(action);
-	});
+    let nowTodosLink = {href: 'http://some.api/nowTodos'};
+    let laterTodosLink = {href: 'http://some.api/laterTodos'};
+    let todoResourcesLink = {href: 'http://some.api/todoResources'};
+    let response = {response: {data: {
+        _links: {
+            nowTodos: nowTodosLink,
+            laterTodos: laterTodosLink,
+            todoResources: todoResourcesLink
+        }
+    }}};
 
-	it('calls endpoint with action link href and todo', () => {
-		expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
-	});
-
-    describe('on request success', () => {
-        let todosLink = {href: 'http://some.api/todos'};
-        let todoResourcesLink = {href: 'http://some.api/todoResources'};
-        let response = {response: {data: {
-            _links: {
-                todos: todosLink,
-                todoResources: todoResourcesLink
-            }
-        }}};
-
+	describe('when action scheduling is now', () => {
         beforeEach(() => {
-            iterator.next();
+            action.scheduling = 'now';
+            iterator = createTodoRequest(action);
         });
 
-        it('fires get todos action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        it('calls endpoint with action link href and todo', () => {
+            expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
         });
 
-        it('fires get todo resources request action', () => {
-            iterator.next(response);
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+        describe('on request success', () => {
+            beforeEach(() => {
+                iterator.next();
+            });
+
+            it('fires get todos action with nowTodos link and scheduling', () => {
+                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+            });
+
+            it('fires get todo resources request action', () => {
+                iterator.next(response);
+                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+            });
         });
-    });
+	});
+
+	describe('when action scheduling is later', () => {
+        beforeEach(() => {
+            action.scheduling = 'later';
+            iterator = createTodoRequest(action);
+        });
+
+        it('calls endpoint with action link href and todo', () => {
+            expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
+        });
+
+        describe('on request success', () => {
+            beforeEach(() => {
+                iterator.next();
+            });
+
+            it('fires get todos action with laterTodos link and scheduling', () => {
+                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
+            });
+
+            it('fires get todo resources request action', () => {
+                iterator.next(response);
+                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
+            });
+        });
+	});
 });
 
 describe('deleteTodoRequest', () => {
@@ -140,11 +173,13 @@ describe('deleteTodoRequest', () => {
 	});
 
     describe('on request success', () => {
-        let todosLink = {href: 'http://some.api/todos'};
+        let nowTodosLink = {href: 'http://some.api/nowTodos'};
+        let laterTodosLink = {href: 'http://some.api/laterTodos'};
         let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink,
+                nowTodos: nowTodosLink,
+                laterTodos: laterTodosLink,
                 todoResources: todoResourcesLink
             }
         }}};
@@ -153,11 +188,17 @@ describe('deleteTodoRequest', () => {
             iterator.next();
         });
 
-        it('fires get todos action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        it('fires get todos action with nowTodos link and scheduling', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+        });
+
+        it('fires get todos action with laterTodos link and scheduling', () => {
+            iterator.next(response)
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
         });
 
         it('fires get todo resources request action', () => {
+            iterator.next(response)
             iterator.next(response);
             expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
         });
@@ -178,11 +219,13 @@ describe('moveTodoRequest', () => {
 	});
 
     describe('on request success', () => {
-        let todosLink = {href: 'http://some.api/todos'};
+        let nowTodosLink = {href: 'http://some.api/nowTodos'};
+        let laterTodosLink = {href: 'http://some.api/laterTodos'};
         let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink,
+                nowTodos: nowTodosLink,
+                laterTodos: laterTodosLink,
                 todoResources: todoResourcesLink
             }
         }}};
@@ -191,11 +234,17 @@ describe('moveTodoRequest', () => {
             iterator.next();
         });
 
-        it('fires get todos action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        it('fires get todos action with nowTodos link and scheduling', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+        });
+
+        it('fires get todos action with laterTodos link and scheduling', () => {
+            iterator.next(response)
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
         });
 
         it('fires get todo resources request action', () => {
+            iterator.next(response)
             iterator.next(response);
             expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
         });
@@ -217,11 +266,13 @@ describe('displaceTodoRequest', () => {
 	});
 
     describe('on request success', () => {
-        let todosLink = {href: 'http://some.api/todos'};
+        let nowTodosLink = {href: 'http://some.api/nowTodos'};
+        let laterTodosLink = {href: 'http://some.api/laterTodos'};
         let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink,
+                nowTodos: nowTodosLink,
+                laterTodos: laterTodosLink,
                 todoResources: todoResourcesLink
             }
         }}};
@@ -230,11 +281,17 @@ describe('displaceTodoRequest', () => {
             iterator.next();
         });
 
-        it('fires get todos action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        it('fires get todos action with nowTodos link and scheduling', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+        });
+
+        it('fires get todos action with laterTodos link and scheduling', () => {
+            iterator.next(response)
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
         });
 
         it('fires get todo resources request action', () => {
+            iterator.next(response)
             iterator.next(response);
             expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
         });
@@ -256,11 +313,13 @@ describe('updateTodoRequest', () => {
 	});
 
     describe('on request success', () => {
-        let todosLink = {href: 'http://some.api/todos'};
+        let nowTodosLink = {href: 'http://some.api/nowTodos'};
+        let laterTodosLink = {href: 'http://some.api/laterTodos'};
         let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink,
+                nowTodos: nowTodosLink,
+                laterTodos: laterTodosLink,
                 todoResources: todoResourcesLink
             }
         }}};
@@ -269,11 +328,17 @@ describe('updateTodoRequest', () => {
             iterator.next();
         });
 
-        it('fires get todos action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        it('fires get todos action with nowTodos link and scheduling', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+        });
+
+        it('fires get todos action with laterTodos link and scheduling', () => {
+            iterator.next(response)
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
         });
 
         it('fires get todo resources request action', () => {
+            iterator.next(response)
             iterator.next(response);
             expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
         });
@@ -294,11 +359,13 @@ describe('completeTodoRequest', () => {
 	});
 
     describe('on request success', () => {
-        let todosLink = {href: 'http://some.api/todos'};
+        let nowTodosLink = {href: 'http://some.api/nowTodos'};
+        let laterTodosLink = {href: 'http://some.api/laterTodos'};
         let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink,
+                nowTodos: nowTodosLink,
+                laterTodos: laterTodosLink,
                 todoResources: todoResourcesLink
             }
         }}};
@@ -307,11 +374,17 @@ describe('completeTodoRequest', () => {
             iterator.next();
         });
 
-        it('fires get todos action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        it('fires get todos action with nowTodos link and scheduling', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+        });
+
+        it('fires get todos action with laterTodos link and scheduling', () => {
+            iterator.next(response)
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
         });
 
         it('fires get todo resources request action', () => {
+            iterator.next(response)
             iterator.next(response);
             expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
         });
@@ -332,11 +405,13 @@ describe('pullTodosRequest', () => {
 	});
 
     describe('on request success', () => {
-        let todosLink = {href: 'http://some.api/todos'};
+        let nowTodosLink = {href: 'http://some.api/nowTodos'};
+        let laterTodosLink = {href: 'http://some.api/laterTodos'};
         let todoResourcesLink = {href: 'http://some.api/todoResources'};
         let response = {response: {data: {
             _links: {
-                todos: todosLink,
+                nowTodos: nowTodosLink,
+                laterTodos: laterTodosLink,
                 todoResources: todoResourcesLink
             }
         }}};
@@ -345,11 +420,17 @@ describe('pullTodosRequest', () => {
             iterator.next();
         });
 
-        it('fires get todos action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
+        it('fires get todos action with nowTodos link and scheduling', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+        });
+
+        it('fires get todos action with laterTodos link and scheduling', () => {
+            iterator.next(response)
+            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
         });
 
         it('fires get todo resources request action', () => {
+            iterator.next(response)
             iterator.next(response);
             expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
         });

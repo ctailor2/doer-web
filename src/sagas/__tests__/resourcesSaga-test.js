@@ -110,12 +110,6 @@ describe('getTodoResourcesRequest', () => {
             iterator.next();
             expect(iterator.next(response).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
         });
-
-        it('fires get todos request action', () => {
-            iterator.next();
-            iterator.next(response);
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: todosLink}));
-        });
     });
 });
 
@@ -153,12 +147,6 @@ describe('getHistoryResourcesRequest', () => {
         it('fires store links action', () => {
             iterator.next();
             expect(iterator.next(response).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
-        });
-
-        it('fires get completed todos request action', () => {
-            iterator.next();
-            iterator.next(response);
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_COMPLETED_TODOS_REQUEST_ACTION', link: todosLink}));
         });
     });
 });

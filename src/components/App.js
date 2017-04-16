@@ -108,7 +108,7 @@ export class App extends Component {
 		if(this.state.submitting) {
 			return(<InputGroup.Button>
 					{this.renderNowButton()}
-					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoLater)}>Later</Button>
+					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoLater, 'later')}>Later</Button>
 					<Button type="button" bsStyle="danger" bsSize="large" onClick={this.handleCancelTaskSubmit.bind(this)}>
 						<Glyphicon glyph="remove"/>
 					</Button>
@@ -126,7 +126,7 @@ export class App extends Component {
 
 	renderNowButton() {
 		if(this.canScheduleForNow()) {
-			return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoNow)}>Now</Button>);
+			return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoNow, 'now')}>Now</Button>);
 		}
 	}
 
@@ -138,9 +138,9 @@ export class App extends Component {
 		this.setState({submitting: !this.state.submitting});
 	}
 
-	submitTodo(link) {
+	submitTodo(link, scheduling) {
 		let todo = this.state.todo;
-		this.props.createTodoRequestAction(link, todo);
+		this.props.createTodoRequestAction(link, todo, scheduling);
 		this.toggleSubmit();
 		this.resetTask();
 	}
