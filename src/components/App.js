@@ -1,7 +1,13 @@
 import React, {Component} from 'react';
 import Todo from './Todo';
 import {connect} from 'react-redux';
-import {createTodoRequestAction, displaceTodoRequestAction, moveTodoRequestAction, pullTodosRequestAction} from '../actions/todoActions';
+import {
+    createTodoRequestAction,
+    displaceTodoRequestAction,
+    moveTodoRequestAction,
+    pullTodosRequestAction,
+    getTodosRequestAction
+} from '../actions/todoActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
 import {
@@ -54,6 +60,7 @@ export class App extends Component {
 	}
 
 	handleSelectTab(tabKey) {
+	    this.props.getTodosRequestAction(this.props.links[tabKey + 'Todos'], tabKey);
 		this.setState({activeTab: tabKey});
 	}
 
@@ -209,5 +216,6 @@ export default connect(mapStateToProps, {
 	createTodoRequestAction,
 	displaceTodoRequestAction,
 	moveTodoRequestAction,
-	pullTodosRequestAction
+	pullTodosRequestAction,
+	getTodosRequestAction
 })(App);

@@ -13,32 +13,37 @@ describe('App', () => {
     links,
     todoNowLink,
     todoLaterLink,
+    nowTodosLink,
+    laterTodosLink,
     pullLink,
     mockCreateTodoActionFn,
-    mockGetHomeResourcesRequestActionFn,
     mockDisplaceTodoActionFn,
     mockPullTodosActionFn,
-    mockMoveTodoActionFn;
+    mockMoveTodoActionFn,
+    mockGetTodosActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
-        mockGetHomeResourcesRequestActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
         mockPullTodosActionFn = jest.fn();
+        mockGetTodosActionFn = jest.fn();
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
+        nowTodosLink = {href: 'http://some.api/nowTodos'};
+        laterTodosLink = {href: 'http://some.api/laterTodos'};
         pullLink = {href: 'http://some.api/pullTodos'};
-        links = {todoNow: todoNowLink, todoLater: todoLaterLink};
+        links = {todoNow: todoNowLink, todoLater: todoLaterLink, nowTodos: nowTodosLink, laterTodos: laterTodosLink};
         tree = mount(<App nowTodos={nowTodos}
                           laterTodos={laterTodos}
                           links={links}
                           createTodoRequestAction={mockCreateTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
-                          pullTodosRequestAction={mockPullTodosActionFn}/>);
+                          pullTodosRequestAction={mockPullTodosActionFn}
+                          getTodosRequestAction={mockGetTodosActionFn}/>);
         input = tree.node.taskInput;
     });
 
@@ -255,6 +260,16 @@ describe('App', () => {
             it('updates activeTab state to tabKey', () => {
                 handler('someTabKey');
                 expect(tree.state().activeTab).toEqual('someTabKey');
+            });
+
+            it('fires get todos request action with nowTodosLink and now scheduling when tabKey is "now"', () => {
+                handler('now');
+                expect(mockGetTodosActionFn).toBeCalledWith(nowTodosLink, 'now');
+            });
+
+            it('fires get todos request action with laterTodosLink and later scheduling when tabKey is "later"', () => {
+                handler('later');
+                expect(mockGetTodosActionFn).toBeCalledWith(laterTodosLink, 'later');
             });
         });
 
