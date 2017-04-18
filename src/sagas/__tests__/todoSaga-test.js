@@ -8,23 +8,19 @@ import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {
 	watchGetTodosRequest,
-	getTodosRequest,
 	watchGetCompletedTodosRequest,
-	getCompletedTodosRequest,
 	watchCreateTodoRequest,
-	createTodoRequest,
 	watchDeleteTodoRequest,
-	deleteTodoRequest,
 	watchDisplaceTodoRequest,
-	displaceTodoRequest,
 	watchUpdateTodoRequest,
-	updateTodoRequest,
 	watchCompleteTodoRequest,
-	completeTodoRequest,
 	watchMoveTodoRequest,
-	moveTodoRequest,
 	watchPullTodosRequest,
-	pullTodosRequest
+	getTodosRequest,
+	getCompletedTodosRequest,
+	deleteTodoRequest,
+	postRequestWithNoData,
+	postRequestWithTodoData
 } from '../todoSaga';
 import {fetchData, postData, deleteData, putData} from '../sagaHelper'
 
@@ -89,76 +85,6 @@ describe('getCompletedTodosRequest', () => {
     });
 });
 
-describe('createTodoRequest', () => {
-	let todo = {task: 'task', scheduling: 'now'};
-	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'CREATE_TODO_REQUEST_ACTION', link: link, todo: todo};
-	let iterator;
-
-    let nowTodosLink = {href: 'http://some.api/nowTodos'};
-    let laterTodosLink = {href: 'http://some.api/laterTodos'};
-    let todoResourcesLink = {href: 'http://some.api/todoResources'};
-    let response = {response: {data: {
-        _links: {
-            nowTodos: nowTodosLink,
-            laterTodos: laterTodosLink,
-            todoResources: todoResourcesLink
-        }
-    }}};
-
-	describe('when action scheduling is now', () => {
-        beforeEach(() => {
-            action.scheduling = 'now';
-            iterator = createTodoRequest(action);
-        });
-
-        it('calls endpoint with action link href and todo', () => {
-            expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
-        });
-
-        describe('on request success', () => {
-            beforeEach(() => {
-                iterator.next();
-            });
-
-            it('fires get todos action with nowTodos link and scheduling', () => {
-                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
-            });
-
-            it('fires get todo resources request action', () => {
-                iterator.next(response);
-                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
-            });
-        });
-	});
-
-	describe('when action scheduling is later', () => {
-        beforeEach(() => {
-            action.scheduling = 'later';
-            iterator = createTodoRequest(action);
-        });
-
-        it('calls endpoint with action link href and todo', () => {
-            expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
-        });
-
-        describe('on request success', () => {
-            beforeEach(() => {
-                iterator.next();
-            });
-
-            it('fires get todos action with laterTodos link and scheduling', () => {
-                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
-            });
-
-            it('fires get todo resources request action', () => {
-                iterator.next(response);
-                expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
-            });
-        });
-	});
-});
-
 describe('deleteTodoRequest', () => {
 	let link = {href: 'http://some.api/todo'};
 	let action = {type: 'DELETE_TODO_REQUEST_ACTION', link: link};
@@ -205,107 +131,14 @@ describe('deleteTodoRequest', () => {
     });
 });
 
-describe('moveTodoRequest', () => {
-	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'MOVE_TODO_REQUEST_ACTION', link: link};
-	let iterator;
-
-	beforeEach(() => {
-		iterator = moveTodoRequest(action);
-	});
-
-	it('calls endpoint with action link href', () => {
-		expect(iterator.next().value).toEqual(call(postData, link.href, null, {headers: {'Session-Token': 'socooltoken'}}));
-	});
-
-    describe('on request success', () => {
-        let nowTodosLink = {href: 'http://some.api/nowTodos'};
-        let laterTodosLink = {href: 'http://some.api/laterTodos'};
-        let todoResourcesLink = {href: 'http://some.api/todoResources'};
-        let response = {response: {data: {
-            _links: {
-                nowTodos: nowTodosLink,
-                laterTodos: laterTodosLink,
-                todoResources: todoResourcesLink
-            }
-        }}};
-
-        beforeEach(() => {
-            iterator.next();
-        });
-
-        it('fires get todos action with nowTodos link and scheduling', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
-        });
-
-        it('fires get todos action with laterTodos link and scheduling', () => {
-            iterator.next(response)
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
-        });
-
-        it('fires get todo resources request action', () => {
-            iterator.next(response)
-            iterator.next(response);
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
-        });
-    });
-});
-
-describe('displaceTodoRequest', () => {
-	let todo = {task: 'task', scheduling: 'now'};
-	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'DISPLACE_TODO_REQUEST_ACTION', link: link, todo: todo};
-	let iterator;
-
-	beforeEach(() => {
-		iterator = displaceTodoRequest(action);
-	});
-
-	it('calls endpoint with action link href', () => {
-		expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
-	});
-
-    describe('on request success', () => {
-        let nowTodosLink = {href: 'http://some.api/nowTodos'};
-        let laterTodosLink = {href: 'http://some.api/laterTodos'};
-        let todoResourcesLink = {href: 'http://some.api/todoResources'};
-        let response = {response: {data: {
-            _links: {
-                nowTodos: nowTodosLink,
-                laterTodos: laterTodosLink,
-                todoResources: todoResourcesLink
-            }
-        }}};
-
-        beforeEach(() => {
-            iterator.next();
-        });
-
-        it('fires get todos action with nowTodos link and scheduling', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
-        });
-
-        it('fires get todos action with laterTodos link and scheduling', () => {
-            iterator.next(response)
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
-        });
-
-        it('fires get todo resources request action', () => {
-            iterator.next(response)
-            iterator.next(response);
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
-        });
-    });
-});
-
-describe('updateTodoRequest', () => {
+describe('postRequestWithTodoData', () => {
 	let todo = {task: 'task'};
 	let link = {href: 'http://some.api/todo'};
 	let action = {type: 'UPDATE_TODO_REQUEST_ACTION', link: link, todo: todo};
 	let iterator;
 
 	beforeEach(() => {
-		iterator = updateTodoRequest(action);
+		iterator = postRequestWithTodoData(action);
 	});
 
 	it('calls endpoint with action link href and todo', () => {
@@ -345,59 +178,13 @@ describe('updateTodoRequest', () => {
     });
 });
 
-describe('completeTodoRequest', () => {
-	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'COMPLETE_TODO_REQUEST_ACTION', link: link};
-	let iterator;
-
-	beforeEach(() => {
-		iterator = completeTodoRequest(action);
-	});
-
-	it('calls endpoint with action link href', () => {
-		expect(iterator.next().value).toEqual(call(postData, link.href, null, {headers: {'Session-Token': 'socooltoken'}}));
-	});
-
-    describe('on request success', () => {
-        let nowTodosLink = {href: 'http://some.api/nowTodos'};
-        let laterTodosLink = {href: 'http://some.api/laterTodos'};
-        let todoResourcesLink = {href: 'http://some.api/todoResources'};
-        let response = {response: {data: {
-            _links: {
-                nowTodos: nowTodosLink,
-                laterTodos: laterTodosLink,
-                todoResources: todoResourcesLink
-            }
-        }}};
-
-        beforeEach(() => {
-            iterator.next();
-        });
-
-        it('fires get todos action with nowTodos link and scheduling', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
-        });
-
-        it('fires get todos action with laterTodos link and scheduling', () => {
-            iterator.next(response)
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: laterTodosLink, scheduling: 'later'}));
-        });
-
-        it('fires get todo resources request action', () => {
-            iterator.next(response)
-            iterator.next(response);
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_TODO_RESOURCES_REQUEST_ACTION', link: todoResourcesLink}));
-        });
-    });
-});
-
-describe('pullTodosRequest', () => {
+describe('postRequestWithNoData', () => {
 	let link = {href: 'http://some.api/todo'};
 	let action = {type: 'PULL_TODOS_REQUEST_ACTION', link: link};
 	let iterator;
 
 	beforeEach(() => {
-		iterator = pullTodosRequest(action);
+		iterator = postRequestWithNoData(action);
 	});
 
 	it('calls endpoint with action link href', () => {
@@ -453,14 +240,6 @@ describe('watchGetCompletedTodosRequest', () => {
 	});
 });
 
-describe('watchCreateTodoRequest', () => {
-	let iterator = watchCreateTodoRequest();
-
-	it('calls create todo request saga with every create todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('CREATE_TODO_REQUEST_ACTION', createTodoRequest).next().value);
-	});
-});
-
 describe('watchDeleteTodoRequest', () => {
 	let iterator = watchDeleteTodoRequest();
 
@@ -469,11 +248,19 @@ describe('watchDeleteTodoRequest', () => {
 	});
 });
 
+describe('watchCreateTodoRequest', () => {
+	let iterator = watchCreateTodoRequest();
+
+	it('calls create todo request saga with every create todo request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('CREATE_TODO_REQUEST_ACTION', postRequestWithTodoData).next().value);
+	});
+});
+
 describe('watchDisplaceTodoRequest', () => {
 	let iterator = watchDisplaceTodoRequest();
 
 	it('calls displace todo request saga with every displace todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('DISPLACE_TODO_REQUEST_ACTION', displaceTodoRequest).next().value);
+		expect(iterator.next().value).toEqual(takeEvery('DISPLACE_TODO_REQUEST_ACTION', postRequestWithTodoData).next().value);
 	});
 });
 
@@ -481,30 +268,30 @@ describe('watchUpdateTodoRequest', () => {
 	let iterator = watchUpdateTodoRequest();
 
 	it('calls update todo request saga with every update todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('UPDATE_TODO_REQUEST_ACTION', updateTodoRequest).next().value);
+		expect(iterator.next().value).toEqual(takeEvery('UPDATE_TODO_REQUEST_ACTION', postRequestWithTodoData).next().value);
 	});
 });
 
 describe('watchCompleteTodoRequest', () => {
 	let iterator = watchCompleteTodoRequest();
 
-	it('calls complete todo request saga with every complete todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('COMPLETE_TODO_REQUEST_ACTION', completeTodoRequest).next().value);
+	it('calls post request with no data saga with every complete todo request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('COMPLETE_TODO_REQUEST_ACTION', postRequestWithNoData).next().value);
 	});
 });
 
 describe('watchMoveTodoRequest', () => {
 	let iterator = watchMoveTodoRequest();
 
-	it('calls move todo request saga with every move todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('MOVE_TODO_REQUEST_ACTION', moveTodoRequest).next().value);
+	it('calls post request with no data saga with every move todo request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('MOVE_TODO_REQUEST_ACTION', postRequestWithNoData).next().value);
 	});
 });
 
-describe('watchMoveTodoRequest', () => {
+describe('watchPullTodoRequest', () => {
 	let iterator = watchPullTodosRequest();
 
-	it('calls pull todos request saga with every pull todos request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('PULL_TODOS_REQUEST_ACTION', pullTodosRequest).next().value);
+	it('calls post request with no data saga with every pull todos request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('PULL_TODOS_REQUEST_ACTION', postRequestWithNoData).next().value);
 	});
 });
