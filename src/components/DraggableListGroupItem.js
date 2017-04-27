@@ -23,8 +23,11 @@ const dragSpec = {
         return {index: props.index};
     },
     endDrag(props, monitor) {
-        let toIndex = monitor.getDropResult().index;
-		props.moveItem(toIndex);
+        let dropResult = monitor.getDropResult();
+        if (dropResult != null) {
+            let toIndex = dropResult.index;
+		    props.moveItem(toIndex);
+        }
     }
 };
 
