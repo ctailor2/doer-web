@@ -17,7 +17,7 @@ import DraggableListGroupItem from './DraggableListGroupItem';
 export class Todo extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {editMode: false, task: this.props.task};
+		this.state = {editMode: false};
 	}
 
 	canBeDisplaced() {
@@ -25,7 +25,7 @@ export class Todo extends Component {
 	}
 
 	handleEditClick() {
-		this.setState({editMode: true});
+		this.setState({editMode: true, task: this.props.task});
 	}
 
 	render() {
@@ -56,8 +56,7 @@ export class Todo extends Component {
 	}
 
 	handleEditCancel() {
-		this.setState({editMode: false});
-		this.setState({task: this.props.task});
+		this.setState({editMode: false, task: this.props.task});
 	}
 
 	saveButtonDisabled() {

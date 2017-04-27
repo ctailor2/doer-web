@@ -37,7 +37,7 @@ describe('Todo', () => {
     });
 
     it('has default state', () => {
-        expect(tree.state()).toEqual({editMode: false, task: 'some task'});
+        expect(tree.state()).toEqual({editMode: false});
     });
 
 	describe('when readOnly is false', () => {
@@ -152,8 +152,9 @@ describe('Todo', () => {
 					        input = unwrappedTree.node.taskInput;
 		                });
 
-			            it('toggles editMode on when clicked', () => {
+			            it('captures task and toggles editMode on and when clicked', () => {
 							expect(unwrappedTree.node.state.editMode).toBe(true);
+							expect(unwrappedTree.node.state.task).toEqual('some task');
 			            });
 
 			            it('focuses the input', () => {
@@ -166,7 +167,7 @@ describe('Todo', () => {
 
 		describe('when in editMode', () => {
 			beforeEach(() => {
-				unwrappedTree.node.setState({editMode: true});
+				unwrappedTree.node.handleEditClick();
 			});
 
 			describe('form group', () => {
