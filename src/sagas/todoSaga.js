@@ -35,6 +35,17 @@ export function* deleteTodoRequest(action) {
 
 export function* postRequestWithTodoData(action) {
 	let todo = action.todo;
+	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	if(response) {
+		yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
+		yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
+		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
+	} else if (error) {
+	}
+}
+
+export function* putRequestWithTodoData(action) {
+	let todo = action.todo;
 	const {response, error} = yield call(putData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
@@ -75,7 +86,7 @@ export function* watchDisplaceTodoRequest() {
 }
 
 export function* watchUpdateTodoRequest() {
-	yield* takeEvery(actionTypes.UPDATE_TODO_REQUEST_ACTION, postRequestWithTodoData);
+	yield* takeEvery(actionTypes.UPDATE_TODO_REQUEST_ACTION, putRequestWithTodoData);
 }
 
 export function* watchCompleteTodoRequest() {
