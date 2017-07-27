@@ -2,6 +2,7 @@ jest.unmock('../loadViewSaga');
 jest.unmock('../../actions/loadViewActions');
 jest.unmock('../../actions/linkActions');
 jest.unmock('../../actions/todoActions');
+jest.unmock('../../actions/listActions');
 
 import {loadTodosView, watchLoadTodosView, loadHistoryView, watchLoadHistoryView} from '../loadViewSaga';
 import {takeLatest} from 'redux-saga';
@@ -52,8 +53,8 @@ describe('loadTodosView', () => {
         });
 
         describe('on request success', () => {
-            let nowTodosLink = {href: 'http://some.api/nowTodos'};
-            let links = {nowTodos: nowTodosLink};
+            let listLink = {href: 'http://some.api/list'};
+            let links = {list: listLink};
             let todoResourcesResponse = {response: {data: {_links: links}}};
 
             beforeEach(() => {
@@ -64,9 +65,9 @@ describe('loadTodosView', () => {
                 expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
             });
 
-            it('fires get todos request action with nowTodos link and scheduling', () => {
+            it('fires get list request action with list link', () => {
                 iterator.next(todoResourcesResponse);
-                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'GET_TODOS_REQUEST_ACTION', link: nowTodosLink, scheduling: 'now'}));
+                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
             });
 
     	    it('fires load todos view complete action on request success', () => {

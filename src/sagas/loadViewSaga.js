@@ -4,7 +4,8 @@ import {fetchData} from './sagaHelper';
 import {call, put} from 'redux-saga/effects';
 import {loadTodosViewCompleteAction, loadHistoryViewCompleteAction} from '../actions/loadViewActions';
 import {storeLinksAction} from '../actions/linkActions';
-import {getTodosRequestAction, getCompletedTodosRequestAction} from '../actions/todoActions';
+import {getCompletedTodosRequestAction} from '../actions/todoActions';
+import {getListRequestAction} from '../actions/listActions';
 
 export function* loadTodosView() {
 	let url = localStorage.getItem('link');
@@ -14,7 +15,7 @@ export function* loadTodosView() {
     	let {response: todoResourcesResponse, error: todoResourcesError} = yield call(fetchData, rootResourcesResponse.data._links.todoResources.href, {headers: {'Session-Token': sessionToken}});
     	if(todoResourcesResponse) {
     	    yield put(storeLinksAction(todoResourcesResponse.data._links));
-            yield put(getTodosRequestAction(todoResourcesResponse.data._links.nowTodos, 'now'));
+            yield put(getListRequestAction(todoResourcesResponse.data._links.list));
             yield put(loadTodosViewCompleteAction());
     	} else if (todoResourcesError) {
             // TODO: handle error

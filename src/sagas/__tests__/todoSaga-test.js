@@ -35,7 +35,10 @@ describe('getTodosRequest', () => {
         link: {href: url},
         scheduling: scheduling
     };
-    let links = [{rel: "this", href: "tisket"}, {rel: "that", href: "tasket"}];
+    let links = {
+        something: {href: "tisket"},
+        somethingElse: {href: "tasket"}
+    };
 
 	beforeEach(() => {
         localStorage.getItem = jest.fn(() => {return 'socooltoken'});
@@ -61,7 +64,10 @@ describe('getCompletedTodosRequest', () => {
         type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
         link: {href: url}
     };
-    let links = [{rel: "this", href: "tisket"}, {rel: "that", href: "tasket"}];
+    let links = {
+        something: {href: "tisket"},
+        somethingElse: {href: "tasket"}
+    };
 
 	beforeEach(() => {
         localStorage.getItem = jest.fn(() => {return 'socooltoken'});

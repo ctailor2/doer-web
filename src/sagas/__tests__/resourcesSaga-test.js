@@ -68,7 +68,10 @@ describe('getBaseResourcesRequest', () => {
     describe('on request success', () => {
         it('fires store links action', () => {
             iterator.next();
-            let links = [{rel: "this", href: "tisket"}, {rel: "that", href: "tasket"}];
+            let links = {
+                something: {href: "tisket"},
+                somethingElse: {href: "tasket"}
+            };
             expect(iterator.next({response: {data: {_links: links}}}).value)
                 .toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
         });

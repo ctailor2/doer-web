@@ -7,7 +7,7 @@ describe('links', () => {
 		expect(links()).toEqual({});
 	});
 
-	it('it stores the links from a STORE_LINKS_ACTION when received', () => {
+	it('stores the links from a STORE_LINKS_ACTION when received', () => {
 		let newLinks = {a: 1, b: 2};
 		let action = {
 			type: 'STORE_LINKS_ACTION',
