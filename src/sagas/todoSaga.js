@@ -2,14 +2,23 @@ import * as actionTypes from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {fetchData, postData, deleteData, putData} from './sagaHelper';
-import {storeTodosAction, getTodosRequestAction, storeCompletedTodosAction} from '../actions/todoActions';
+import {storeTodosAction, storeDeferredTodosAction, getTodosRequestAction, storeCompletedTodosAction} from '../actions/todoActions';
 import {storeLinksAction} from '../actions/linkActions';
 import {getTodoResourcesRequestAction} from '../actions/resourcesActions';
+import {getListRequestAction} from '../actions/listActions';
 
 export function* getTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
 		yield put(storeTodosAction(response.data.todos, action.scheduling));
+	} else  if (error) {
+	}
+}
+
+export function* getDeferredTodosRequest(action) {
+	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
+	if(response) {
+		yield put(storeDeferredTodosAction(response.data.todos));
 	} else  if (error) {
 	}
 }
@@ -26,9 +35,7 @@ export function* getCompletedTodosRequest(action) {
 export function* deleteTodoRequest(action) {
 	const {response, error} = yield call(deleteData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-        yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
-        yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
-        yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
+        yield put(getListRequestAction(response.data._links.list));
     } else if (error) {
     }
 }
@@ -37,9 +44,7 @@ export function* postRequestWithTodoData(action) {
 	let todo = action.todo;
 	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
-		yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
-		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
+        yield put(getListRequestAction(response.data._links.list));
 	} else if (error) {
 	}
 }
@@ -48,9 +53,7 @@ export function* putRequestWithTodoData(action) {
 	let todo = action.todo;
 	const {response, error} = yield call(putData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
-		yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
-		yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
+        yield put(getListRequestAction(response.data._links.list));
 	} else if (error) {
 	}
 }
@@ -58,15 +61,17 @@ export function* putRequestWithTodoData(action) {
 export function* postRequestWithNoData(action) {
 	const {response, error} = yield call(postData, action.link.href, null, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-        yield put(getTodosRequestAction(response.data._links.nowTodos, 'now'));
-        yield put(getTodosRequestAction(response.data._links.laterTodos, 'later'));
-        yield put(getTodoResourcesRequestAction(response.data._links.todoResources));
+        yield put(getListRequestAction(response.data._links.list));
     } else if (error) {
     }
 }
 
 export function* watchGetTodosRequest() {
 	yield* takeEvery(actionTypes.GET_TODOS_REQUEST_ACTION, getTodosRequest);
+}
+
+export function* watchGetDeferredTodosRequest() {
+	yield* takeEvery(actionTypes.GET_DEFERRED_TODOS_REQUEST_ACTION, getDeferredTodosRequest);
 }
 
 export function* watchGetCompletedTodosRequest() {

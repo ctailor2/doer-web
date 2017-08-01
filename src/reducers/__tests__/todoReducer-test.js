@@ -8,44 +8,37 @@ describe('todos', () => {
 	});
 
 	describe('when STORE_TODOS_ACTION received', () => {
-		describe('when action scheduling is now', () => {
-			it('returns the existing todos scheduled for later and the todos from the STORE_TODOS_ACTION separated by their scheduling property', () => {
-				let action = {
-					type: 'STORE_TODOS_ACTION',
-					todos: [
-						{task: 'this', scheduling: 'now'},
-						{task: 'that', scheduling: 'later'},
-						{task: 'other', scheduling: 'now'}
-					],
-					scheduling: 'now'
-				}
-				let todosState = todos({
-					inactive: [{task: 'one', scheduling: 'later'}]
-				}, action);
-		        expect(todosState.active).toContain({task: 'this', scheduling: 'now'}, {task: 'other', scheduling: 'now'});
-		        expect(todosState.inactive).not.toContain({task: 'that', scheduling: 'later'});
-		        expect(todosState.inactive).toContain({task: 'one', scheduling: 'later'});
-			});
-		});
+        it('stores todos from action as active', () => {
+            let action = {
+                type: 'STORE_TODOS_ACTION',
+                todos: [
+                    {task: 'this'},
+                    {task: 'that'}
+                ]
+            }
+            let todosState = todos({inactive: [{task: 'one'}]}, action);
+            expect(todosState.inactive).toContain({task: 'one'});
+            expect(todosState.active).toContain({task: 'this'}, {task: 'other'});
+            expect(todosState.inactive).not.toContain({task: 'this'});
+            expect(todosState.inactive).not.toContain({task: 'that'});
+        });
+    });
 
-		describe('when action scheduling is later', () => {
-			it('returns the existing todos scheduled for now and the todos from the STORE_TODOS_ACTION separated by their scheduling property', () => {
-				let action = {
-					type: 'STORE_TODOS_ACTION',
-					todos: [
-						{task: 'this', scheduling: 'now'},
-						{task: 'that', scheduling: 'later'},
-						{task: 'other', scheduling: 'now'}
-					],
-					scheduling: 'later'
-				}
-				let todosState = todos({
-					active: [{task: 'one', scheduling: 'now'}]
-				}, action);
-		        expect(todosState.active).toContain({task: 'one', scheduling: 'now'});
-		        expect(todosState.inactive).toContain({task: 'that', scheduling: 'later'});
-			});
-		});
+	describe('when STORE_DEFERRED_TODOS_ACTION received', () => {
+        it('stores todos from action as inactive', () => {
+            let action = {
+                type: 'STORE_DEFERRED_TODOS_ACTION',
+                todos: [
+                    {task: 'this'},
+                    {task: 'that'}
+                ]
+            }
+            let todosState = todos({active: [{task: 'one'}]}, action);
+            expect(todosState.active).toContain({task: 'one'});
+            expect(todosState.inactive).toContain({task: 'this'}, {task: 'that'});
+            expect(todosState.active).not.toContain({task: 'this'});
+            expect(todosState.active).not.toContain({task: 'that'});
+        });
 	});
 
 	describe('when a STORE_COMPLETED_TODOS_ACTION is received', () => {

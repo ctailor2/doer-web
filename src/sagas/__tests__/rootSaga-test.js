@@ -4,6 +4,7 @@ jest.unmock('../todoSaga');
 jest.unmock('../resourcesSaga');
 jest.unmock('../linksSaga');
 jest.unmock('../loadViewSaga');
+jest.unmock('../listSaga');
 
 import rootSaga from '../rootSaga';
 import {call, fork} from 'redux-saga/effects';
@@ -17,7 +18,8 @@ import {
 	watchUpdateTodoRequest,
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
-	watchPullTodosRequest
+	watchPullTodosRequest,
+	watchGetDeferredTodosRequest
 } from '../todoSaga';
 import {
     watchGetBaseResourcesRequest,
@@ -25,6 +27,9 @@ import {
     watchGetTodoResourcesRequest,
     watchGetHistoryResourcesRequest
 } from '../resourcesSaga';
+import {
+    watchGetListRequest
+} from '../listSaga';
 import {watchPersistLink} from '../linksSaga';
 import {watchLoadTodosView, watchLoadHistoryView} from '../loadViewSaga';
 
@@ -52,7 +57,9 @@ describe('rootSaga', () => {
             fork(watchLoadTodosView),
             fork(watchLoadHistoryView),
             fork(watchGetCompletedTodosRequest),
-            fork(watchPullTodosRequest)
+            fork(watchPullTodosRequest),
+            fork(watchGetDeferredTodosRequest),
+            fork(watchGetListRequest)
         ]);
     });
 });

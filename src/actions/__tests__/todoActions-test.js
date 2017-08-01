@@ -2,8 +2,10 @@ jest.unmock('../todoActions');
 
 import {
 	getTodosRequestAction,
+	getDeferredTodosRequestAction,
 	getCompletedTodosRequestAction,
 	storeTodosAction,
+	storeDeferredTodosAction,
 	storeCompletedTodosAction,
 	createTodoRequestAction,
 	deleteTodoRequestAction,
@@ -18,8 +20,7 @@ describe('getTodosRequestAction', () => {
 	it('creates a get todos request action with empty link and scheduling by default', () => {
 		expect(getTodosRequestAction()).toEqual({
 			type: 'GET_TODOS_REQUEST_ACTION',
-			link: {},
-			scheduling: ''
+			link: {}
 		});
 	});
 
@@ -28,8 +29,24 @@ describe('getTodosRequestAction', () => {
 		let scheduling = 'someScheduling';
 		expect(getTodosRequestAction(link, scheduling)).toEqual({
 			type: 'GET_TODOS_REQUEST_ACTION',
-			link: link,
-			scheduling: scheduling
+			link: link
+		});
+	});
+});
+
+describe('getDeferredTodosRequestAction', () => {
+	it('creates a get deferred todos request action with empty link by default', () => {
+		expect(getDeferredTodosRequestAction()).toEqual({
+			type: 'GET_DEFERRED_TODOS_REQUEST_ACTION',
+			link: {}
+		});
+	});
+
+	it('creates a get deferred todos request action with supplied link', () => {
+		let link = {href: 'http://some.api/todos'};
+		expect(getDeferredTodosRequestAction(link)).toEqual({
+			type: 'GET_DEFERRED_TODOS_REQUEST_ACTION',
+			link: link
 		});
 	});
 });
@@ -52,19 +69,33 @@ describe('getCompletedTodosRequestAction', () => {
 });
 
 describe('storeTodosAction', () => {
-	it('creates a store todos action with empty todos and empty scheduling by default', () => {
+	it('creates a store todos action with empty todos by default', () => {
 		expect(storeTodosAction()).toEqual({
 			type: 'STORE_TODOS_ACTION',
-			todos: [],
-			scheduling: ''
+			todos: []
 		});
 	});
 
-	it('creates a store todos action with supplied todos and scheduling', () => {
-		expect(storeTodosAction([1, 2, 3], 'someScheduling')).toEqual({
+	it('creates a store todos action with supplied todos', () => {
+		expect(storeTodosAction([1, 2, 3])).toEqual({
 			type: 'STORE_TODOS_ACTION',
-			todos: [1, 2, 3],
-			scheduling: 'someScheduling'
+			todos: [1, 2, 3]
+		});
+	});
+});
+
+describe('storeDeferredTodosAction', () => {
+	it('creates a store deferred todos action with empty todos by default', () => {
+		expect(storeDeferredTodosAction()).toEqual({
+			type: 'STORE_DEFERRED_TODOS_ACTION',
+			todos: []
+		});
+	});
+
+	it('creates a store deferred todos action with supplied todos', () => {
+		expect(storeDeferredTodosAction([1, 2, 3])).toEqual({
+			type: 'STORE_DEFERRED_TODOS_ACTION',
+			todos: [1, 2, 3]
 		});
 	});
 });
