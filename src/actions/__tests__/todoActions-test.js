@@ -17,17 +17,16 @@ import {
 } from '../todoActions';
 
 describe('getTodosRequestAction', () => {
-	it('creates a get todos request action with empty link and scheduling by default', () => {
+	it('creates a get todos request action with empty link by default', () => {
 		expect(getTodosRequestAction()).toEqual({
 			type: 'GET_TODOS_REQUEST_ACTION',
 			link: {}
 		});
 	});
 
-	it('creates a get todos request action with supplied link and scheduling', () => {
+	it('creates a get todos request action with supplied link', () => {
 		let link = {href: 'http://some.api/todos'};
-		let scheduling = 'someScheduling';
-		expect(getTodosRequestAction(link, scheduling)).toEqual({
+		expect(getTodosRequestAction(link)).toEqual({
 			type: 'GET_TODOS_REQUEST_ACTION',
 			link: link
 		});

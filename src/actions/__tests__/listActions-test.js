@@ -15,8 +15,7 @@ describe('getListRequestAction', () => {
 
 	it('creates a get list request action with supplied link', () => {
 		let link = {href: 'http://some.api/todos'};
-		let scheduling = 'someScheduling';
-		expect(getListRequestAction(link, scheduling)).toEqual({
+		expect(getListRequestAction(link)).toEqual({
 			type: 'GET_LIST_REQUEST_ACTION',
 			link: link
 		});

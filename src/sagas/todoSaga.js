@@ -9,7 +9,7 @@ import {getListRequestAction} from '../actions/listActions';
 export function* getTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(storeTodosAction(response.data.todos, action.scheduling));
+		yield put(storeTodosAction(response.data.todos));
 	} else  if (error) {
 	}
 }
@@ -25,7 +25,7 @@ export function* getDeferredTodosRequest(action) {
 export function* getCompletedTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
-		yield put(storeCompletedTodosAction(response.data.todos, action.scheduling));
+		yield put(storeCompletedTodosAction(response.data.todos));
 		yield put(storeLinksAction(response.data._links));
 	} else  if (error) {
 	}

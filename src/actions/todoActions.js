@@ -1,6 +1,6 @@
 import * as actionTypes from '../constants/actionTypes';
 
-export function getTodosRequestAction(link = {}, scheduling = '') {
+export function getTodosRequestAction(link = {}) {
 	return {
 		type: actionTypes.GET_TODOS_REQUEST_ACTION,
 		link: link
