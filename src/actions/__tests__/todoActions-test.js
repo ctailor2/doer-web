@@ -117,24 +117,21 @@ describe('storeCompletedTodosAction', () => {
 });
 
 describe('createTodoRequestAction', () => {
-	it('creates a create todo request action with empty link, todo, and scheduling by default', () => {
+	it('creates a create todo request action with empty link and todo by default', () => {
 		expect(createTodoRequestAction()).toEqual({
 			type: 'CREATE_TODO_REQUEST_ACTION',
 			link: {},
-			todo: {},
-			scheduling: ''
+			todo: {}
 		});
 	});
 
-	it('creates a create todo request action with supplied link, todo, and scheduling', () => {
+	it('creates a create todo request action with supplied link and todo', () => {
 		let link = {href: 'http://some.api/todo'};
 		let todo = {a: 1, b: 2};
-		let scheduling = 'someScheduling';
-		expect(createTodoRequestAction(link, todo, scheduling)).toEqual({
+		expect(createTodoRequestAction(link, todo)).toEqual({
 			type: 'CREATE_TODO_REQUEST_ACTION',
 			link: link,
-			todo: todo,
-			scheduling: scheduling
+			todo: todo
 		});
 	});
 });

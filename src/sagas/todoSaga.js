@@ -2,9 +2,8 @@ import * as actionTypes from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {fetchData, postData, deleteData, putData} from './sagaHelper';
-import {storeTodosAction, storeDeferredTodosAction, getTodosRequestAction, storeCompletedTodosAction} from '../actions/todoActions';
+import {storeTodosAction, storeDeferredTodosAction, storeCompletedTodosAction} from '../actions/todoActions';
 import {storeLinksAction} from '../actions/linkActions';
-import {getTodoResourcesRequestAction} from '../actions/resourcesActions';
 import {getListRequestAction} from '../actions/listActions';
 
 export function* getTodosRequest(action) {

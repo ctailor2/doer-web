@@ -5,8 +5,7 @@ import {
     createTodoRequestAction,
     displaceTodoRequestAction,
     moveTodoRequestAction,
-    pullTodosRequestAction,
-    getTodosRequestAction
+    pullTodosRequestAction
 } from '../actions/todoActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
@@ -27,7 +26,7 @@ import {
 export class App extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {todo: {task: ''}, submitting: false, activeTab: 'now'};
+		this.state = {todo: {task: ''}, submitting: false, activeTab: props.list.name};
 	}
 
 	render() {
@@ -60,14 +59,13 @@ export class App extends Component {
 	}
 
 	handleSelectTab(tabKey) {
-	    this.props.getTodosRequestAction(this.props.links[tabKey + 'Todos'], tabKey);
 		this.setState({activeTab: tabKey});
 	}
 
 	renderTabs() {
 		return (
 			<Tabs activeKey={this.state.activeTab} onSelect={this.handleSelectTab.bind(this)} id='tabs'>
-		        <Tab eventKey='now' title='Now'>
+		        <Tab eventKey={this.props.list.name} title={_.capitalize(this.props.list.name)}>
 					<ListGroup>
                         {this.props.nowTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
@@ -75,7 +73,7 @@ export class App extends Component {
                         {this.renderReplenishButton()}
                     </ListGroup>
 		        </Tab>
-		        <Tab eventKey='later' title='Later'>
+		        <Tab eventKey={this.props.list.deferredName} title={_.capitalize(this.props.list.deferredName)}>
 					<ListGroup>
                         {this.props.laterTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
@@ -87,7 +85,7 @@ export class App extends Component {
 	}
 
 	renderReplenishButton() {
-		if(!_.isUndefined(this.props.links.pull)) {
+		if(!_.isUndefined(this.props.list._links.pull)) {
 			return (<ListGroupItem onClick={this.handlePullClick.bind(this)} bsStyle="info">
                 Replenish <Glyphicon glyph="refresh" />
             </ListGroupItem>);
@@ -95,7 +93,7 @@ export class App extends Component {
 	}
 
 	handlePullClick() {
-		this.props.pullTodosRequestAction(this.props.links.pull);
+		this.props.pullTodosRequestAction(this.props.list._links.pull);
 	}
 
 	handleCancelTaskSubmit() {
@@ -115,7 +113,7 @@ export class App extends Component {
 		if(this.state.submitting) {
 			return(<InputGroup.Button>
 					{this.renderNowButton()}
-					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoLater, 'later')}>Later</Button>
+					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.list._links.createDeferred)}>Later</Button>
 					<Button type="button" bsStyle="danger" bsSize="large" onClick={this.handleCancelTaskSubmit.bind(this)}>
 						<Glyphicon glyph="remove"/>
 					</Button>
@@ -133,21 +131,21 @@ export class App extends Component {
 
 	renderNowButton() {
 		if(this.canScheduleForNow()) {
-			return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.todoNow, 'now')}>Now</Button>);
+			return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.list._links.create)}>Now</Button>);
 		}
 	}
 
 	canScheduleForNow() {
-		return !_.isUndefined(this.props.links.todoNow);
+		return !_.isUndefined(this.props.list._links.create);
 	}
 
 	toggleSubmit() {
 		this.setState({submitting: !this.state.submitting});
 	}
 
-	submitTodo(link, scheduling) {
+	submitTodo(link) {
 		let todo = this.state.todo;
-		this.props.createTodoRequestAction(link, todo, scheduling);
+		this.props.createTodoRequestAction(link, todo);
 		this.toggleSubmit();
 		this.resetTask();
 	}
@@ -208,7 +206,7 @@ export const mapStateToProps = (state) => {
 	return {
 		nowTodos: state.todos.active,
 		laterTodos: state.todos.inactive,
-		links: state.links
+		list: state.list
 	};
 }
 
@@ -216,6 +214,5 @@ export default connect(mapStateToProps, {
 	createTodoRequestAction,
 	displaceTodoRequestAction,
 	moveTodoRequestAction,
-	pullTodosRequestAction,
-	getTodosRequestAction
+	pullTodosRequestAction
 })(App);

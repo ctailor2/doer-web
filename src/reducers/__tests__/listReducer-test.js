@@ -4,7 +4,7 @@ import {list} from '../listReducer';
 
 describe('list', () => {
 	it('has initial state', () => {
-		expect(list()).toEqual({});
+		expect(list()).toEqual({_links: {}});
 	});
 
     it('stores the links from a STORE_LIST_ACTION when received', () => {

@@ -1,5 +1,6 @@
 jest.unmock('../App');
 
+import _ from 'lodash';
 import {App, mapStateToProps} from '../App';
 import Todo from '../Todo';
 import React from 'react';
@@ -8,42 +9,43 @@ import {mount} from 'enzyme';
 describe('App', () => {
     let tree,
     input,
+    list,
     nowTodos,
     laterTodos,
     links,
     todoNowLink,
     todoLaterLink,
-    nowTodosLink,
-    laterTodosLink,
     pullLink,
     mockCreateTodoActionFn,
     mockDisplaceTodoActionFn,
     mockPullTodosActionFn,
-    mockMoveTodoActionFn,
-    mockGetTodosActionFn;
+    mockMoveTodoActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
         mockPullTodosActionFn = jest.fn();
-        mockGetTodosActionFn = jest.fn();
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
-        nowTodosLink = {href: 'http://some.api/nowTodos'};
-        laterTodosLink = {href: 'http://some.api/laterTodos'};
         pullLink = {href: 'http://some.api/pullTodos'};
-        links = {todoNow: todoNowLink, todoLater: todoLaterLink, nowTodos: nowTodosLink, laterTodos: laterTodosLink};
-        tree = mount(<App nowTodos={nowTodos}
+        list = {
+            name: 'name',
+            deferredName: 'deferredname',
+            _links: {
+                create: todoNowLink,
+                createDeferred: todoLaterLink
+            }
+        };
+        tree = mount(<App list={list}
+                          nowTodos={nowTodos}
                           laterTodos={laterTodos}
-                          links={links}
                           createTodoRequestAction={mockCreateTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
-                          pullTodosRequestAction={mockPullTodosActionFn}
-                          getTodosRequestAction={mockGetTodosActionFn}/>);
+                          pullTodosRequestAction={mockPullTodosActionFn}/>);
         input = tree.node.taskInput;
     });
 
@@ -52,7 +54,7 @@ describe('App', () => {
     });
 
     it('has default state', () => {
-        expect(tree.state()).toEqual({todo: {task: ''}, submitting: false, activeTab: 'now'});
+        expect(tree.state()).toEqual({todo: {task: ''}, submitting: false, activeTab: 'name'});
     });
 
     describe('text input', () => {
@@ -148,8 +150,10 @@ describe('App', () => {
                 expect(buttons.length).toBe(3);
             });
 
-            it('renders 2 buttons when todoNow link is missing', () => {
-                tree.setProps({links: {todoLater: todoLaterLink}})
+            it('renders 2 buttons when create link is missing', () => {
+                let listWithoutCreateLink = _.clone(list);
+                delete listWithoutCreateLink._links.create
+                tree.setProps({list: listWithoutCreateLink})
                 buttons = tree.find('Button');
                 expect(buttons.length).toBe(2);
             });
@@ -159,8 +163,8 @@ describe('App', () => {
                     buttons.at(0).simulate('click');
                 });
 
-	            it('fires create todo action with todoNowLink and "now" scheduling', () => {
-	                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'}, 'now');
+	            it('fires create todo action with todoNowLink', () => {
+	                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'});
 	            });
 
 	            it('toggles submitting state to false', () => {
@@ -186,8 +190,8 @@ describe('App', () => {
                     buttons.at(1).simulate('click');
                 });
 
-	            it('fires create todo action with todoLaterLink and "later" scheduling', () => {
-	                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'}, 'later');
+	            it('fires create todo action with todoLaterLink', () => {
+	                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'});
 	            });
 
 	            it('toggles submitting state to false', () => {
@@ -261,16 +265,6 @@ describe('App', () => {
                 handler('someTabKey');
                 expect(tree.state().activeTab).toEqual('someTabKey');
             });
-
-            it('fires get todos request action with nowTodosLink and now scheduling when tabKey is "now"', () => {
-                handler('now');
-                expect(mockGetTodosActionFn).toBeCalledWith(nowTodosLink, 'now');
-            });
-
-            it('fires get todos request action with laterTodosLink and later scheduling when tabKey is "later"', () => {
-                handler('later');
-                expect(mockGetTodosActionFn).toBeCalledWith(laterTodosLink, 'later');
-            });
         });
 
         describe('first tab', () => {
@@ -280,8 +274,12 @@ describe('App', () => {
                 tab = tabs.find('Tab').at(0);
             });
 
-            it('eventKey is now', () => {
-                expect(tab.prop('eventKey')).toEqual('now');
+            it('has eventKey matching list name', () => {
+                expect(tab.prop('eventKey')).toEqual('name');
+            });
+
+            it('has Title matching title cased list name', () => {
+                expect(tab.prop('title')).toEqual('Name');
             });
 
             describe('clickable list item', () => {
@@ -296,7 +294,9 @@ describe('App', () => {
                 });
 
                 it('renders when the pull link is present', () => {
-                    tree.setProps({links: {pull: pullLink}});
+                    let listWithPullLink = _.clone(list);
+                    listWithPullLink._links.pull = pullLink;
+                    tree.setProps({list: listWithPullLink});
                     tabs = tree.find('Tabs');
                     tab = tabs.find('Tab').at(0);
                     item = tab.find('ListGroupItem').find('[onClick]');
@@ -305,7 +305,9 @@ describe('App', () => {
 
                 describe('when rendered', () => {
                     beforeEach(() => {
-	                    tree.setProps({links: {pull: pullLink}});
+                        let listWithPullLink = _.clone(list);
+                        listWithPullLink._links.pull = pullLink;
+                        tree.setProps({list: listWithPullLink});
 	                    tabs = tree.find('Tabs');
 	                    tab = tabs.find('Tab').at(0);
 	                    item = tab.find('ListGroupItem').find('[onClick]');
@@ -326,8 +328,12 @@ describe('App', () => {
                 tab = tabs.find('Tab').at(1);
             });
 
-            it('eventKey is later', () => {
-                expect(tab.prop('eventKey')).toEqual('later');
+            it('has eventKey matching deferredName', () => {
+                expect(tab.prop('eventKey')).toEqual('deferredname');
+            });
+
+            it('has title matching capitalized deferredName', () => {
+                expect(tab.prop('title')).toEqual('Deferredname');
             });
         });
     })
@@ -446,11 +452,14 @@ describe('App', () => {
 
     it('maps state to props', () => {
         let links = {todos: {href: 'http://some.api/todos'}};
-        let state = {todos: {active: [1], inactive: [3]}, links: links};
+        let state = {
+            todos: {active: [1], inactive: [3]},
+            list: list
+        };
         expect(mapStateToProps(state)).toEqual({
             nowTodos: [1],
             laterTodos: [3],
-            links: links
+            list: list
         });
     });
 });

@@ -42,12 +42,11 @@ export function storeCompletedTodosAction(todos = []) {
 	}
 }
 
-export function createTodoRequestAction(link = {}, todo = {}, scheduling = '') {
+export function createTodoRequestAction(link = {}, todo = {}) {
 	return {
 		type: actionTypes.CREATE_TODO_REQUEST_ACTION,
 		link: link,
-		todo: todo,
-		scheduling: scheduling
+		todo: todo
 	}
 }
 
