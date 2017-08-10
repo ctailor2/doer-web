@@ -2,7 +2,8 @@ jest.unmock('../listActions');
 
 import {
 	getListRequestAction,
-	storeListAction
+	storeListAction,
+	unlockListRequestAction
 } from '../listActions';
 
 describe('getListRequestAction', () => {
@@ -17,6 +18,23 @@ describe('getListRequestAction', () => {
 		let link = {href: 'http://some.api/todos'};
 		expect(getListRequestAction(link)).toEqual({
 			type: 'GET_LIST_REQUEST_ACTION',
+			link: link
+		});
+	});
+});
+
+describe('unlockListRequestAction', () => {
+	it('creates an unlock list request action with empty link by default', () => {
+		expect(unlockListRequestAction()).toEqual({
+			type: 'UNLOCK_LIST_REQUEST_ACTION',
+			link: {}
+		});
+	});
+
+	it('creates an unlock list request action with supplied link', () => {
+		let link = {href: 'http://some.api/todos'};
+		expect(unlockListRequestAction(link)).toEqual({
+			type: 'UNLOCK_LIST_REQUEST_ACTION',
 			link: link
 		});
 	});

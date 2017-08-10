@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {App, mapStateToProps} from '../App';
 import Todo from '../Todo';
 import React from 'react';
-import {mount} from 'enzyme';
+import {mount, ReactWrapper} from 'enzyme';
 
 describe('App', () => {
     let tree,
@@ -16,27 +16,32 @@ describe('App', () => {
     todoNowLink,
     todoLaterLink,
     pullLink,
+    unlockLink,
     mockCreateTodoActionFn,
     mockDisplaceTodoActionFn,
     mockPullTodosActionFn,
-    mockMoveTodoActionFn;
+    mockMoveTodoActionFn,
+    mockUnlockListActionFn;
 
     beforeEach(() => {
         mockCreateTodoActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
         mockPullTodosActionFn = jest.fn();
+        mockUnlockListActionFn = jest.fn();
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
         pullLink = {href: 'http://some.api/pullTodos'};
+        unlockLink = {href: 'http://some.api/unlockTodos'};
         list = {
             name: 'name',
             deferredName: 'deferredname',
             _links: {
                 create: todoNowLink,
-                createDeferred: todoLaterLink
+                createDeferred: todoLaterLink,
+                unlock: unlockLink
             }
         };
         tree = mount(<App list={list}
@@ -45,7 +50,8 @@ describe('App', () => {
                           createTodoRequestAction={mockCreateTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
-                          pullTodosRequestAction={mockPullTodosActionFn}/>);
+                          pullTodosRequestAction={mockPullTodosActionFn}
+                          unlockListRequestAction={mockUnlockListActionFn}/>);
         input = tree.node.taskInput;
     });
 
@@ -54,7 +60,17 @@ describe('App', () => {
     });
 
     it('has default state', () => {
-        expect(tree.state()).toEqual({todo: {task: ''}, submitting: false, activeTab: 'name'});
+        expect(tree.state()).toEqual({todo: {task: ''}, submitting: false, showUnlockConfirmation: false});
+    });
+
+    describe('upon receiving props', () => {
+        beforeEach(() => {
+            tree.setProps({list: list});
+        });
+
+        it('sets activeTab to list name', () => {
+            expect(tree.state().activeTab).toEqual('name');
+        });
     });
 
     describe('text input', () => {
@@ -261,9 +277,47 @@ describe('App', () => {
                 handler = tabs.prop('onSelect')
             });
 
-            it('updates activeTab state to tabKey', () => {
-                handler('someTabKey');
-                expect(tree.state().activeTab).toEqual('someTabKey');
+            describe('when tabKey matches list name', () => {
+                beforeEach(() => {
+                    handler('name');
+                });
+
+                it('updates activeTab state', () => {
+                    expect(tree.state().activeTab).toEqual('name');
+                });
+
+                it('does not update showUnlockConfirmation state', () => {
+                    expect(tree.state().showUnlockConfirmation).toBe(false);
+                });
+            });
+
+            describe('when tabKey matches deferred list name', () => {
+                beforeEach(() => {
+                    handler('deferredName');
+                });
+
+                it('does not update activeTab state', () => {
+                    handler('someTabKey');
+                    expect(tree.state().activeTab).not.toEqual('someTabKey');
+                });
+
+                it('updates showUnlockConfirmation to true', () => {
+                    handler('someTabKey');
+                    expect(tree.state().showUnlockConfirmation).toEqual(true);
+                });
+
+                describe('when the deferredTodos link is present', () => {
+                    beforeEach(() => {
+                        let listWithDeferredTodosLink = _.clone(list);
+                        listWithDeferredTodosLink._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                        tree.setProps({list: listWithDeferredTodosLink});
+                    });
+
+                    it('updates activeTab state to tabKey', () => {
+                        handler('someTabKey');
+                        expect(tree.state().activeTab).toEqual('someTabKey');
+                    });
+                });
             });
         });
 
@@ -332,11 +386,110 @@ describe('App', () => {
                 expect(tab.prop('eventKey')).toEqual('deferredname');
             });
 
-            it('has title matching capitalized deferredName', () => {
-                expect(tab.prop('title')).toEqual('Deferredname');
+            it('has a title', () => {
+                expect(tab.prop('title')).not.toBeUndefined();
+            });
+
+            describe('title', () => {
+                let titleNode;
+
+                beforeEach(() => {
+                    titleNode = mount(tab.prop('title'));
+                });
+
+                it('contains capitalized deferredName', () => {
+                    expect(titleNode.text()).toContain('Deferredname');
+                });
+
+                it('contains an icon', () => {
+                    expect(titleNode.find('Glyphicon').length).toEqual(1);
+                });
+
+                describe('when the deferredTodos link is present', () => {
+                    beforeEach(() => {
+                        let listWithDeferredTodosLink = _.clone(list);
+                        listWithDeferredTodosLink._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                        tree.setProps({list: listWithDeferredTodosLink});
+                        tabs = tree.find('Tabs');
+                        tab = tabs.find('Tab').at(1);
+                        titleNode = mount(tab.prop('title'));
+                    });
+
+                    it('does not contain an icon', () => {
+                        expect(titleNode.find('Glyphicon').length).toEqual(0);
+                    });
+                });
             });
         });
-    })
+    });
+
+    describe('modal', () => {
+        let modal;
+
+        beforeEach(() => {
+            modal = tree.find('Modal').at(0);
+        });
+
+        it('renders', () => {
+            expect(modal.length).toEqual(1);
+        });
+
+        it('has show state matching showUnlockConfirmation', () => {
+            tree.setState({showUnlockConfirmation: true});
+            modal = tree.find('Modal').at(0);
+            expect(modal.prop('show')).toEqual(true);
+        });
+
+        describe('dialog element, when rendered', () => {
+            let dialogElement;
+
+            beforeEach(() => {
+                tree.setState({showUnlockConfirmation: true});
+                modal = tree.find('Modal').at(0);
+                let dialogElementNode = modal.getNode()._modal.getDialogElement()
+                dialogElement = new ReactWrapper(dialogElementNode, dialogElementNode);
+            });
+
+            it('renders', () => {
+                expect(dialogElement.length).toEqual(1);
+            });
+
+            it('contains 2 buttons', () => {
+                expect(dialogElement.find('Button').length).toEqual(2);
+            });
+
+            describe('first button', () => {
+                let button;
+
+                beforeEach(() => {
+                    button = dialogElement.find('Button').at(0);
+                });
+
+                it('updates showUnlockConfirmation state to false on click', () => {
+                    button.simulate('click');
+                    expect(tree.state().showUnlockConfirmation).toBe(false)
+                });
+            });
+
+            describe('second button', () => {
+                let button;
+
+                beforeEach(() => {
+                    button = dialogElement.find('Button').at(1);
+                });
+
+                it('fires unlock list request action with list unlockLink', () => {
+                    button.simulate('click');
+                    expect(mockUnlockListActionFn).toBeCalledWith(unlockLink);
+                });
+
+                it('updates showUnlockConfirmation state to false on click', () => {
+                    button.simulate('click');
+                    expect(tree.state().showUnlockConfirmation).toBe(false)
+                });
+            });
+        });
+    });
 
     describe('list', () => {
         let list;

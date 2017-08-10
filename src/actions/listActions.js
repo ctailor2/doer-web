@@ -13,3 +13,10 @@ export function storeListAction(list = {}) {
 		list: list
 	}
 }
+
+export function unlockListRequestAction(link = {}) {
+	return {
+		type: actionTypes.UNLOCK_LIST_REQUEST_ACTION,
+		link: link
+	}
+}

@@ -7,6 +7,9 @@ import {
     moveTodoRequestAction,
     pullTodosRequestAction
 } from '../actions/todoActions';
+import {
+    unlockListRequestAction
+} from '../actions/listActions';
 import _ from 'lodash';
 import {HotKeys} from 'react-hotkeys';
 import {
@@ -21,12 +24,21 @@ import {
 	Tabs,
 	Tab,
 	ListGroupItem,
+	Modal
 } from 'react-bootstrap';
 
 export class App extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {todo: {task: ''}, submitting: false, activeTab: props.list.name};
+		this.state = {
+		    todo: {task: ''},
+		    submitting: false,
+		    showUnlockConfirmation: false
+		};
+	}
+
+	componentWillReceiveProps(nextProps) {
+	    this.setState({activeTab: nextProps.list.name});
 	}
 
 	render() {
@@ -37,7 +49,30 @@ export class App extends Component {
 					{this.renderTabs()}
 				</Col>
 	        </Row>
+	        {this.renderModal()}
 		</HotKeys>);
+	}
+
+	renderModal() {
+	    return (<Modal show={this.state.showUnlockConfirmation} onHide={this.closeModal.bind(this)}>
+            <Modal.Header closeButton>
+                <Modal.Title>Unlock Later list?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>The Later list can only be unlocked once a day.</Modal.Body>
+            <Modal.Footer>
+                <Button onClick={this.closeModal.bind(this)}>Cancel</Button>
+                <Button onClick={this.handleUnlockClick.bind(this)}>Unlock</Button>
+            </Modal.Footer>
+        </Modal>);
+	}
+
+	closeModal() {
+	    this.setState({showUnlockConfirmation: false});
+	}
+
+	handleUnlockClick() {
+	    this.props.unlockListRequestAction(this.props.list._links.unlock)
+	    this.closeModal();
 	}
 
 	renderForm() {
@@ -58,8 +93,16 @@ export class App extends Component {
 		);
 	}
 
-	handleSelectTab(tabKey) {
-		this.setState({activeTab: tabKey});
+	handleSelectTab(tabKey, event) {
+	    if(tabKey == this.props.list.name) {
+            this.setState({activeTab: tabKey});
+	    } else {
+            if(this.canViewDeferredTodos()) {
+                this.setState({activeTab: tabKey});
+            } else {
+                this.setState({showUnlockConfirmation: true});
+            }
+	    }
 	}
 
 	renderTabs() {
@@ -73,7 +116,7 @@ export class App extends Component {
                         {this.renderReplenishButton()}
                     </ListGroup>
 		        </Tab>
-		        <Tab eventKey={this.props.list.deferredName} title={_.capitalize(this.props.list.deferredName)}>
+		        <Tab eventKey={this.props.list.deferredName} title={this.deferredTodosTab()}>
 					<ListGroup>
                         {this.props.laterTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
@@ -82,6 +125,27 @@ export class App extends Component {
                 </Tab>
             </Tabs>
 		);
+	}
+
+	deferredTodosTab() {
+	    let tabName = _.capitalize(this.props.list.deferredName)
+	    if(this.cannotViewDeferredTodos()) {
+            return (<div>
+                <Glyphicon glyph="lock" /> {tabName}
+            </div>);
+	    } else {
+            return (<div>
+                {tabName}
+            </div>);
+	    }
+	}
+
+	canViewDeferredTodos() {
+	    return !this.cannotViewDeferredTodos();
+	}
+
+	cannotViewDeferredTodos() {
+	    return _.isUndefined(this.props.list._links.deferredTodos);
 	}
 
 	renderReplenishButton() {
@@ -214,5 +278,6 @@ export default connect(mapStateToProps, {
 	createTodoRequestAction,
 	displaceTodoRequestAction,
 	moveTodoRequestAction,
-	pullTodosRequestAction
+	pullTodosRequestAction,
+	unlockListRequestAction
 })(App);

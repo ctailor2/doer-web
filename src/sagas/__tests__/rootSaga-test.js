@@ -19,7 +19,7 @@ import {
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
 	watchPullTodosRequest,
-	watchGetDeferredTodosRequest
+	watchGetDeferredTodosRequest,
 } from '../todoSaga';
 import {
     watchGetBaseResourcesRequest,
@@ -28,7 +28,8 @@ import {
     watchGetHistoryResourcesRequest
 } from '../resourcesSaga';
 import {
-    watchGetListRequest
+    watchGetListRequest,
+    watchUnlockListRequest
 } from '../listSaga';
 import {watchPersistLink} from '../linksSaga';
 import {watchLoadTodosView, watchLoadHistoryView} from '../loadViewSaga';
@@ -59,7 +60,8 @@ describe('rootSaga', () => {
             fork(watchGetCompletedTodosRequest),
             fork(watchPullTodosRequest),
             fork(watchGetDeferredTodosRequest),
-            fork(watchGetListRequest)
+            fork(watchGetListRequest),
+            fork(watchUnlockListRequest)
         ]);
     });
 });
