@@ -33,12 +33,12 @@ export class App extends Component {
 		this.state = {
 		    todo: {task: ''},
 		    submitting: false,
-		    showUnlockConfirmation: false
+		    showUnlockConfirmation: false,
+		    activeTab: props.list.name
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-	    this.setState({activeTab: nextProps.list.name});
 	}
 
 	render() {
@@ -129,23 +129,19 @@ export class App extends Component {
 
 	deferredTodosTab() {
 	    let tabName = _.capitalize(this.props.list.deferredName)
-	    if(this.cannotViewDeferredTodos()) {
+	    if(this.canViewDeferredTodos()) {
             return (<div>
-                <Glyphicon glyph="lock" /> {tabName}
+                {tabName}
             </div>);
 	    } else {
             return (<div>
-                {tabName}
+                <Glyphicon glyph="lock" /> {tabName}
             </div>);
 	    }
 	}
 
 	canViewDeferredTodos() {
-	    return !this.cannotViewDeferredTodos();
-	}
-
-	cannotViewDeferredTodos() {
-	    return _.isUndefined(this.props.list._links.deferredTodos);
+	    return !_.isUndefined(this.props.list._links.deferredTodos);
 	}
 
 	renderReplenishButton() {

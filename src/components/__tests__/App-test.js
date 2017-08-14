@@ -60,16 +60,11 @@ describe('App', () => {
     });
 
     it('has default state', () => {
-        expect(tree.state()).toEqual({todo: {task: ''}, submitting: false, showUnlockConfirmation: false});
-    });
-
-    describe('upon receiving props', () => {
-        beforeEach(() => {
-            tree.setProps({list: list});
-        });
-
-        it('sets activeTab to list name', () => {
-            expect(tree.state().activeTab).toEqual('name');
+        expect(tree.state()).toEqual({
+            todo: {task: ''},
+            submitting: false,
+            showUnlockConfirmation: false,
+            activeTab: 'name'
         });
     });
 

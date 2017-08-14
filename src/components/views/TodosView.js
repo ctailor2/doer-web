@@ -27,7 +27,7 @@ export class TodosView extends Component {
 	}
 
 	renderView() {
-		if(this.props.viewLoaded) {
+		if(!_.isEmpty(this.props.list)) {
 			return (<App />);
 		}
 		return (<Loader />)
@@ -36,7 +36,7 @@ export class TodosView extends Component {
 
 export const mapStateToProps = (state) => {
 	return {
-		viewLoaded: state.loadView.todosViewLoaded
+		list: state.list
 	};
 }
 

@@ -42,15 +42,15 @@ describe('HistoryView', () => {
         expect(tree.find('Loader').length).toBe(1);
     });
 
-    it('renders the history when view is loaded', () => {
-        tree.setProps({viewLoaded: true});
+    it('renders the history when todos is not empty', () => {
+        tree.setProps({todos: [1, 2, 3]});
         expect(tree.find(History).length).toBe(1);
     });
 
     it('maps state to props', () => {
-        let state = {loadView: {historyViewLoaded: true}};
+        let state = {todos: {completed: [1, 2, 3]}};
         expect(mapStateToProps(state)).toEqual({
-            viewLoaded: true
+            todos: [1, 2, 3]
         });
     });
 });

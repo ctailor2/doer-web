@@ -42,15 +42,16 @@ describe('TodosView', () => {
         expect(tree.find('Loader').length).toBe(1);
     });
 
-    it('renders the app when view is loaded', () => {
-        tree.setProps({viewLoaded: true});
+    it('renders the app when list is not empty', () => {
+        tree.setProps({list: {name: 'cool list'}});
         expect(tree.find(App).length).toBe(1);
     });
 
 	it('maps state to props', () => {
-	    let state = {loadView: {todosViewLoaded: true}};
+	    let list = {name: 'cool list'};
+	    let state = {list: list};
 	    expect(mapStateToProps(state)).toEqual({
-	        viewLoaded: true
+	        list: list
 	    });
 	});
 });

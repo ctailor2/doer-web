@@ -69,12 +69,6 @@ describe('loadTodosView', () => {
                 iterator.next(todoResourcesResponse);
                 expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
             });
-
-    	    it('fires load todos view complete action on request success', () => {
-                iterator.next(todoResourcesResponse);
-                iterator.next(todoResourcesResponse);
-    	        expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'LOAD_TODOS_VIEW_COMPLETE_ACTION'}));
-    	    });
         });
     });
 });
@@ -146,12 +140,6 @@ describe('loadHistoryView', () => {
             it('fires get completed todos request action', () => {
                 iterator.next(historyResourcesResponse);
                 expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'GET_COMPLETED_TODOS_REQUEST_ACTION', link: completedTodosLink}));
-            });
-
-            it('fires load history view complete action on request success', () => {
-                iterator.next(historyResourcesResponse);
-                iterator.next(historyResourcesResponse);
-                expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'LOAD_HISTORY_VIEW_COMPLETE_ACTION'}));
             });
         });
     });

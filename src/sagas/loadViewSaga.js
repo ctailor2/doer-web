@@ -16,7 +16,6 @@ export function* loadTodosView() {
     	if(todoResourcesResponse) {
     	    yield put(storeLinksAction(todoResourcesResponse.data._links));
             yield put(getListRequestAction(todoResourcesResponse.data._links.list));
-            yield put(loadTodosViewCompleteAction());
     	} else if (todoResourcesError) {
             // TODO: handle error
     	}
@@ -38,7 +37,6 @@ export function* loadHistoryView() {
         if (historyResourcesResponse) {
             yield put(storeLinksAction(historyResourcesResponse.data._links));
             yield put(getCompletedTodosRequestAction(historyResourcesResponse.data._links.completedTodos));
-            yield put(loadHistoryViewCompleteAction());
         } else if (historyResourcesError) {
             // TODO: handle error
         }

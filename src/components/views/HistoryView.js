@@ -24,7 +24,7 @@ export class HistoryView extends Component {
     }
 
     renderView() {
-        if(this.props.viewLoaded) {
+        if(!_.isEmpty(this.props.todos)) {
             return (<History />);
         }
         return (<Loader />)
@@ -33,7 +33,7 @@ export class HistoryView extends Component {
 
 export const mapStateToProps = (state) => {
     return {
-        viewLoaded: state.loadView.historyViewLoaded
+        todos: state.todos.completed
     };
 }
 
