@@ -38,9 +38,6 @@ export class App extends Component {
 		};
 	}
 
-	componentWillReceiveProps(nextProps) {
-	}
-
 	render() {
 		return (<HotKeys handlers={{cancel: (event) => this.handleCancelTaskSubmit(event),}}>
 	        <Row>
