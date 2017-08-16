@@ -131,8 +131,9 @@ export class App extends Component {
 	renderDeferredTodosTabTitle() {
 	    let tabName = _.capitalize(this.props.list.deferredName)
 	    if(this.canViewDeferredTodos()) {
+    	    let unlockDuration = new Date(this.props.list.unlockDuration).toISOString().substr(14, 5)
             return (<div>
-                {tabName}
+                {tabName} {unlockDuration}
             </div>);
 	    } else {
             return (<div>

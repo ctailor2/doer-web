@@ -301,9 +301,10 @@ describe('App', () => {
 
                 describe('when the deferredTodos link is present', () => {
                     beforeEach(() => {
-                        let listWithDeferredTodosLink = _.clone(list);
-                        listWithDeferredTodosLink._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
-                        tree.setProps({list: listWithDeferredTodosLink});
+                        let listWithProps = _.clone(list);
+                        listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                        listWithProps.unlockDuration = 1700000;
+                        tree.setProps({list: listWithProps});
                     });
 
                     it('updates activeTab state to tabKey', () => {
@@ -403,9 +404,10 @@ describe('App', () => {
 
             describe('when the deferredTodos link is present', () => {
                 beforeEach(() => {
-                    let listWithDeferredTodosLink = _.clone(list);
-                    listWithDeferredTodosLink._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
-                    tree.setProps({list: listWithDeferredTodosLink});
+                    let listWithProps = _.clone(list);
+                    listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                    listWithProps.unlockDuration = 1700000;
+                    tree.setProps({list: listWithProps});
                     tabs = tree.find('Tabs');
                     tab = tabs.find('Tab').at(1);
                 });
@@ -432,9 +434,10 @@ describe('App', () => {
 
                 describe('when the deferredTodos link is present', () => {
                     beforeEach(() => {
-                        let listWithDeferredTodosLink = _.clone(list);
-                        listWithDeferredTodosLink._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
-                        tree.setProps({list: listWithDeferredTodosLink});
+                        let listWithProps = _.clone(list);
+                        listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                        listWithProps.unlockDuration = 1700000;
+                        tree.setProps({list: listWithProps});
                         tabs = tree.find('Tabs');
                         tab = tabs.find('Tab').at(1);
                         titleNode = mount(tab.prop('title'));
@@ -442,6 +445,10 @@ describe('App', () => {
 
                     it('does not contain an icon', () => {
                         expect(titleNode.find('Glyphicon').length).toEqual(0);
+                    });
+
+                    it('contains the unlock duration in minutes and seconds', () => {
+                        expect(titleNode.text()).toContain('28:20');
                     });
                 });
             });
