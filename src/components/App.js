@@ -91,7 +91,7 @@ export class App extends Component {
 	}
 
 	handleSelectTab(tabKey, event) {
-	    if(tabKey == this.props.list.name) {
+	    if(tabKey === this.props.list.name) {
             this.setState({activeTab: tabKey});
 	    } else {
             if(this.canViewDeferredTodos()) {
@@ -113,7 +113,7 @@ export class App extends Component {
                         {this.renderReplenishButton()}
                     </ListGroup>
 		        </Tab>
-		        <Tab eventKey={this.props.list.deferredName} title={this.deferredTodosTab()}>
+		        <Tab eventKey={this.props.list.deferredName} title={this.renderDeferredTodosTabTitle()} disabled={this.deferredTodosTabIsDisabled()}>
 					<ListGroup>
                         {this.props.laterTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
@@ -124,7 +124,11 @@ export class App extends Component {
 		);
 	}
 
-	deferredTodosTab() {
+	deferredTodosTabIsDisabled() {
+	    return !this.canViewDeferredTodos() && _.isUndefined(this.props.list._links.unlock)
+	}
+
+	renderDeferredTodosTabTitle() {
 	    let tabName = _.capitalize(this.props.list.deferredName)
 	    if(this.canViewDeferredTodos()) {
             return (<div>

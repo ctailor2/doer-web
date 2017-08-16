@@ -34,14 +34,12 @@ describe('App', () => {
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
         pullLink = {href: 'http://some.api/pullTodos'};
-        unlockLink = {href: 'http://some.api/unlockTodos'};
         list = {
             name: 'name',
             deferredName: 'deferredname',
             _links: {
                 create: todoNowLink,
-                createDeferred: todoLaterLink,
-                unlock: unlockLink
+                createDeferred: todoLaterLink
             }
         };
         tree = mount(<App list={list}
@@ -385,6 +383,38 @@ describe('App', () => {
                 expect(tab.prop('title')).not.toBeUndefined();
             });
 
+            it('is disabled by default', () => {
+                expect(tab.prop('disabled')).toBe(true);
+            });
+
+            describe('when the unlock link is present', () => {
+                beforeEach(() => {
+                    let listWithUnlockLink = _.clone(list);
+                    listWithUnlockLink._links.unlock = {href: 'http://some.api/unlock'}
+                    tree.setProps({list: listWithUnlockLink});
+                    tabs = tree.find('Tabs');
+                    tab = tabs.find('Tab').at(1);
+                });
+
+                it('is not disabled', () => {
+                    expect(tab.prop('disabled')).toBe(false);
+                });
+            });
+
+            describe('when the deferredTodos link is present', () => {
+                beforeEach(() => {
+                    let listWithDeferredTodosLink = _.clone(list);
+                    listWithDeferredTodosLink._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                    tree.setProps({list: listWithDeferredTodosLink});
+                    tabs = tree.find('Tabs');
+                    tab = tabs.find('Tab').at(1);
+                });
+
+                it('is not disabled', () => {
+                    expect(tab.prop('disabled')).toBe(false);
+                });
+            });
+
             describe('title', () => {
                 let titleNode;
 
@@ -436,10 +466,14 @@ describe('App', () => {
         });
 
         describe('dialog element, when rendered', () => {
-            let dialogElement;
+            let dialogElement, unlockLink;
 
             beforeEach(() => {
                 tree.setState({showUnlockConfirmation: true});
+                let listWithUnlockLink = _.clone(list);
+                unlockLink = {href: 'http://some.api/unlock'};
+                listWithUnlockLink._links.unlock = unlockLink;
+                tree.setProps({list: listWithUnlockLink});
                 modal = tree.find('Modal').at(0);
                 let dialogElementNode = modal.getNode()._modal.getDialogElement()
                 dialogElement = new ReactWrapper(dialogElementNode, dialogElementNode);

@@ -2,7 +2,6 @@ import {takeLatest} from 'redux-saga';
 import * as actionTypes from '../constants/actionTypes';
 import {fetchData} from './sagaHelper';
 import {call, put} from 'redux-saga/effects';
-import {loadTodosViewCompleteAction, loadHistoryViewCompleteAction} from '../actions/loadViewActions';
 import {storeLinksAction} from '../actions/linkActions';
 import {getCompletedTodosRequestAction} from '../actions/todoActions';
 import {getListRequestAction} from '../actions/listActions';
