@@ -1,5 +1,3 @@
-jest.unmock('../linksReducer');
-
 import {links} from '../linksReducer';
 
 describe('links', () => {

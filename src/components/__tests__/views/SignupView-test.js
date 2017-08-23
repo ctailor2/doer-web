@@ -1,5 +1,3 @@
-jest.unmock('../../views/SignupView');
-
 import {SignupView, mapStateToProps} from '../../views/SignupView';
 import {shallow, mount} from 'enzyme';
 import React from 'react';
@@ -34,7 +32,16 @@ describe('SignupView', () => {
     });
 
     it('fires get base resources action when mounted', () => {
-        mount(<SignupView signupRequestAction={signupRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+        const store = {
+            subscribe: () => {},
+            dispatch: () => {},
+            getState: () => {}
+        };
+        const options = {
+            context: { store },
+            childContextTypes: { store: React.PropTypes.object.isRequired }
+        }
+        mount(<SignupView signupRequestAction={signupRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 

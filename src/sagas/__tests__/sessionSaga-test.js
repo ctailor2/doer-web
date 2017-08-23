@@ -1,10 +1,3 @@
-jest.unmock('../sagaHelper');
-jest.unmock('../sessionSaga');
-jest.unmock('../../actions/sessionActions');
-jest.unmock('../../actions/todoActions');
-jest.unmock('../../actions/resourcesActions');
-jest.unmock('../../actions/linkActions');
-
 import {
     watchSignupRequest,
     signupRequest,

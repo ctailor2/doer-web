@@ -1,5 +1,3 @@
-jest.unmock('../../views/HistoryView');
-
 import {shallow} from 'enzyme';
 import React from 'react';
 import {HistoryView, mapStateToProps} from '../../views/HistoryView';

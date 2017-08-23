@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import Todo from './Todo';
+import TaskForm from './TaskForm';
 import {connect} from 'react-redux';
 import {
-    createTodoRequestAction,
     displaceTodoRequestAction,
     moveTodoRequestAction,
     pullTodosRequestAction
@@ -11,14 +11,10 @@ import {
     unlockListRequestAction
 } from '../actions/listActions';
 import _ from 'lodash';
-import {HotKeys} from 'react-hotkeys';
 import {
 	Row,
 	Col,
-	FormGroup,
-	FormControl,
 	Button,
-	InputGroup,
 	ListGroup,
 	Glyphicon,
 	Tabs,
@@ -39,15 +35,27 @@ export class App extends Component {
 	}
 
 	render() {
-		return (<HotKeys handlers={{cancel: (event) => this.handleCancelTaskSubmit(event),}}>
+		return (<div>
 	        <Row>
 				<Col lg={6} lgOffset={3}>
-					{this.renderForm()}
+					<TaskForm task={this.state.todo.task}
+					          submitting={this.state.submitting}
+					          links={this.props.list._links}
+					          handleTaskChange={this.handleTaskChange.bind(this)}
+					          handleSubmitChange={this.handleSubmitChange.bind(this)} />
 					{this.renderTabs()}
 				</Col>
 	        </Row>
 	        {this.renderModal()}
-		</HotKeys>);
+		</div>);
+	}
+
+	handleTaskChange(task) {
+	    this.setState({todo: {task: task}});
+	}
+
+	handleSubmitChange(isSubmitting) {
+	    this.setState({submitting: isSubmitting});
 	}
 
 	renderModal() {
@@ -70,24 +78,6 @@ export class App extends Component {
 	handleUnlockClick() {
 	    this.props.unlockListRequestAction(this.props.list._links.unlock)
 	    this.closeModal();
-	}
-
-	renderForm() {
-		return (
-			<div>
-                <FormGroup bsSize="large">
-                    <InputGroup>
-                        <HotKeys handlers={{submit: (event) => this.handleTaskSubmit(event)}}>
-	                        <FormControl
-	                            type="text"
-	                            inputRef={ref => { this.taskInput = ref; }}
-	                            onChange={this.handleTodoDescriptionOnChange.bind(this)}/>
-                        </HotKeys>
-                        {this.renderFormButtonGroup()}
-                    </InputGroup>
-                </FormGroup>
-            </div>
-		);
 	}
 
 	handleSelectTab(tabKey, event) {
@@ -158,78 +148,6 @@ export class App extends Component {
 		this.props.pullTodosRequestAction(this.props.list._links.pull);
 	}
 
-	handleCancelTaskSubmit() {
-		if(this.state.submitting) {
-			this.toggleSubmit();
-			this.taskInput.focus();
-		}
-	}
-
-	handleTaskSubmit() {
-		if(this.todoHasTask()) {
-			this.toggleSubmit();
-		}
-	}
-
-	renderFormButtonGroup() {
-		if(this.state.submitting) {
-			return(<InputGroup.Button>
-					{this.renderNowButton()}
-					<Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.list._links.createDeferred)}>Later</Button>
-					<Button type="button" bsStyle="danger" bsSize="large" onClick={this.handleCancelTaskSubmit.bind(this)}>
-						<Glyphicon glyph="remove"/>
-					</Button>
-				</InputGroup.Button>);
-		} else {
-			return(<InputGroup.Button>
-					<Button type="button" bsStyle="primary" bsSize="large"
-			            disabled={this.submitButtonIsDisabled()}
-			            onClick={this.toggleSubmit.bind(this)}>
-			                Do!
-					</Button>
-				</InputGroup.Button>);
-		}
-	}
-
-	renderNowButton() {
-		if(this.canScheduleForNow()) {
-			return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.list._links.create)}>Now</Button>);
-		}
-	}
-
-	canScheduleForNow() {
-		return !_.isUndefined(this.props.list._links.create);
-	}
-
-	toggleSubmit() {
-		this.setState({submitting: !this.state.submitting});
-	}
-
-	submitTodo(link) {
-		let todo = this.state.todo;
-		this.props.createTodoRequestAction(link, todo);
-		this.toggleSubmit();
-		this.resetTask();
-	}
-
-	resetTask() {
-		this.setState({todo: {task: ''}});
-		this.taskInput.value = '';
-		this.taskInput.focus();
-	}
-
-	handleTodoDescriptionOnChange(event) {
-		this.setState({todo: {task: event.target.value}});
-	}
-
-	submitButtonIsDisabled() {
-		return !this.todoHasTask();
-	}
-
-	todoHasTask() {
-		return this.state.todo.task.match(/\w+/);
-	}
-
 	renderList(todos) {
 		return(<ListGroup>
 			{todos.map((todo, index) => {
@@ -238,15 +156,10 @@ export class App extends Component {
 		</ListGroup>);
 	}
 
-	canBeDisplaced(todo) {
-		return this.state.submitting && !_.isUndefined(todo._links.displace);
-	}
-
 	displaceTodo(link) {
 		let todo = this.state.todo;
 		this.props.displaceTodoRequestAction(link, todo);
-		this.toggleSubmit();
-        this.resetTask();
+		this.setState({todo: {task: ''}, submitting: false});
 	}
 
 	moveItem(link) {
@@ -273,7 +186,6 @@ export const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {
-	createTodoRequestAction,
 	displaceTodoRequestAction,
 	moveTodoRequestAction,
 	pullTodosRequestAction,

@@ -1,5 +1,3 @@
-jest.unmock('../../views/TodosView');
-
 import {shallow} from 'enzyme';
 import React from 'react';
 import {TodosView, mapStateToProps} from '../../views/TodosView';

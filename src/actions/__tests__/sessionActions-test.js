@@ -1,5 +1,3 @@
-jest.unmock('../sessionActions');
-
 import {
 	signupRequestAction,
 	loginRequestAction,

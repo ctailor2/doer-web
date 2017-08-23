@@ -1,7 +1,3 @@
-jest.unmock('../resourcesSaga');
-jest.unmock('../../actions/linkActions');
-jest.unmock('../../actions/todoActions');
-
 import {
     getRootResourcesRequest,
     watchGetRootResourcesRequest,

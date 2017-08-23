@@ -1,5 +1,3 @@
-jest.unmock('../resourcesActions');
-
 import {
     getRootResourcesRequestAction,
     getBaseResourcesRequestAction,

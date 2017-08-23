@@ -1,5 +1,3 @@
-jest.unmock('../../views/LoginView');
-
 import {LoginView, mapStateToProps} from '../../views/LoginView';
 import {shallow, mount} from 'enzyme';
 import React from 'react';
@@ -33,7 +31,16 @@ describe('LoginView', () => {
     });
 
     it('fires get base resources action when mounted', () => {
-        mount(<LoginView loginRequestAction={loginRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+        const store = {
+            subscribe: () => {},
+            dispatch: () => {},
+            getState: () => {}
+        };
+        const options = {
+            context: { store },
+            childContextTypes: { store: React.PropTypes.object.isRequired }
+        }
+        mount(<LoginView loginRequestAction={loginRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 

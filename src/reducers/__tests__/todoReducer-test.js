@@ -1,5 +1,3 @@
-jest.unmock('../todoReducer');
-
 import {todos} from '../todoReducer';
 
 describe('todos', () => {
@@ -17,10 +15,10 @@ describe('todos', () => {
                 ]
             }
             let todosState = todos({inactive: [{task: 'one'}]}, action);
-            expect(todosState.inactive).toContain({task: 'one'});
-            expect(todosState.active).toContain({task: 'this'}, {task: 'other'});
-            expect(todosState.inactive).not.toContain({task: 'this'});
-            expect(todosState.inactive).not.toContain({task: 'that'});
+            expect(todosState.inactive).toContainEqual({task: 'one'});
+            expect(todosState.active).toContainEqual({task: 'this'}, {task: 'other'});
+            expect(todosState.inactive).not.toContainEqual({task: 'this'});
+            expect(todosState.inactive).not.toContainEqual({task: 'that'});
         });
     });
 
@@ -34,10 +32,10 @@ describe('todos', () => {
                 ]
             }
             let todosState = todos({active: [{task: 'one'}]}, action);
-            expect(todosState.active).toContain({task: 'one'});
-            expect(todosState.inactive).toContain({task: 'this'}, {task: 'that'});
-            expect(todosState.active).not.toContain({task: 'this'});
-            expect(todosState.active).not.toContain({task: 'that'});
+            expect(todosState.active).toContainEqual({task: 'one'});
+            expect(todosState.inactive).toContainEqual({task: 'this'}, {task: 'that'});
+            expect(todosState.active).not.toContainEqual({task: 'this'});
+            expect(todosState.active).not.toContainEqual({task: 'that'});
         });
 	});
 
@@ -53,7 +51,7 @@ describe('todos', () => {
             let todosState = todos({
                 active: [{task: 'one', completedAt: '2017-02-20T22:50:10+0000'}]
             }, action);
-            expect(todosState.completed).toContain(
+            expect(todosState.completed).toContainEqual(
                 {task: 'this', completedAt: new Date('2017-02-25T14:20:20+0000')},
                 {task: 'that', completedAt: new Date('2017-02-23T00:15:00+0000')}
             );

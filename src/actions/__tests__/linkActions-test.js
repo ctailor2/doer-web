@@ -1,5 +1,3 @@
-jest.unmock('../linkActions');
-
 import {storeLinksAction, persistLinkAction} from '../linkActions';
 
 describe('storeLinksAction', () => {

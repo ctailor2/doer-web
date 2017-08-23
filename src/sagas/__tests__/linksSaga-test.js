@@ -1,5 +1,3 @@
-jest.unmock('../linksSaga');
-
 import {persistLink, watchPersistLink} from '../linksSaga';
 import {takeLatest} from 'redux-saga';
 

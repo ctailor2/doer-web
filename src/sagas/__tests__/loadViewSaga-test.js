@@ -1,9 +1,3 @@
-jest.unmock('../loadViewSaga');
-jest.unmock('../../actions/loadViewActions');
-jest.unmock('../../actions/linkActions');
-jest.unmock('../../actions/todoActions');
-jest.unmock('../../actions/listActions');
-
 import {loadTodosView, watchLoadTodosView, loadHistoryView, watchLoadHistoryView} from '../loadViewSaga';
 import {takeLatest} from 'redux-saga';
 import {fetchData} from '../sagaHelper'

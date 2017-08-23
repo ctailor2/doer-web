@@ -1,10 +1,3 @@
-jest.unmock('../todoSaga');
-jest.unmock('../sessionSaga');
-jest.unmock('../../actions/todoActions');
-jest.unmock('../../actions/linkActions');
-jest.unmock('../../actions/resourcesActions');
-jest.unmock('../../actions/listActions');
-
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {

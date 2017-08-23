@@ -1,6 +1,3 @@
-jest.unmock('../Todo');
-jest.unmock('../DraggableListGroupItem');
-
 import {Todo} from '../Todo';
 import React, {Component} from 'react';
 import {mount, shallow} from 'enzyme';

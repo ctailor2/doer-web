@@ -1,5 +1,3 @@
-jest.unmock('../loadViewActions');
-
 import {
 	loadTodosViewAction,
 	loadHistoryViewAction

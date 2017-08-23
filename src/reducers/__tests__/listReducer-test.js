@@ -1,5 +1,3 @@
-jest.unmock('../listReducer');
-
 import {list} from '../listReducer';
 
 describe('list', () => {

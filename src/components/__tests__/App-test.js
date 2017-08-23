@@ -1,14 +1,17 @@
-jest.unmock('../App');
-
 import _ from 'lodash';
 import {App, mapStateToProps} from '../App';
 import Todo from '../Todo';
+import TaskForm from '../TaskForm';
 import React from 'react';
-import {mount, ReactWrapper} from 'enzyme';
+import {shallow} from 'enzyme';
+import {
+    Tabs,
+    Tab,
+    Modal
+} from 'react-bootstrap';
 
 describe('App', () => {
     let tree,
-    input,
     list,
     nowTodos,
     laterTodos,
@@ -17,14 +20,12 @@ describe('App', () => {
     todoLaterLink,
     pullLink,
     unlockLink,
-    mockCreateTodoActionFn,
     mockDisplaceTodoActionFn,
     mockPullTodosActionFn,
     mockMoveTodoActionFn,
     mockUnlockListActionFn;
 
     beforeEach(() => {
-        mockCreateTodoActionFn = jest.fn();
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
         mockPullTodosActionFn = jest.fn();
@@ -42,15 +43,13 @@ describe('App', () => {
                 createDeferred: todoLaterLink
             }
         };
-        tree = mount(<App list={list}
+        tree = shallow(<App list={list}
                           nowTodos={nowTodos}
                           laterTodos={laterTodos}
-                          createTodoRequestAction={mockCreateTodoActionFn}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
                           pullTodosRequestAction={mockPullTodosActionFn}
                           unlockListRequestAction={mockUnlockListActionFn}/>);
-        input = tree.node.taskInput;
     });
 
     it('renders', () => {
@@ -66,173 +65,50 @@ describe('App', () => {
         });
     });
 
-    describe('text input', () => {
-        let formControl;
+    describe('TaskForm', () => {
+        let taskForm;
 
         beforeEach(() => {
-            formControl = tree.find('FormControl');
+            taskForm = tree.find(TaskForm);
         });
 
         it('renders', () => {
-            expect(formControl.length).toBe(1);
+            expect(taskForm.length).toEqual(1);
         });
 
-        it('has no value by default', () => {
-            expect(input.value).toEqual('');
+        it('has task matching state', () => {
+            expect(taskForm.prop('task')).toEqual('');
         });
 
-        it('updates todo task state on change', () => {
-            formControl.simulate('change', {target: {value: 'things'}});
-            expect(tree.state().todo.task).toEqual('things');
+        it('has submitting matching state', () => {
+            expect(taskForm.prop('submitting')).toBe(false);
         });
 
-        describe('when todo has a task', () => {
+        it('has links matching list links', () => {
+            expect(taskForm.prop('links')).toEqual(list._links);
+        });
+
+        describe('task change handler', () => {
+            let task = 'someTask';
+
             beforeEach(() => {
-                tree.setState({todo: {task: 'some task'}});
+                taskForm.prop('handleTaskChange')(task);
             });
 
-            it('toggles the submitting state to true on pressing the "submit" hotkey', () => {
-                tree.find('HotKeys').at(1).props().handlers.submit();
-				expect(tree.state().submitting).toBe(true);
+            it('sets task on state', () => {
+                expect(tree.state().todo).toEqual({task: task});
             });
-        })
+        });
 
-        describe('when submitting state is true', () => {
+        describe('submit change handler', () => {
+            let isSubmitting = true;
+
             beforeEach(() => {
-                tree.setState({submitting: true});
-                formControl = tree.find('FormControl');
+                taskForm.prop('handleSubmitChange')(isSubmitting);
             });
 
-            it('toggles the submitting state to false on pressing the "cancel" hotkey', () => {
-                tree.find('HotKeys').at(0).props().handlers.cancel();
-                expect(tree.state().submitting).toBe(false);
-            });
-        });
-    });
-
-    describe('buttons', () => {
-        let buttons;
-
-        beforeEach(() => {
-            buttons = tree.find('Button');
-        });
-
-        it('renders 1 by default', () => {
-            expect(buttons.length).toBe(1);
-        });
-
-
-        describe('default button', () => {
-            it('is disabled by default', () => {
-                let button = buttons.at(0);
-                expect(button.prop('disabled')).toBe(true);
-            });
-
-            it('is disabled when the todo has a task consisting entirely of whitespace', () => {
-				tree.setState({todo: {task: '  '}});
-				let button = tree.find('Button').at(0);
-				expect(button.prop('disabled')).toBe(true);
-            });
-
-			it('is enabled when the todo has a task', () => {
-				tree.setState({todo: {task: 'hey'}});
-				let button = tree.find('Button').at(0);
-				expect(button.prop('disabled')).toBe(false);
-			});
-
-			it('toggles the submitting state to true on click', () => {
-				tree.setState({todo: {task: 'hey'}});
-				let button = tree.find('Button').at(0);
-				button.simulate('click');
-				expect(tree.state().submitting).toBe(true);
-            });
-        });
-
-        describe('when submitting', () => {
-            beforeEach(() => {
-                tree.setState({todo: {task: 'something'}, submitting: true});
-				input.value = 'something';
-                buttons = tree.find('Button');
-            });
-
-            it('renders 3 buttons when all links are present', () => {
-                expect(buttons.length).toBe(3);
-            });
-
-            it('renders 2 buttons when create link is missing', () => {
-                let listWithoutCreateLink = _.clone(list);
-                delete listWithoutCreateLink._links.create
-                tree.setProps({list: listWithoutCreateLink})
-                buttons = tree.find('Button');
-                expect(buttons.length).toBe(2);
-            });
-
-            describe('on clicking first button', () => {
-                beforeEach(() => {
-                    buttons.at(0).simulate('click');
-                });
-
-	            it('fires create todo action with todoNowLink', () => {
-	                expect(mockCreateTodoActionFn).toBeCalledWith(todoNowLink, {task: 'something'});
-	            });
-
-	            it('toggles submitting state to false', () => {
-                    expect(tree.state().submitting).toBe(false);
-	            });
-
-	            it('clears todo task state', () => {
-	                expect(tree.state().todo.task).toEqual('');
-	            });
-
-	            it('clears the todo input value', () => {
-					expect(input.value).toEqual('');
-	            });
-
-	            it('puts focus on the input', () => {
-					// TODO: Cannot get this test to fail
-					expect(document.activeElement).toEqual(input);
-	            });
-            });
-
-            describe('on clicking second button', () => {
-                beforeEach(() => {
-                    buttons.at(1).simulate('click');
-                });
-
-	            it('fires create todo action with todoLaterLink', () => {
-	                expect(mockCreateTodoActionFn).toBeCalledWith(todoLaterLink, {task: 'something'});
-	            });
-
-	            it('toggles submitting state to false', () => {
-                    expect(tree.state().submitting).toBe(false);
-	            });
-
-	            it('clears todo task state', () => {
-	                expect(tree.state().todo.task).toEqual('');
-	            });
-
-	            it('clears the todo input value', () => {
-					expect(input.value).toEqual('');
-	            });
-
-	            it('puts focus on the input', () => {
-					// TODO: Cannot get this test to fail
-					expect(document.activeElement).toEqual(input);
-	            });
-            });
-
-            describe('on clicking third button', () => {
-                beforeEach(() => {
-                    buttons.at(2).simulate('click');
-                });
-
-				it('toggles submitting state to false', () => {
-					expect(tree.state().submitting).toBe(false);
-				});
-
-				it('puts focus on the input', () => {
-					expect(document.activeElement).toEqual(input);
-				});
+            it('sets submitting on state', () => {
+                expect(tree.state().submitting).toBe(isSubmitting);
             });
         });
     });
@@ -241,7 +117,7 @@ describe('App', () => {
         let tabs;
 
         beforeEach(() => {
-            tabs = tree.find('Tabs');
+            tabs = tree.find(Tabs);
         });
 
         it('renders', () => {
@@ -249,13 +125,13 @@ describe('App', () => {
         });
 
         it('contains 2', () => {
-            expect(tabs.find('Tab').length).toBe(2);
+            expect(tabs.find(Tab).length).toBe(2);
         });
 
         describe('for activeTab state', () => {
             beforeEach(() => {
                 tree.setState({activeTab: 'somethingElse'});
-                tabs = tree.find('Tabs');
+                tabs = tree.find(Tabs);
             });
 
             it('has the matching activeKey', () => {
@@ -319,7 +195,7 @@ describe('App', () => {
             let tab;
 
             beforeEach(() => {
-                tab = tabs.find('Tab').at(0);
+                tab = tabs.find(Tab).at(0);
             });
 
             it('has eventKey matching list name', () => {
@@ -345,8 +221,8 @@ describe('App', () => {
                     let listWithPullLink = _.clone(list);
                     listWithPullLink._links.pull = pullLink;
                     tree.setProps({list: listWithPullLink});
-                    tabs = tree.find('Tabs');
-                    tab = tabs.find('Tab').at(0);
+                    tabs = tree.find(Tabs);
+                    tab = tabs.find(Tab).at(0);
                     item = tab.find('ListGroupItem').find('[onClick]');
                     expect(item.length).toBe(1);
                 });
@@ -356,8 +232,8 @@ describe('App', () => {
                         let listWithPullLink = _.clone(list);
                         listWithPullLink._links.pull = pullLink;
                         tree.setProps({list: listWithPullLink});
-	                    tabs = tree.find('Tabs');
-	                    tab = tabs.find('Tab').at(0);
+	                    tabs = tree.find(Tabs);
+	                    tab = tabs.find(Tab).at(0);
 	                    item = tab.find('ListGroupItem').find('[onClick]');
                     });
 
@@ -373,7 +249,7 @@ describe('App', () => {
             let tab;
 
             beforeEach(() => {
-                tab = tabs.find('Tab').at(1);
+                tab = tabs.find(Tab).at(1);
             });
 
             it('has eventKey matching deferredName', () => {
@@ -393,8 +269,8 @@ describe('App', () => {
                     let listWithUnlockLink = _.clone(list);
                     listWithUnlockLink._links.unlock = {href: 'http://some.api/unlock'}
                     tree.setProps({list: listWithUnlockLink});
-                    tabs = tree.find('Tabs');
-                    tab = tabs.find('Tab').at(1);
+                    tabs = tree.find(Tabs);
+                    tab = tabs.find(Tab).at(1);
                 });
 
                 it('is not disabled', () => {
@@ -408,8 +284,8 @@ describe('App', () => {
                     listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
                     listWithProps.unlockDuration = 1700000;
                     tree.setProps({list: listWithProps});
-                    tabs = tree.find('Tabs');
-                    tab = tabs.find('Tab').at(1);
+                    tabs = tree.find(Tabs);
+                    tab = tabs.find(Tab).at(1);
                 });
 
                 it('is not disabled', () => {
@@ -421,7 +297,7 @@ describe('App', () => {
                 let titleNode;
 
                 beforeEach(() => {
-                    titleNode = mount(tab.prop('title'));
+                    titleNode = shallow(tab.prop('title'));
                 });
 
                 it('contains capitalized deferredName', () => {
@@ -438,9 +314,9 @@ describe('App', () => {
                         listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
                         listWithProps.unlockDuration = 1700000;
                         tree.setProps({list: listWithProps});
-                        tabs = tree.find('Tabs');
-                        tab = tabs.find('Tab').at(1);
-                        titleNode = mount(tab.prop('title'));
+                        tabs = tree.find(Tabs);
+                        tab = tabs.find(Tab).at(1);
+                        titleNode = shallow(tab.prop('title'));
                     });
 
                     it('does not contain an icon', () => {
@@ -459,7 +335,7 @@ describe('App', () => {
         let modal;
 
         beforeEach(() => {
-            modal = tree.find('Modal').at(0);
+            modal = tree.find(Modal).at(0);
         });
 
         it('renders', () => {
@@ -468,12 +344,12 @@ describe('App', () => {
 
         it('has show state matching showUnlockConfirmation', () => {
             tree.setState({showUnlockConfirmation: true});
-            modal = tree.find('Modal').at(0);
+            modal = tree.find(Modal).at(0);
             expect(modal.prop('show')).toEqual(true);
         });
 
-        describe('dialog element, when rendered', () => {
-            let dialogElement, unlockLink;
+        describe('when rendered', () => {
+            let unlockLink;
 
             beforeEach(() => {
                 tree.setState({showUnlockConfirmation: true});
@@ -481,47 +357,53 @@ describe('App', () => {
                 unlockLink = {href: 'http://some.api/unlock'};
                 listWithUnlockLink._links.unlock = unlockLink;
                 tree.setProps({list: listWithUnlockLink});
-                modal = tree.find('Modal').at(0);
-                let dialogElementNode = modal.getNode()._modal.getDialogElement()
-                dialogElement = new ReactWrapper(dialogElementNode, dialogElementNode);
+                modal = tree.find(Modal).at(0);
             });
 
-            it('renders', () => {
-                expect(dialogElement.length).toEqual(1);
-            });
-
-            it('contains 2 buttons', () => {
-                expect(dialogElement.find('Button').length).toEqual(2);
-            });
-
-            describe('first button', () => {
-                let button;
+            describe('footer', () => {
+                let footer;
 
                 beforeEach(() => {
-                    button = dialogElement.find('Button').at(0);
+                    footer = modal.find(Modal.Footer);
                 });
 
-                it('updates showUnlockConfirmation state to false on click', () => {
-                    button.simulate('click');
-                    expect(tree.state().showUnlockConfirmation).toBe(false)
-                });
-            });
-
-            describe('second button', () => {
-                let button;
-
-                beforeEach(() => {
-                    button = dialogElement.find('Button').at(1);
+                it('renders', () => {
+                    expect(footer.length).toEqual(1);
                 });
 
-                it('fires unlock list request action with list unlockLink', () => {
-                    button.simulate('click');
-                    expect(mockUnlockListActionFn).toBeCalledWith(unlockLink);
+                it('contains 2 buttons', () => {
+                    expect(footer.find('Button').length).toEqual(2);
                 });
 
-                it('updates showUnlockConfirmation state to false on click', () => {
-                    button.simulate('click');
-                    expect(tree.state().showUnlockConfirmation).toBe(false)
+                describe('first button', () => {
+                    let button;
+
+                    beforeEach(() => {
+                        button = footer.find('Button').at(0);
+                    });
+
+                    it('updates showUnlockConfirmation state to false on click', () => {
+                        button.simulate('click');
+                        expect(tree.state().showUnlockConfirmation).toBe(false)
+                    });
+                });
+
+                describe('second button', () => {
+                    let button;
+
+                    beforeEach(() => {
+                        button = footer.find('Button').at(1);
+                    });
+
+                    it('fires unlock list request action with list unlockLink', () => {
+                        button.simulate('click');
+                        expect(mockUnlockListActionFn).toBeCalledWith(unlockLink);
+                    });
+
+                    it('updates showUnlockConfirmation state to false on click', () => {
+                        button.simulate('click');
+                        expect(tree.state().showUnlockConfirmation).toBe(false)
+                    });
                 });
             });
         });
@@ -611,8 +493,6 @@ describe('App', () => {
 
 	                beforeEach(() => {
 	                    tree.setState({todo: todoToSubmit, submitting: true});
-                        input.value = task;
-
                         list = tree.find('ListGroup');
                         todo = list.find(Todo).at(0);
 	                    todo.prop('handleDisplace')(displaceLink);
@@ -626,13 +506,8 @@ describe('App', () => {
                         expect(tree.state().submitting).toBe(false);
                     });
 
-                    it('clears the todo input value', () => {
-                        expect(input.value).toEqual('');
-                    });
-
-                    it('puts focus on the input', () => {
-						// TODO: Cannot get this test to fail
-                        expect(document.activeElement).toEqual(input);
+                    it('clears the todo task state', () => {
+                        expect(tree.state().todo).toEqual({task: ''});
                     });
 	            });
 	        });

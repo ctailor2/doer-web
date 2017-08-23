@@ -1,11 +1,3 @@
-jest.unmock('../rootSaga');
-jest.unmock('../sessionSaga');
-jest.unmock('../todoSaga');
-jest.unmock('../resourcesSaga');
-jest.unmock('../linksSaga');
-jest.unmock('../loadViewSaga');
-jest.unmock('../listSaga');
-
 import rootSaga from '../rootSaga';
 import {call, fork} from 'redux-saga/effects';
 import {watchSignupRequest, watchLoginRequest, watchLogoutRequest, watchStoreSession} from '../sessionSaga';

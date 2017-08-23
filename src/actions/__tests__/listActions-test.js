@@ -1,5 +1,3 @@
-jest.unmock('../listActions');
-
 import {
 	getListRequestAction,
 	storeListAction,

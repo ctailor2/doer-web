@@ -1,5 +1,3 @@
-jest.unmock('../todoActions');
-
 import {
 	getTodosRequestAction,
 	getDeferredTodosRequestAction,
