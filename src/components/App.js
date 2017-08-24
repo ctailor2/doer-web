@@ -8,6 +8,7 @@ import {
     pullTodosRequestAction
 } from '../actions/todoActions';
 import {
+    getListRequestAction,
     unlockListRequestAction
 } from '../actions/listActions';
 import _ from 'lodash';
@@ -24,14 +25,49 @@ import {
 } from 'react-bootstrap';
 
 export class App extends Component {
+
 	constructor(props) {
 		super(props)
+        this.timerTickMilliseconds = 1000;
 		this.state = {
 		    todo: {task: ''},
 		    submitting: false,
 		    showUnlockConfirmation: false,
-		    activeTab: props.list.name
+		    activeTab: props.list.name,
+		    unlockDuration: props.list.unlockDuration,
+		    unlockTimer: this.createTimer()
 		};
+	}
+
+	componentWillReceiveProps(nextProps) {
+	    let newUnlockDuration = nextProps.list.unlockDuration;
+	    if(newUnlockDuration > 0) {
+            this.setTimer(newUnlockDuration);
+	    }
+	}
+
+	setTimer(unlockDuration) {
+		clearTimeout(this.state.unlockTimer);
+        this.setState({
+            unlockDuration: unlockDuration,
+            unlockTimer: this.createTimer()
+        });
+	}
+
+	createTimer() {
+	    return setTimeout(this.decrementUnlockDuration.bind(this), this.timerTickMilliseconds);
+	}
+
+	decrementUnlockDuration() {
+        if(this.state.unlockDuration > 0) {
+    	    let newUnlockDuration = this.state.unlockDuration - this.timerTickMilliseconds;
+    	    if (newUnlockDuration <= 0) {
+    	        newUnlockDuration = 0;
+    	        this.props.getListRequestAction(this.props.listLink);
+    	        this.setState({activeTab: this.props.list.name});
+    	    }
+    	    this.setTimer(newUnlockDuration);
+        }
 	}
 
 	render() {
@@ -121,7 +157,7 @@ export class App extends Component {
 	renderDeferredTodosTabTitle() {
 	    let tabName = _.capitalize(this.props.list.deferredName)
 	    if(this.canViewDeferredTodos()) {
-    	    let unlockDuration = new Date(this.props.list.unlockDuration).toISOString().substr(14, 5)
+    	    let unlockDuration = new Date(this.state.unlockDuration).toISOString().substr(14, 5)
             return (<div>
                 {tabName} {unlockDuration}
             </div>);
@@ -181,7 +217,8 @@ export const mapStateToProps = (state) => {
 	return {
 		nowTodos: state.todos.active,
 		laterTodos: state.todos.inactive,
-		list: state.list
+		list: state.list,
+		listLink: state.links.list
 	};
 }
 
@@ -189,5 +226,6 @@ export default connect(mapStateToProps, {
 	displaceTodoRequestAction,
 	moveTodoRequestAction,
 	pullTodosRequestAction,
-	unlockListRequestAction
+	unlockListRequestAction,
+	getListRequestAction
 })(App);

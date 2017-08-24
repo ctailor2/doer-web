@@ -1,3 +1,5 @@
+jest.useFakeTimers();
+
 import _ from 'lodash';
 import {App, mapStateToProps} from '../App';
 import Todo from '../Todo';
@@ -19,25 +21,29 @@ describe('App', () => {
     todoNowLink,
     todoLaterLink,
     pullLink,
-    unlockLink,
+    listLink,
     mockDisplaceTodoActionFn,
     mockPullTodosActionFn,
     mockMoveTodoActionFn,
-    mockUnlockListActionFn;
+    mockUnlockListActionFn,
+    mockGetListActionFn;
 
     beforeEach(() => {
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
         mockPullTodosActionFn = jest.fn();
         mockUnlockListActionFn = jest.fn();
+        mockGetListActionFn = jest.fn();
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
         pullLink = {href: 'http://some.api/pullTodos'};
+        listLink = {href: 'http://some.api/list'};
         list = {
             name: 'name',
             deferredName: 'deferredname',
+            unlockDuration: 1700900,
             _links: {
                 create: todoNowLink,
                 createDeferred: todoLaterLink
@@ -46,10 +52,12 @@ describe('App', () => {
         tree = shallow(<App list={list}
                           nowTodos={nowTodos}
                           laterTodos={laterTodos}
+                          listLink={listLink}
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
                           pullTodosRequestAction={mockPullTodosActionFn}
-                          unlockListRequestAction={mockUnlockListActionFn}/>);
+                          unlockListRequestAction={mockUnlockListActionFn}
+                          getListRequestAction={mockGetListActionFn}/>);
     });
 
     it('renders', () => {
@@ -57,11 +65,96 @@ describe('App', () => {
     });
 
     it('has default state', () => {
-        expect(tree.state()).toEqual({
-            todo: {task: ''},
-            submitting: false,
-            showUnlockConfirmation: false,
-            activeTab: 'name'
+        expect(tree.state().todo).toEqual({task: ''});
+        expect(tree.state().submitting).toEqual(false);
+        expect(tree.state().showUnlockConfirmation).toEqual(false);
+        expect(tree.state().activeTab).toEqual('name');
+        expect(tree.state().unlockDuration).toEqual(1700900);
+    });
+
+    describe('upon receiving props', () => {
+        describe('when unlockDuration from props is > 0', () => {
+            let listWithProps;
+
+            beforeEach(() => {
+                listWithProps = _.clone(list);
+                listWithProps.unlockDuration = 15250;
+                tree.setProps({list: listWithProps});
+            });
+
+            it('sets unlockDuration state', () => {
+                expect(tree.state().unlockDuration).toEqual(15250);
+            });
+
+            describe('when unlockDuration is currently > 0', () => {
+                beforeEach(() => {
+                    jest.runTimersToTime(2000);
+                    tree.setProps({list: listWithProps});
+                });
+
+                it('decrements unlockDuration after a second has elapsed', () => {
+                    jest.runTimersToTime(1000);
+                    expect(tree.state().unlockDuration).toEqual(14250);
+                });
+            });
+
+            describe('when unlockDuration is not currently > 0', () => {
+                beforeEach(() => {
+                    jest.runAllTimers();
+                    tree.setProps({list: listWithProps});
+                });
+
+                it('decrements unlockDuration after a second has elapsed', () => {
+                    jest.runTimersToTime(1000);
+                    expect(tree.state().unlockDuration).toEqual(14250);
+                });
+            });
+        });
+
+        describe('when unlockDuration from props is 0', () => {
+            let listWithProps;
+
+            beforeEach(() => {
+                listWithProps = _.clone(list);
+                listWithProps.unlockDuration = 0;
+                tree.setProps({list: listWithProps});
+            });
+
+            it('does not set unlockDuration state', () => {
+                expect(tree.state().unlockDuration).toEqual(1700900);
+            });
+        });
+    });
+
+    describe('unlockDuration state', () => {
+        it('decrements after a second has elapsed', () => {
+            jest.runTimersToTime(1000);
+            expect(tree.state().unlockDuration).toEqual(1699900);
+        });
+
+        it('does not decrement when less than a second has passed', () => {
+            jest.runTimersToTime(999);
+            expect(tree.state().unlockDuration).toEqual(1700900);
+        });
+
+        it('does not decrement unlockDuration past zero', () => {
+            jest.runTimersToTime(3000000);
+            expect(tree.state().unlockDuration).toEqual(0);
+        });
+    });
+
+    describe('when unlockDuration reaches 0', () => {
+        beforeEach(() => {
+            tree.setState({activeTab: list.deferredName});
+            jest.runAllTimers();
+        });
+
+        it('fires get list request action with listLink when unlockDuration reaches 0', () => {
+            expect(mockGetListActionFn).toBeCalledWith(listLink);
+        });
+
+        it('updates activeTab state', () => {
+            expect(tree.state().activeTab).toEqual(list.name);
         });
     });
 
@@ -95,7 +188,7 @@ describe('App', () => {
                 taskForm.prop('handleTaskChange')(task);
             });
 
-            it('sets task on state', () => {
+            it('sets task state', () => {
                 expect(tree.state().todo).toEqual({task: task});
             });
         });
@@ -107,7 +200,7 @@ describe('App', () => {
                 taskForm.prop('handleSubmitChange')(isSubmitting);
             });
 
-            it('sets submitting on state', () => {
+            it('sets submitting state', () => {
                 expect(tree.state().submitting).toBe(isSubmitting);
             });
         });
@@ -312,7 +405,6 @@ describe('App', () => {
                     beforeEach(() => {
                         let listWithProps = _.clone(list);
                         listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
-                        listWithProps.unlockDuration = 1700000;
                         tree.setProps({list: listWithProps});
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(1);
@@ -515,15 +607,18 @@ describe('App', () => {
     });
 
     it('maps state to props', () => {
-        let links = {todos: {href: 'http://some.api/todos'}};
         let state = {
             todos: {active: [1], inactive: [3]},
-            list: list
+            list: {name: 'cool list'},
+            links: {
+                list: {href: 'http://some.api/list'}
+            }
         };
         expect(mapStateToProps(state)).toEqual({
             nowTodos: [1],
             laterTodos: [3],
-            list: list
+            list: {name: 'cool list'},
+            listLink: {href: 'http://some.api/list'}
         });
     });
 });
