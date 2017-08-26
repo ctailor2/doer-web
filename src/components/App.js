@@ -40,8 +40,9 @@ export class App extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+	    let currentUnlockDuration = this.state.unlockDuration;
 	    let newUnlockDuration = nextProps.list.unlockDuration;
-	    if(newUnlockDuration > 0) {
+	    if(currentUnlockDuration === 0 || newUnlockDuration < currentUnlockDuration) {
             this.setTimer(newUnlockDuration);
 	    }
 	}

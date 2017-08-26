@@ -74,34 +74,58 @@ describe('App', () => {
 
     describe('upon receiving props', () => {
         describe('when unlockDuration from props is > 0', () => {
-            let listWithProps;
-
-            beforeEach(() => {
-                listWithProps = _.clone(list);
-                listWithProps.unlockDuration = 15250;
-                tree.setProps({list: listWithProps});
-            });
-
-            it('sets unlockDuration state', () => {
-                expect(tree.state().unlockDuration).toEqual(15250);
-            });
-
             describe('when unlockDuration is currently > 0', () => {
-                beforeEach(() => {
-                    jest.runTimersToTime(2000);
-                    tree.setProps({list: listWithProps});
+                describe('when unlockDuration from props is greater than current unlockDuration', () => {
+                    let listWithProps;
+
+                    beforeEach(() => {
+                        listWithProps = _.clone(list);
+                        listWithProps.unlockDuration = 1800000;
+                        tree.setProps({list: listWithProps});
+                    });
+
+                    it('does not set unlockDuration state', () => {
+                        expect(tree.state().unlockDuration).toEqual(1700900);
+                    });
+
+                    it('decrements unlockDuration after a second has elapsed', () => {
+                        jest.runTimersToTime(1000);
+                        expect(tree.state().unlockDuration).toEqual(1699900);
+                    });
                 });
 
-                it('decrements unlockDuration after a second has elapsed', () => {
-                    jest.runTimersToTime(1000);
-                    expect(tree.state().unlockDuration).toEqual(14250);
+                describe('when unlockDuration from props is less than current unlockDuration', () => {
+                    let listWithProps;
+
+                    beforeEach(() => {
+                        listWithProps = _.clone(list);
+                        listWithProps.unlockDuration = 15250;
+                        tree.setProps({list: listWithProps});
+                    });
+
+                    it('sets unlockDuration state', () => {
+                        expect(tree.state().unlockDuration).toEqual(15250);
+                    });
+
+                    it('decrements unlockDuration after a second has elapsed', () => {
+                        jest.runTimersToTime(1000);
+                        expect(tree.state().unlockDuration).toEqual(14250);
+                    });
                 });
             });
 
-            describe('when unlockDuration is not currently > 0', () => {
+            describe('when unlockDuration is currently 0', () => {
+                let listWithProps;
+
                 beforeEach(() => {
                     jest.runAllTimers();
+                    listWithProps = _.clone(list);
+                    listWithProps.unlockDuration = 15250;
                     tree.setProps({list: listWithProps});
+                });
+
+                it('sets unlockDuration state', () => {
+                    expect(tree.state().unlockDuration).toEqual(15250);
                 });
 
                 it('decrements unlockDuration after a second has elapsed', () => {
