@@ -37,11 +37,15 @@ describe('TaskForm', () => {
     });
 
     describe('upon receiving props', () => {
-        beforeEach(() => {
-            tree.node.componentWillReceiveProps({task: 'some task'});
+        it('sets input value to received task when task is empty', () => {
+            input.value = 'some value'
+            tree.setProps({task: ''});
+            expect(input.value).toEqual('');
         });
 
-        it('sets input value to received task', () => {
+        it('does not set input value to received task when task is not empty', () => {
+            input.value = 'some task'
+            tree.setProps({task: 'some other task'});
             expect(input.value).toEqual('some task');
         });
     });

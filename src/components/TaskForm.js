@@ -13,7 +13,9 @@ import {createTodoRequestAction} from '../actions/todoActions';
 
 export class TaskForm extends Component {
 	componentWillReceiveProps(nextProps) {
-	    this.taskInput.value = nextProps.task;
+	    if (nextProps.task === '') {
+	        this.taskInput.value = nextProps.task;
+	    }
 	}
 
 	render() {
