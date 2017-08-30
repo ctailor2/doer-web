@@ -181,6 +181,14 @@ describe('App', () => {
             expect(taskForm.prop('task')).toEqual('');
         });
 
+        it('has primaryButtonName matching list name', () => {
+            expect(taskForm.prop('primaryButtonName')).toEqual('name');
+        });
+
+        it('has secondaryButtonName matching list deferredName', () => {
+            expect(taskForm.prop('secondaryButtonName')).toEqual('deferredname');
+        });
+
         it('has submitting matching state', () => {
             expect(taskForm.prop('submitting')).toBe(false);
         });

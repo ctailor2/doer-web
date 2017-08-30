@@ -76,6 +76,8 @@ export class App extends Component {
 	        <Row>
 				<Col lg={6} lgOffset={3}>
 					<TaskForm task={this.state.todo.task}
+					          primaryButtonName={this.props.list.name}
+					          secondaryButtonName={this.props.list.deferredName}
 					          submitting={this.state.submitting}
 					          links={this.props.list._links}
 					          handleTaskChange={this.handleTaskChange.bind(this)}

@@ -40,7 +40,7 @@ export class TaskForm extends Component {
         if(this.props.submitting) {
             return(<InputGroup.Button>
                     {this.renderNowButton()}
-                    <Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.createDeferred)}>Later</Button>
+                    <Button type="button" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.createDeferred)}>{_.capitalize(this.props.secondaryButtonName)}</Button>
                     <Button type="button" bsStyle="danger" bsSize="large" onClick={this.handleCancelTaskSubmit.bind(this)}>
                         <Glyphicon glyph="remove"/>
                     </Button>
@@ -96,7 +96,7 @@ export class TaskForm extends Component {
 
     renderNowButton() {
         if(this.canScheduleForNow()) {
-            return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.create)}>Now</Button>);
+            return (<Button type="button" bsStyle="primary" bsSize="large" onClick={this.submitTodo.bind(this, this.props.links.create)}>{_.capitalize(this.props.primaryButtonName)}</Button>);
         }
     }
 

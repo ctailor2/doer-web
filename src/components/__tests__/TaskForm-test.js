@@ -24,6 +24,8 @@ describe('TaskForm', () => {
             createDeferred: createdDeferredLink
         };
         tree = mount(<TaskForm task=''
+                               primaryButtonName='primary'
+                               secondaryButtonName='secondary'
                                submitting={false}
                                links={links}
                                handleTaskChange={mockTaskChangeHandlerFn}
@@ -156,57 +158,81 @@ describe('TaskForm', () => {
                 expect(buttons.length).toBe(2);
             });
 
-            describe('on clicking first button', () => {
+            describe('first button', () => {
+                let button;
+
                 beforeEach(() => {
-                    buttons.at(0).simulate('click');
+                    button = buttons.at(0);
                 });
 
-                it('fires create todo action with create link', () => {
-                    expect(mockCreateTodoActionFn).toBeCalledWith(createLink, {task: 'something'});
+                it('has title matching primary button name', () => {
+                    expect(button.text()).toEqual('Primary');
                 });
 
-                it('calls submitting change handler with false', () => {
-                    expect(mockSubmittingChangeHandlerFn).toBeCalledWith(false);
-                });
+                describe('on click', () => {
+                    beforeEach(() => {
+                        button.simulate('click');
+                    });
 
-                it('calls task change handler with cleared out task', () => {
-                    expect(mockTaskChangeHandlerFn).toBeCalledWith('');
-                });
+                    it('fires create todo action with create link', () => {
+                        expect(mockCreateTodoActionFn).toBeCalledWith(createLink, {task: 'something'});
+                    });
 
-                it('clears the todo input value', () => {
-                    expect(input.value).toEqual('');
-                });
+                    it('calls submitting change handler with false', () => {
+                        expect(mockSubmittingChangeHandlerFn).toBeCalledWith(false);
+                    });
 
-                it('puts focus on the input', () => {
-                    // TODO: Cannot get this test to fail
-                    expect(document.activeElement).toEqual(input);
+                    it('calls task change handler with cleared out task', () => {
+                        expect(mockTaskChangeHandlerFn).toBeCalledWith('');
+                    });
+
+                    it('clears the todo input value', () => {
+                        expect(input.value).toEqual('');
+                    });
+
+                    it('puts focus on the input', () => {
+                        // TODO: Cannot get this test to fail
+                        expect(document.activeElement).toEqual(input);
+                    });
                 });
             });
 
-            describe('on clicking second button', () => {
+            describe('second button', () => {
+                let button;
+
                 beforeEach(() => {
-                    buttons.at(1).simulate('click');
+                    button = buttons.at(1);
                 });
 
-                it('fires create todo action with todoLaterLink', () => {
-                    expect(mockCreateTodoActionFn).toBeCalledWith(createdDeferredLink, {task: 'something'});
+                it('has title matching secondary button name', () => {
+                    expect(button.text()).toEqual('Secondary');
                 });
 
-                it('calls submitting change handler with false', () => {
-                    expect(mockSubmittingChangeHandlerFn).toBeCalledWith(false);
-                });
+                describe('on click', () => {
+                    beforeEach(() => {
+                        button.simulate('click');
+                    });
 
-                it('calls task change handler with cleared out task', () => {
-                    expect(mockTaskChangeHandlerFn).toBeCalledWith('');
-                });
+                    it('fires create todo action with todoLaterLink', () => {
+                        expect(mockCreateTodoActionFn).toBeCalledWith(createdDeferredLink, {task: 'something'});
+                    });
 
-                it('clears the todo input value', () => {
-                    expect(input.value).toEqual('');
-                });
+                    it('calls submitting change handler with false', () => {
+                        expect(mockSubmittingChangeHandlerFn).toBeCalledWith(false);
+                    });
 
-                it('puts focus on the input', () => {
-                    // TODO: Cannot get this test to fail
-                    expect(document.activeElement).toEqual(input);
+                    it('calls task change handler with cleared out task', () => {
+                        expect(mockTaskChangeHandlerFn).toBeCalledWith('');
+                    });
+
+                    it('clears the todo input value', () => {
+                        expect(input.value).toEqual('');
+                    });
+
+                    it('puts focus on the input', () => {
+                        // TODO: Cannot get this test to fail
+                        expect(document.activeElement).toEqual(input);
+                    });
                 });
             });
 
