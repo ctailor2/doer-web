@@ -39,6 +39,27 @@ export class App extends Component {
 		};
 	}
 
+	componentDidMount() {
+        document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+	}
+
+	componentWillUnmount() {
+        document.removeEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+	}
+
+	handleVisibilityChange(event) {
+	    let hidden = event.target.hidden;
+	    if (hidden) {
+	        clearTimeout(this.state.unlockTimer);
+	    } else {
+	        this.reloadList();
+	    }
+	}
+
+	reloadList() {
+	    this.props.getListRequestAction(this.props.listLink);
+	}
+
 	componentWillReceiveProps(nextProps) {
 	    let currentUnlockDuration = this.state.unlockDuration;
 	    let newUnlockDuration = nextProps.list.unlockDuration;
@@ -64,7 +85,7 @@ export class App extends Component {
     	    let newUnlockDuration = this.state.unlockDuration - this.timerTickMilliseconds;
     	    if (newUnlockDuration <= 0) {
     	        newUnlockDuration = 0;
-    	        this.props.getListRequestAction(this.props.listLink);
+    	        this.reloadList();
     	        this.setState({activeTab: this.props.list.name});
     	    }
     	    this.setTimer(newUnlockDuration);

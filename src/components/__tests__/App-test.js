@@ -26,7 +26,8 @@ describe('App', () => {
     mockPullTodosActionFn,
     mockMoveTodoActionFn,
     mockUnlockListActionFn,
-    mockGetListActionFn;
+    mockGetListActionFn,
+    eventListenerCallbacks;
 
     beforeEach(() => {
         mockDisplaceTodoActionFn = jest.fn();
@@ -34,6 +35,13 @@ describe('App', () => {
         mockPullTodosActionFn = jest.fn();
         mockUnlockListActionFn = jest.fn();
         mockGetListActionFn = jest.fn();
+        eventListenerCallbacks = {};
+        document.addEventListener = jest.fn((event, callback) => {
+            eventListenerCallbacks[event] = callback;
+        });
+        document.removeEventListener = jest.fn((event) => {
+            delete eventListenerCallbacks[event];
+        });
         nowTodos = [];
         laterTodos = [];
         todoNowLink = {href: 'http://some.api/todoNow'};
@@ -70,6 +78,48 @@ describe('App', () => {
         expect(tree.state().showUnlockConfirmation).toEqual(false);
         expect(tree.state().activeTab).toEqual('name');
         expect(tree.state().unlockDuration).toEqual(1700900);
+    });
+
+    describe('when mounted', () => {
+        beforeEach(() => {
+            tree.instance().componentDidMount();
+        });
+
+        it('should register an event listener with the document to capture changes in visibility', () => {
+            expect(document.addEventListener).toBeCalled();
+            expect(eventListenerCallbacks['visibilitychange']).toBeDefined();
+        });
+
+        describe('visibility change callback', () => {
+            let visibilityChangeCallback;
+
+            beforeEach(() => {
+                visibilityChangeCallback = eventListenerCallbacks.visibilitychange;
+            });
+
+            it('when document is hidden', () => {
+                visibilityChangeCallback({target: {hidden: true}});
+                jest.runAllTimers();
+                expect(tree.state().unlockDuration).toEqual(1700900);
+            });
+
+            it('when document is visible', () => {
+                visibilityChangeCallback({target: {hidden: false}});
+                expect(mockGetListActionFn).toBeCalledWith(listLink);
+            });
+        });
+    });
+
+    describe('when unmounted', () => {
+        beforeEach(() => {
+            tree.instance().componentDidMount();
+            tree.instance().componentWillUnmount();
+        });
+
+        it('should remove the event listener from the document that is capturing changes in visibility', () => {
+            expect(document.removeEventListener).toBeCalled();
+            expect(eventListenerCallbacks['visibilitychange']).toBeUndefined();
+        });
     });
 
     describe('upon receiving props', () => {
