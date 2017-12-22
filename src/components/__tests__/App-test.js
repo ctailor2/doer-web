@@ -680,6 +680,7 @@ describe('App', () => {
                 list: {href: 'http://some.api/list'}
             }
         };
+
         expect(mapStateToProps(state)).toEqual({
             nowTodos: [1],
             laterTodos: [3],

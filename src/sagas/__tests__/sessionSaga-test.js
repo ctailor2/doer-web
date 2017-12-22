@@ -72,6 +72,20 @@ describe('signupRequest', () => {
 			expect(browserHistory.push).toBeCalledWith('/');
 		});
     });
+
+    describe('on request failure', () => {
+        let errors = {
+            fieldErrors: [],
+            globalErrors: []
+        };
+        let response = {error: {response: {data: errors}}};
+
+        it('fires store errors action', () => {
+            iterator.next();
+            expect(iterator.next(response).value)
+                .toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
+        });
+    });
 });
 
 describe('watchLoginRequest', () => {
@@ -132,6 +146,20 @@ describe('loginRequest', () => {
 			iterator.next(response);
 			expect(browserHistory.push).toBeCalledWith('/');
 		});
+    });
+
+    describe('on request failure', () => {
+        let errors = {
+            fieldErrors: [],
+            globalErrors: []
+        };
+        let response = {error: {response: {data: errors}}};
+
+        it('fires store errors action', () => {
+            iterator.next();
+            expect(iterator.next(response).value)
+                .toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
+        });
     });
 });
 

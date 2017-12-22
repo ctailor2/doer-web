@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Navbar, Nav, NavDropdown, MenuItem} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown, MenuItem, Row, Col, Alert} from 'react-bootstrap';
 import {logoutRequestAction} from '../actions/sessionActions';
+import {dismissGlobalAlertAction} from '../actions/errorActions';
 import {browserHistory} from 'react-router';
 
 export class Header extends Component {
@@ -12,6 +13,11 @@ export class Header extends Component {
                     <Navbar.Brand onClick={this.handleBrandClick.bind(this)}>Doer</Navbar.Brand>
                     {this.renderNav()}
                 </Navbar>
+                <Row>
+                    <Col lg={6} lgOffset={3}>
+                        {this.renderGlobalAlerts()}
+                    </Col>
+                </Row>
             </div>
         );
     }
@@ -29,6 +35,22 @@ export class Header extends Component {
         }
     }
 
+    renderGlobalAlerts() {
+        return(
+            <div>
+                {this.props.globalErrors.map((error, index) => {
+                    return (<Alert key={index}
+                                   onDismiss={this.handleAlertDismiss.bind(this, index)}
+                                   bsStyle="danger">{error.message}</Alert>);
+                })}
+            </div>
+        );
+    }
+
+    handleAlertDismiss(index) {
+        this.props.dismissGlobalAlertAction(index);
+    }
+
     handleLogoutClick() {
         this.props.logoutRequestAction();
     }
@@ -42,6 +64,13 @@ export class Header extends Component {
     }
 }
 
-export default connect(null, {
-	logoutRequestAction
+export const mapStateToProps = (state) => {
+	return {
+		globalErrors: state.errors.globalErrors
+	};
+}
+
+export default connect(mapStateToProps, {
+	logoutRequestAction,
+	dismissGlobalAlertAction
 })(Header);

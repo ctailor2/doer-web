@@ -1,16 +1,20 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import {Header} from '../Header';
+import {Header, mapStateToProps} from '../Header';
 import {Navbar, Brand, Nav, NavDropdown} from 'react-bootstrap';
 import {browserHistory} from 'react-router';
 
 describe('Header', () => {
-    let tree, logoutRequestActionFn;
+    let tree, globalErrors, dismissGlobalAlertActionFn, logoutRequestActionFn;
 
     beforeEach(() => {
         logoutRequestActionFn = jest.fn();
+        dismissGlobalAlertActionFn = jest.fn();
         localStorage.getItem = jest.fn();
-        tree = shallow(<Header logoutRequestAction={logoutRequestActionFn}/>);
+        globalErrors = []
+        tree = shallow(<Header globalErrors={globalErrors}
+                               dismissGlobalAlertAction={dismissGlobalAlertActionFn}
+                               logoutRequestAction={logoutRequestActionFn}/>);
     });
 
     it('renders', () => {
@@ -47,6 +51,53 @@ describe('Header', () => {
         });
     });
 
+    describe('Alert', () => {
+        let alert;
+
+        beforeEach(() => {
+            alert = tree.find('Alert');
+        });
+
+        it('does not render by default', () => {
+            expect(alert.length).toBe(0);
+        });
+
+        describe('when there are global errors', () => {
+            let message;
+
+            beforeEach(() => {
+                message = "Oh snap, something went wrong!"
+                tree.setProps({
+                    globalErrors: [
+                        {message: message}
+                    ]
+                });
+                alert = tree.find('Alert');
+            });
+
+            it('renders', () => {
+                expect(alert.length).toBe(1);
+            });
+
+            it('contains the message', () => {
+                expect(alert.childAt(0).text()).toBe(message);
+            });
+
+            describe('onDismiss handler', () => {
+                let handler;
+
+                beforeEach(() => {
+                    handler = alert.prop('onDismiss')
+                });
+
+                it('fires dismiss global alert action with its index', () => {
+                    handler();
+                    expect(dismissGlobalAlertActionFn).toBeCalledWith(0);
+                });
+            });
+        });
+    });
+
     describe('Nav', () => {
         let nav;
 
@@ -62,7 +113,7 @@ describe('Header', () => {
             beforeEach(() => {
                 localStorage.getItem = jest.fn(() => {return 'cooltoken'});
                 // Calling update wasn't re-rendering
-                tree = shallow(<Header logoutRequestAction={logoutRequestActionFn}/>);
+                tree = shallow(<Header globalErrors={globalErrors} logoutRequestAction={logoutRequestActionFn}/>);
                 nav = tree.find(Nav);
             });
 
@@ -128,6 +179,19 @@ describe('Header', () => {
                     });
                 });
             });
+        });
+    });
+
+    it('maps state to props', () => {
+        let state = {
+            errors: {
+                fieldErrors: [1],
+                globalErrors: [2]
+            }
+        };
+
+        expect(mapStateToProps(state)).toEqual({
+            globalErrors: [2]
         });
     });
 });

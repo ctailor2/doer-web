@@ -35,7 +35,9 @@ describe('SignupView', () => {
         const store = {
             subscribe: () => {},
             dispatch: () => {},
-            getState: () => {}
+            getState: () => {
+                return {errors: {globalErrors: []}};
+            },
         };
         const options = {
             context: { store },

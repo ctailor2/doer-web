@@ -27,7 +27,7 @@ import {
 export class App extends Component {
 
 	constructor(props) {
-		super(props)
+		super(props);
         this.timerTickMilliseconds = 1000;
 		this.state = {
 		    todo: {task: ''},
