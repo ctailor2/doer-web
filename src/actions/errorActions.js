@@ -13,3 +13,9 @@ export function dismissGlobalAlertAction(index = null) {
 		index: index
 	}
 }
+
+export function clearErrorsAction() {
+    return {
+        type: actionTypes.CLEAR_ERRORS_ACTION
+    }
+}

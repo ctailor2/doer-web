@@ -26,4 +26,13 @@ describe('errors', () => {
 		let expectedState = {globalErrors: [3, 7], fieldErrors: [2, 4, 6]}
 		expect(errorsState).toEqual(expectedState);
 	});
+
+	it('clears errors when a CLEAR_ERRORS_ACTION is received', () => {
+        let action = {
+            type: 'CLEAR_ERRORS_ACTION'
+        };
+        let errorsState = errors({globalErrors: [{a: 1}], fieldErrors: [{b: 2}]}, action);
+		let expectedState = {globalErrors: [], fieldErrors: []}
+        expect(errorsState).toEqual(expectedState);
+	});
 });

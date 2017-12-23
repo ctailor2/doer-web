@@ -5,13 +5,14 @@ import * as actionTypes from '../constants/actionTypes';
 import {browserHistory} from 'react-router';
 import {storeSessionAction} from '../actions/sessionActions';
 import {persistLinkAction} from '../actions/linkActions';
-import {storeErrorsAction} from '../actions/errorActions';
+import {storeErrorsAction, clearErrorsAction} from '../actions/errorActions';
 
 export function* signupRequest(action) {
     const {response, error} = yield call(postData, action.link.href, action.data);
     if(response) {
         yield put(storeSessionAction(response.data.session.token));
         yield put(persistLinkAction(response.data._links.root));
+        yield put(clearErrorsAction());
         yield browserHistory.push('/');
     } else if (error) {
         yield put(storeErrorsAction(error.response.data));
@@ -27,6 +28,7 @@ export function* loginRequest(action) {
     if(response) {
         yield put(storeSessionAction(response.data.session.token));
         yield put(persistLinkAction(response.data._links.root));
+        yield put(clearErrorsAction());
         yield browserHistory.push('/');
     } else if (error) {
         yield put(storeErrorsAction(error.response.data));

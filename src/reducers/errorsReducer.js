@@ -12,6 +12,10 @@ export function errors(state = {fieldErrors: [], globalErrors: []}, action = {})
                 return index !== action.index
             });
 			break;
+	    case actionTypes.CLEAR_ERRORS_ACTION:
+	        newState.fieldErrors = [];
+	        newState.globalErrors = [];
+	        break;
 		default:
 			break;
 	}

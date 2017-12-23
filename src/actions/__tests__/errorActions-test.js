@@ -1,4 +1,4 @@
-import {storeErrorsAction, dismissGlobalAlertAction} from '../errorActions';
+import {storeErrorsAction, dismissGlobalAlertAction, clearErrorsAction} from '../errorActions';
 
 describe('storeErrorsAction', () => {
 	it('creates a store errors action with empty errors by default', () => {
@@ -30,6 +30,15 @@ describe('dismissGlobalAlertAction', () => {
 		expect(dismissGlobalAlertAction(index)).toEqual({
 			type: 'DISMISS_GLOBAL_ALERT_ACTION',
 			index: index
+		});
+	});
+});
+
+describe('clearErrorsAction', () => {
+	it('creates a clear errors action', () => {
+		let errors = {a: 1, b: 2};
+		expect(clearErrorsAction()).toEqual({
+			type: 'CLEAR_ERRORS_ACTION'
 		});
 	});
 });

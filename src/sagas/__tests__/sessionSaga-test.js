@@ -64,8 +64,17 @@ describe('signupRequest', () => {
                 .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
         });
 
+		it('fires clear errors action', () => {
+			iterator.next();
+			iterator.next(response);
+			iterator.next(response);
+			expect(iterator.next(response).value)
+			    .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+		});
+
 		it('redirects to the root', () => {
 			iterator.next();
+			iterator.next(response);
 			iterator.next(response);
 			iterator.next(response);
 			iterator.next(response);
@@ -139,8 +148,17 @@ describe('loginRequest', () => {
                 .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
         });
 
+		it('fires clear errors action', () => {
+			iterator.next();
+			iterator.next(response);
+			iterator.next(response);
+			expect(iterator.next(response).value)
+			    .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+		});
+
 		it('redirects to the root', () => {
 			iterator.next();
+			iterator.next(response);
 			iterator.next(response);
 			iterator.next(response);
 			iterator.next(response);
