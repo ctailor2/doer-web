@@ -36,7 +36,13 @@ describe('signupRequest', () => {
         browserHistory.push = jest.fn();
     });
 
+    it('fires clear errors action', () => {
+        expect(iterator.next().value)
+            .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+    });
+
     it('calls endpoint with action href and action data', () => {
+        iterator.next();
         expect(iterator.next().value).toEqual(call(postData, url, action.data));
     });
 
@@ -53,28 +59,22 @@ describe('signupRequest', () => {
 
         it('fires store session action', () => {
             iterator.next();
+            iterator.next();
             expect(iterator.next(response).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
 
         it('fires persist link action', () => {
             iterator.next();
+            iterator.next();
             iterator.next(response);
             expect(iterator.next(response).value)
                 .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
         });
 
-		it('fires clear errors action', () => {
-			iterator.next();
-			iterator.next(response);
-			iterator.next(response);
-			expect(iterator.next(response).value)
-			    .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
-		});
-
 		it('redirects to the root', () => {
 			iterator.next();
-			iterator.next(response);
+			iterator.next();
 			iterator.next(response);
 			iterator.next(response);
 			iterator.next(response);
@@ -90,6 +90,7 @@ describe('signupRequest', () => {
         let response = {error: {response: {data: errors}}};
 
         it('fires store errors action', () => {
+			iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
                 .toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
@@ -120,7 +121,12 @@ describe('loginRequest', () => {
         browserHistory.push = jest.fn();
     });
 
+    it('fires clear errors action', () => {
+        expect(iterator.next().value).toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+    });
+
     it('calls endpoint with action href and action data', () => {
+        iterator.next();
         expect(iterator.next().value).toEqual(call(postData, url, action.data));
     });
 
@@ -137,28 +143,22 @@ describe('loginRequest', () => {
 
         it('fires store session action', () => {
             iterator.next();
+            iterator.next();
             expect(iterator.next(response).value)
                 .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
         });
 
         it('fires persist link action', () => {
             iterator.next();
+            iterator.next();
             iterator.next(response);
             expect(iterator.next(response).value)
                 .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
         });
 
-		it('fires clear errors action', () => {
-			iterator.next();
-			iterator.next(response);
-			iterator.next(response);
-			expect(iterator.next(response).value)
-			    .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
-		});
-
 		it('redirects to the root', () => {
 			iterator.next();
-			iterator.next(response);
+			iterator.next();
 			iterator.next(response);
 			iterator.next(response);
 			iterator.next(response);
@@ -174,6 +174,7 @@ describe('loginRequest', () => {
         let response = {error: {response: {data: errors}}};
 
         it('fires store errors action', () => {
+            iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
                 .toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
