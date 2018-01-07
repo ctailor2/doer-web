@@ -156,7 +156,13 @@ describe('postRequestWithTodoData', () => {
 		iterator = postRequestWithTodoData(action);
 	});
 
+    it('fires clear errors action', () => {
+        expect(iterator.next().value)
+            .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+    });
+
 	it('calls endpoint with action link href and todo', () => {
+        iterator.next();
 		expect(iterator.next().value).toEqual(call(postData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
@@ -170,10 +176,28 @@ describe('postRequestWithTodoData', () => {
 
         beforeEach(() => {
             iterator.next();
+            iterator.next();
         });
 
         it('fires get list request action with list link', () => {
             expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
+        });
+    });
+
+    describe('on request failure', () => {
+        let errors = {
+            fieldErrors: [],
+            globalErrors: []
+        };
+        let response = {error: {response: {data: errors}}};
+
+        beforeEach(() => {
+            iterator.next();
+            iterator.next();
+        });
+
+        it('fires store errors action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
         });
     });
 });
@@ -188,7 +212,13 @@ describe('putRequestWithTodoData', () => {
 		iterator = putRequestWithTodoData(action);
 	});
 
+    it('fires clear errors action', () => {
+        expect(iterator.next().value)
+            .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+    });
+
 	it('calls endpoint with action link href and todo', () => {
+        iterator.next();
 		expect(iterator.next().value).toEqual(call(putData, link.href, todo, {headers: {'Session-Token': 'socooltoken'}}));
 	});
 
@@ -202,10 +232,28 @@ describe('putRequestWithTodoData', () => {
 
         beforeEach(() => {
             iterator.next();
+            iterator.next();
         });
 
         it('fires get list request action with list link', () => {
             expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
+        });
+    });
+
+    describe('on request failure', () => {
+        let errors = {
+            fieldErrors: [],
+            globalErrors: []
+        };
+        let response = {error: {response: {data: errors}}};
+
+        beforeEach(() => {
+            iterator.next();
+            iterator.next();
+        });
+
+        it('fires store errors action', () => {
+            expect(iterator.next(response).value).toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
         });
     });
 });

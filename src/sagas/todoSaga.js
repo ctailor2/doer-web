@@ -5,6 +5,7 @@ import {fetchData, postData, deleteData, putData} from './sagaHelper';
 import {storeTodosAction, storeDeferredTodosAction, storeCompletedTodosAction} from '../actions/todoActions';
 import {storeLinksAction} from '../actions/linkActions';
 import {getListRequestAction} from '../actions/listActions';
+import {storeErrorsAction, clearErrorsAction} from '../actions/errorActions';
 
 export function* getTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
@@ -41,19 +42,23 @@ export function* deleteTodoRequest(action) {
 
 export function* postRequestWithTodoData(action) {
 	let todo = action.todo;
+    yield put(clearErrorsAction());
 	const {response, error} = yield call(postData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(getListRequestAction(response.data._links.list));
 	} else if (error) {
+        yield put(storeErrorsAction(error.response.data));
 	}
 }
 
 export function* putRequestWithTodoData(action) {
 	let todo = action.todo;
+    yield put(clearErrorsAction());
 	const {response, error} = yield call(putData, action.link.href, todo, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(getListRequestAction(response.data._links.list));
 	} else if (error) {
+        yield put(storeErrorsAction(error.response.data));
 	}
 }
 
