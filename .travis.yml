@@ -3,11 +3,11 @@ jobs:
   - stage: test
     language: node_js
     node_js:
-    - '6.2.1'
+    - 6.2.1
   - stage: deploy
     script: skip
-    deploy: &heroku
+    deploy:
       provider: heroku
       api_key:
-        secure: rQxcNZl0RcIuiWW2rS/uXr6Y9YbGbOK75XdEyedsPdScCBxxqbWLsTtEhLRlwjxYmDClLBUq+Z5MwdbBuOSTTywV4NaC3yP4wblMpjcd3giNLdTb+CVKsuEkjpwVDsWenJ/qVMwi1FCZjc2fRM3vP7VTMuL+o4rVsc2aAqSe3EeqihLr9wddnrpeHJgKuwcdHVDZpb6tatPQ0l3Adp939vPLSt8g2vtgF+MZpU6b5q5KyqjOdo+wgToexcrNiBBgHVy7jbcKtOv8qAqdaCCuMDVX7/gACfnG/8Io7NFszITl8W8fjJgRqFzN4cIYdohlWTYIRYagxm0C1b5M+w+udSDQKJ61iTjmFxHbYEOKbkiXSqX+8qmTlCzAR5S+F6LM7p4HVQaUMpsW7YsWvTXR4cWi+wtlGDCFCcqu22ur61J3kMFVeoKfgb4puJfCK+9jp9eVb0PVrl05c3vx4gHpbmJhTFhXuK1GvtnvrnCQTF819tEX8Re4AZ3YJDdBfTdAvXopPaaS22rFGo9N8tl47h2fwB0W5uFdhXjTRy6dlxh4lSm0VVq+apYhjMCJSTytaKfLE1hlj8ne/L2UXL3UDKJSTjzbhqCdPgHTDj34JTiBQD/EhWIfb7hcZ6aZeKBKToGt09rlNtq61Tadyxex2sr87/kRTXdLniNESks43dg=
+        secure: UIQWuiie0kaNNWYBnPxJLGVzdWxbcC0R1yyh6cDFbOc9vKb9X6wum/UjE/uGjo73LbJgHqpsnXaiskDzgi3gMrjkiGiylk9bNJg9QWBx8U7SroeTL6yrXqi1786C3ge1aMmSjrccQ+vV+K12auc+iTDoZiIdeKWi9ysiIf1uXvyTlP5FfAo+YIiZqeaVgOZpG0AAiM8gefhfSv4nmfbz8/07c8yFIPGON89tYYHHV8gPxTGIafe0JZXaI00BsxyWgbm0+WoTyng6un/jwkTPmQ2Ah0Kw4xx+XchJPFDX45wvsO7KCmz+G5BGfM49owCEccUh3HBlMdXuDRnlWmkH6FQfKDTYWgIUqEOj5O3XL3X3OIHO3TlMQsGqAwFLIs2boXmKB3dYLMZeo3e2YuA/hljFaNsJvoenCow65Cf+dsJLjbh6MSswAvp9W6elUFucOUKK3uRI87Fh0OBtpiIUiW5X/lsj8Ct2w5VVFfecyE8wqPQilqlzNH32yNmgsixyBcpLXYt3lzATPMR1lg6QZFCXe3+vRYgoI3KHV8xi3IJRE1gUIg6nvl4c7BAqDschYIYGuwbOBBx+6StuGoympfSOgPbt+Uy9HJ/TkR3G5fWgvVdPumCT7Les8dcMewEXcvLEkYDiBzfolg6RMdin6vRYuJpBeZBq0N9y5w67Mh8=
       app: doer-web
