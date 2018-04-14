@@ -1,22 +1,30 @@
+env:
+  global:
+    secure: CP90cB1UJWWTfW11sq6ZDr8xuUyzp7A86+uuAExJPFJu7zzZtX2Ro3j0LxlVqG3RZGjh2mEBKnFumR9PTg6Co6N7bQtX5jHhsD7xAM07gvdVhcYQHIbMu6s+RslNr99EMSd7eVhK17UNris0fPUqhmYdfsQhKPUoReNUR5Xn0x57CNi3cBu/TxjF4Kptmfjur9HHi32nvOHmFQ+UFXz+20G/tjPEDONj8IhipyscGaUoYpMBij5MbxF512Mkfl7zzDeeyffDK++Y91L9MTk5d0vg7RzCm1zCrFDNuvFt8jO2vn4cB/NafI0RBfIDFlxuN/H/M4Vod2UXTBtp1PMsbKTwfNHvPH0wzlkZR1BhIZPBv2xDAcPi5cNb8Pj6VLP7n1iMWhoBkGvdSwdRJkG/14VpzQ9JvO/IRPR5CWFYs/NJDj1jKdecns2/XYEeMa3t7NKC0lH05FaHKua96uMbEaUUGfXTvcm7LIXKzzRuLL5+26x7BNpUza4T3xVrt9PLjZInI0jZGWHrzLhIcNs3TOzb7kk3HeeVu48P0yARBX3U4kHeZMK/lbSPain0vNRtC642tiH482QRWWKcZ+y8CpIzgSZHSX1ZCAdwDCIqMcXU9hGHY+K0RysNjfARUjYYtRGXnFd1nm0zippUhx2WUbhEApxYxX5V7DBpCBTRYiQ=
 jobs:
   include:
-    - stage: test
+  - stage: test
     language: node_js
     node_js:
     - 6.2.1
-    - stage: deploy
+  - stage: deploy-staging
     script: skip
     deploy:
-    provider: heroku
+      provider: heroku
     api_key:
-    secure: UIQWuiie0kaNNWYBnPxJLGVzdWxbcC0R1yyh6cDFbOc9vKb9X6wum/UjE/uGjo73LbJgHqpsnXaiskDzgi3gMrjkiGiylk9bNJg9QWBx8U7SroeTL6yrXqi1786C3ge1aMmSjrccQ+vV+K12auc+iTDoZiIdeKWi9ysiIf1uXvyTlP5FfAo+YIiZqeaVgOZpG0AAiM8gefhfSv4nmfbz8/07c8yFIPGON89tYYHHV8gPxTGIafe0JZXaI00BsxyWgbm0+WoTyng6un/jwkTPmQ2Ah0Kw4xx+XchJPFDX45wvsO7KCmz+G5BGfM49owCEccUh3HBlMdXuDRnlWmkH6FQfKDTYWgIUqEOj5O3XL3X3OIHO3TlMQsGqAwFLIs2boXmKB3dYLMZeo3e2YuA/hljFaNsJvoenCow65Cf+dsJLjbh6MSswAvp9W6elUFucOUKK3uRI87Fh0OBtpiIUiW5X/lsj8Ct2w5VVFfecyE8wqPQilqlzNH32yNmgsixyBcpLXYt3lzATPMR1lg6QZFCXe3+vRYgoI3KHV8xi3IJRE1gUIg6nvl4c7BAqDschYIYGuwbOBBx+6StuGoympfSOgPbt+Uy9HJ/TkR3G5fWgvVdPumCT7Les8dcMewEXcvLEkYDiBzfolg6RMdin6vRYuJpBeZBq0N9y5w67Mh8=
+      secure: UIQWuiie0kaNNWYBnPxJLGVzdWxbcC0R1yyh6cDFbOc9vKb9X6wum/UjE/uGjo73LbJgHqpsnXaiskDzgi3gMrjkiGiylk9bNJg9QWBx8U7SroeTL6yrXqi1786C3ge1aMmSjrccQ+vV+K12auc+iTDoZiIdeKWi9ysiIf1uXvyTlP5FfAo+YIiZqeaVgOZpG0AAiM8gefhfSv4nmfbz8/07c8yFIPGON89tYYHHV8gPxTGIafe0JZXaI00BsxyWgbm0+WoTyng6un/jwkTPmQ2Ah0Kw4xx+XchJPFDX45wvsO7KCmz+G5BGfM49owCEccUh3HBlMdXuDRnlWmkH6FQfKDTYWgIUqEOj5O3XL3X3OIHO3TlMQsGqAwFLIs2boXmKB3dYLMZeo3e2YuA/hljFaNsJvoenCow65Cf+dsJLjbh6MSswAvp9W6elUFucOUKK3uRI87Fh0OBtpiIUiW5X/lsj8Ct2w5VVFfecyE8wqPQilqlzNH32yNmgsixyBcpLXYt3lzATPMR1lg6QZFCXe3+vRYgoI3KHV8xi3IJRE1gUIg6nvl4c7BAqDschYIYGuwbOBBx+6StuGoympfSOgPbt+Uy9HJ/TkR3G5fWgvVdPumCT7Les8dcMewEXcvLEkYDiBzfolg6RMdin6vRYuJpBeZBq0N9y5w67Mh8=
     app: doer-web-staging
   - stage: e2etest
     before_install:
-      - git clone https://github.com/ctailor2/doerE2ETests.git
-      - cd doerE2ETests
+    - git clone https://github.com/ctailor2/doerE2ETests.git
+    - cd doerE2ETests
     install:
-      - npm install
+    - npm install
     script:
-      - ./node_modules/.bin/cypress run
-
+    - "./node_modules/.bin/cypress run"
+  - stage: promote-to-prod
+    sudo: required
+    before_script:
+    - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+    script:
+    - heroku pipelines:promote -a doer-web-staging --to doer-web
