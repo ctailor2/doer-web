@@ -21,6 +21,7 @@ describe('App', () => {
     todoNowLink,
     todoLaterLink,
     pullLink,
+    displaceLink,
     listLink,
     mockDisplaceTodoActionFn,
     mockPullTodosActionFn,
@@ -47,6 +48,7 @@ describe('App', () => {
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
         pullLink = {href: 'http://some.api/pullTodos'};
+        displaceLink = {href: 'http://some.api/displaceTodo'};
         listLink = {href: 'http://some.api/list'};
         list = {
             name: 'name',
@@ -365,15 +367,76 @@ describe('App', () => {
                 expect(tab.prop('title')).toEqual('Name');
             });
 
-            describe('clickable list item', () => {
-                let item;
+            describe('displace button', () => {
+                let button;
 
                 beforeEach(() => {
-                    item = tab.find('ListGroupItem').find('[onClick]');
+                    button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
                 });
 
                 it('does not render by default', () => {
-                    expect(item.length).toBe(0);
+                    expect(button.length).toBe(0);
+                });
+
+                it('renders when the displace link is present and submitting state is true', () => {
+                    let listWithDisplaceLink = _.clone(list);
+                    listWithDisplaceLink._links.displace = displaceLink;
+                    tree.setState({submitting: true});
+                    tree.setProps({list: listWithDisplaceLink});
+                    tabs = tree.find(Tabs);
+                    tab = tabs.find(Tab).at(0);
+                    button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
+                    expect(button.length).toBe(1);
+                });
+
+                it('does not render when the displace link is present and submitting state is false', () => {
+                    let listWithDisplaceLink = _.clone(list);
+                    listWithDisplaceLink._links.displace = displaceLink;
+                    tree.setState({submitting: false});
+                    tree.setProps({list: listWithDisplaceLink});
+                    tabs = tree.find(Tabs);
+                    tab = tabs.find(Tab).at(0);
+                    button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
+                    expect(button.length).toBe(0);
+                });
+
+                describe('when rendered, on click', () => {
+                    let todoToSubmit = {task: 'some task'};
+
+                    beforeEach(() => {
+                        let listWithDisplaceLink = _.clone(list);
+                        listWithDisplaceLink._links.displace = displaceLink;
+                        tree.setState({todo: todoToSubmit, submitting: true});
+                        tree.setProps({list: listWithDisplaceLink});
+                        tabs = tree.find(Tabs);
+                        tab = tabs.find(Tab).at(0);
+                        button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
+                        button.simulate('click');
+                    });
+
+                    it('fires displace todos action with displaceLink', () => {
+                        expect(mockDisplaceTodoActionFn).toBeCalledWith(displaceLink, todoToSubmit);
+                    });
+
+                    it('toggles submitting state to false', () => {
+                        expect(tree.state().submitting).toBe(false);
+                    });
+
+                    it('clears the todo task state', () => {
+                        expect(tree.state().todo).toEqual({task: ''});
+                    });
+                });
+            });
+
+            describe('replenish button', () => {
+                let button;
+
+                beforeEach(() => {
+                    button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
+                });
+
+                it('does not render by default', () => {
+                    expect(button.length).toBe(0);
                 });
 
                 it('renders when the pull link is present', () => {
@@ -382,8 +445,8 @@ describe('App', () => {
                     tree.setProps({list: listWithPullLink});
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(0);
-                    item = tab.find('ListGroupItem').find('[onClick]');
-                    expect(item.length).toBe(1);
+                    button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
+                    expect(button.length).toBe(1);
                 });
 
                 describe('when rendered', () => {
@@ -393,11 +456,11 @@ describe('App', () => {
                         tree.setProps({list: listWithPullLink});
 	                    tabs = tree.find(Tabs);
 	                    tab = tabs.find(Tab).at(0);
-	                    item = tab.find('ListGroupItem').find('[onClick]');
+	                    button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
                     });
 
                     it('fires pull todos action with pullLink', () => {
-                        item.simulate('click');
+                        button.simulate('click');
 		                expect(mockPullTodosActionFn).toBeCalledWith(pullLink);
                     });
                 });
@@ -642,31 +705,6 @@ describe('App', () => {
 	            it('has task and links', () => {
 	                expect(todo.prop('task')).toEqual('thing one');
 	                expect(todo.prop('links')).toEqual({delete: deleteLinkOne});
-	            });
-
-	            describe('displace handler', () => {
-	                let task = 'someTask';
-                    let todoToSubmit = {task: task};
-                    let displaceLink = {href: 'http://some.api/displaceTodo'};
-
-	                beforeEach(() => {
-	                    tree.setState({todo: todoToSubmit, submitting: true});
-                        list = tree.find('ListGroup');
-                        todo = list.find(Todo).at(0);
-	                    todo.prop('handleDisplace')(displaceLink);
-	                });
-
-                    it('fires displace todo action with todo displaceLink and task', () => {
-                        expect(mockDisplaceTodoActionFn).toBeCalledWith(displaceLink, todoToSubmit);
-                    });
-
-                    it('toggles submitting state to false', () => {
-                        expect(tree.state().submitting).toBe(false);
-                    });
-
-                    it('clears the todo task state', () => {
-                        expect(tree.state().todo).toEqual({task: ''});
-                    });
 	            });
 	        });
         });

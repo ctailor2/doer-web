@@ -266,37 +266,6 @@ describe('Todo', () => {
 			});
 		});
 	});
-
-	describe('when readOnly is true', () => {
-		beforeEach(() => {
-			tree.setProps({readOnly: true});
-		});
-
-		describe('when the displace link is present', () => {
-            let displaceLink = {href: 'http://some.api/displaceTodo'};
-
-            beforeEach(() => {
-                tree.setProps({links: {delete: deleteLink, displace: displaceLink}});
-            });
-
-            describe('button', () => {
-                let button;
-
-                beforeEach(() => {
-                     button = tree.find('Button');
-                });
-
-	            it('renders', () => {
-	                expect(button.length).toBe(1);
-	            });
-
-                it('calls handleDisplace with displaceLink when clicked', () => {
-                    button.simulate('click');
-                    expect(mockDisplaceHandler).toBeCalledWith(displaceLink);
-                });
-            });
-        });
-	});
 });
 
 

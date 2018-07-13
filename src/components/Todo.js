@@ -20,29 +20,12 @@ export class Todo extends Component {
 		this.state = {editMode: false};
 	}
 
-	canBeDisplaced() {
-		return this.props.readOnly && !_.isUndefined(this.props.links.displace);
-	}
-
 	handleEditClick() {
 		this.setState({editMode: true, task: this.props.task});
 	}
 
 	render() {
-		if(this.canBeDisplaced()) {
-			return this.displaceableTodo();
-		} else {
-			return this.editableTodo();
-		}
-	}
-
-	displaceableTodo() {
-	    return (<ListGroupItem>
-		    <Row>
-	            <Col lg={1} xs={1}><Button className="icon-button" bsStyle="primary" type="button" bsSize="xsmall" onClick={this.callDisplaceHandler.bind(this)}><Glyphicon glyph="menu-right"/></Button></Col>
-	            <Col lg={11} xs={11}>{this.props.task}</Col>
-	        </Row>
-        </ListGroupItem>);
+        return this.editableTodo();
 	}
 
 	componentDidUpdate() {
@@ -112,10 +95,6 @@ export class Todo extends Component {
 
 	handleDelete() {
 		this.props.deleteTodoRequestAction(this.props.links.delete);
-	}
-
-	callDisplaceHandler() {
-		this.props.handleDisplace(this.props.links.displace);
 	}
 }
 

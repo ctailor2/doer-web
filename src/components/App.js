@@ -157,6 +157,7 @@ export class App extends Component {
 			<Tabs activeKey={this.state.activeTab} onSelect={this.handleSelectTab.bind(this)} id='tabs'>
 		        <Tab eventKey={this.props.list.name} title={_.capitalize(this.props.list.name)}>
 					<ListGroup>
+                        {this.renderDisplaceButton()}
                         {this.props.nowTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
                         })}
@@ -198,7 +199,7 @@ export class App extends Component {
 
 	renderReplenishButton() {
 		if(!_.isUndefined(this.props.list._links.pull)) {
-			return (<ListGroupItem onClick={this.handlePullClick.bind(this)} bsStyle="info">
+			return (<ListGroupItem onClick={this.handlePullClick.bind(this)} bsStyle="info" className="refresh">
                 Replenish <Glyphicon glyph="refresh" />
             </ListGroupItem>);
 		}
@@ -208,18 +209,26 @@ export class App extends Component {
 		this.props.pullTodosRequestAction(this.props.list._links.pull);
 	}
 
+	renderDisplaceButton() {
+        if(!_.isUndefined(this.props.list._links.displace) && this.state.submitting) {
+            return (<ListGroupItem onClick={this.handleDisplaceClick.bind(this)} bsStyle="info" className="displace">
+                Now <Glyphicon glyph="chevron-down" />
+            </ListGroupItem>);
+        }
+	}
+
+	handleDisplaceClick() {
+		let todo = this.state.todo;
+		this.props.displaceTodoRequestAction(this.props.list._links.displace, todo);
+		this.setState({todo: {task: ''}, submitting: false});
+	}
+
 	renderList(todos) {
 		return(<ListGroup>
 			{todos.map((todo, index) => {
 				return this.renderListItem(todo, index);
             })}
 		</ListGroup>);
-	}
-
-	displaceTodo(link) {
-		let todo = this.state.todo;
-		this.props.displaceTodoRequestAction(link, todo);
-		this.setState({todo: {task: ''}, submitting: false});
 	}
 
 	moveItem(link) {
@@ -232,8 +241,7 @@ export class App extends Component {
 					handleMove={this.moveItem.bind(this)}
 					readOnly={this.state.submitting}
 					task={todo.task}
-					links={todo._links}
-					handleDisplace={this.displaceTodo.bind(this)} />);
+					links={todo._links} />);
 	}
 }
 
