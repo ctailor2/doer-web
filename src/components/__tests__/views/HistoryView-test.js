@@ -40,15 +40,16 @@ describe('HistoryView', () => {
         expect(tree.find('Loader').length).toBe(1);
     });
 
-    it('renders the history when todos is not empty', () => {
-        tree.setProps({todos: [1, 2, 3]});
+    it('renders the history when list is not empty', () => {
+        tree.setProps({list: {name: 'neat list'}});
         expect(tree.find(History).length).toBe(1);
     });
 
     it('maps state to props', () => {
-        let state = {todos: {completed: [1, 2, 3]}};
+        let list = {name: 'neat list'}
+        let state = {completedList: list};
         expect(mapStateToProps(state)).toEqual({
-            todos: [1, 2, 3]
+            list: list
         });
     });
 });

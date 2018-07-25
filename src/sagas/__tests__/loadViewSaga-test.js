@@ -119,8 +119,8 @@ describe('loadHistoryView', () => {
         });
 
         describe('on request success', () => {
-            let completedTodosLink = {href: 'http://some.api/completedTodos'};
-            let links = {completedTodos: completedTodosLink};
+            let completedListLink = {href: 'http://some.api/completedList'};
+            let links = {completedList: completedListLink};
             let historyResourcesResponse = {response: {data: {_links: links}}};
 
             beforeEach(() => {
@@ -131,9 +131,9 @@ describe('loadHistoryView', () => {
                 expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
             });
 
-            it('fires get completed todos request action', () => {
+            it('fires get completed list request action', () => {
                 iterator.next(historyResourcesResponse);
-                expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'GET_COMPLETED_TODOS_REQUEST_ACTION', link: completedTodosLink}));
+                expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'GET_COMPLETED_LIST_REQUEST_ACTION', link: completedListLink}));
             });
         });
     });

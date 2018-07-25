@@ -2,6 +2,7 @@ import {getReducers} from '../rootReducer';
 import {todos} from '../todoReducer';
 import {links} from '../linksReducer';
 import {list} from '../listReducer';
+import {completedList} from '../completedListReducer';
 import {errors} from '../errorsReducer';
 
 describe('getReducers', () => {
@@ -10,6 +11,7 @@ describe('getReducers', () => {
             todos,
             links,
             list,
+            completedList,
             errors
         });
     });

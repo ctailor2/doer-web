@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 import {todos} from './todoReducer';
 import {links} from './linksReducer';
 import {list} from './listReducer';
+import {completedList} from './completedListReducer';
 import {errors} from './errorsReducer';
 
 const rootReducer = combineReducers(getReducers());
@@ -11,6 +12,7 @@ export function getReducers() {
         todos,
         links,
         list,
+        completedList,
         errors
     };
 }

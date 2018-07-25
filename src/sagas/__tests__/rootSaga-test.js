@@ -21,6 +21,7 @@ import {
 } from '../resourcesSaga';
 import {
     watchGetListRequest,
+    watchGetCompletedListRequest,
     watchUnlockListRequest
 } from '../listSaga';
 import {watchPersistLink} from '../linksSaga';
@@ -53,6 +54,7 @@ describe('rootSaga', () => {
             fork(watchPullTodosRequest),
             fork(watchGetDeferredTodosRequest),
             fork(watchGetListRequest),
+            fork(watchGetCompletedListRequest),
             fork(watchUnlockListRequest)
         ]);
     });

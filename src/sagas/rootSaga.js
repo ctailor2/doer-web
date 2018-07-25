@@ -19,6 +19,7 @@ import {
 } from './resourcesSaga';
 import {
     watchGetListRequest,
+    watchGetCompletedListRequest,
     watchUnlockListRequest
 } from './listSaga';
 import {watchPersistLink} from './linksSaga';
@@ -49,6 +50,7 @@ export default function* rootSaga() {
         fork(watchPullTodosRequest),
         fork(watchGetDeferredTodosRequest),
         fork(watchGetListRequest),
+        fork(watchGetCompletedListRequest),
         fork(watchUnlockListRequest)
     ];
 }

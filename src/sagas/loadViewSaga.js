@@ -3,8 +3,8 @@ import * as actionTypes from '../constants/actionTypes';
 import {fetchData} from './sagaHelper';
 import {call, put} from 'redux-saga/effects';
 import {storeLinksAction} from '../actions/linkActions';
-import {getCompletedTodosRequestAction} from '../actions/todoActions';
 import {getListRequestAction} from '../actions/listActions';
+import {getCompletedListRequestAction} from '../actions/listActions';
 
 export function* loadTodosView() {
 	let url = localStorage.getItem('link');
@@ -35,7 +35,7 @@ export function* loadHistoryView() {
     	let {response: historyResourcesResponse, error: historyResourcesError} = yield call(fetchData, rootResourcesResponse.data._links.historyResources.href, {headers: {'Session-Token': sessionToken}});
         if (historyResourcesResponse) {
             yield put(storeLinksAction(historyResourcesResponse.data._links));
-            yield put(getCompletedTodosRequestAction(historyResourcesResponse.data._links.completedTodos));
+            yield put(getCompletedListRequestAction(historyResourcesResponse.data._links.completedList));
         } else if (historyResourcesError) {
             // TODO: handle error
         }
