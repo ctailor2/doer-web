@@ -31,7 +31,7 @@ describe('getCompletedTodosRequest', () => {
     };
 
 	beforeEach(() => {
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = getCompletedTodosRequest(action);
 	});
 

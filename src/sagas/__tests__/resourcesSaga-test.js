@@ -23,7 +23,7 @@ describe('getRootResourcesRequest', () => {
 
 	beforeEach(() => {
 		iterator = getRootResourcesRequest(action);
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.setItem('sessionToken', 'socooltoken');
 	});
 
     it('calls endpoint with action url', () => {
@@ -93,7 +93,7 @@ describe('getTodoResourcesRequest', () => {
 
 	beforeEach(() => {
 		iterator = getTodoResourcesRequest(action);
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.setItem('sessionToken', 'socooltoken');
 	});
 
     it('calls endpoint with action url', () => {
@@ -131,7 +131,7 @@ describe('getHistoryResourcesRequest', () => {
 
 	beforeEach(() => {
 		iterator = getHistoryResourcesRequest(action);
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.setItem('sessionToken', 'socooltoken');
 	});
 
     it('calls endpoint with action url', () => {

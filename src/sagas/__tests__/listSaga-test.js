@@ -26,7 +26,7 @@ describe('getListRequest', () => {
     };
 
 	beforeEach(() => {
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = getListRequest(action);
 	});
 
@@ -64,7 +64,7 @@ describe('getCompletedListRequest', () => {
     };
 
 	beforeEach(() => {
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = getCompletedListRequest(action);
 	});
 
@@ -109,7 +109,7 @@ describe('unlockListRequest', () => {
     };
 
 	beforeEach(() => {
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = unlockListRequest(action);
 	});
 

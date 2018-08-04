@@ -15,14 +15,13 @@ describe('HistoryView', () => {
     });
 
     it('redirects to the login page if a sessionToken is not present', () => {
-        localStorage.getItem = jest.fn(() => {return null});
         tree = shallow(<HistoryView viewLoaded={false} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadHistoryViewActionFn).not.toBeCalled();
     });
 
     it('fires load history view action when mounted', () => {
-        localStorage.getItem = jest.fn(() => {return 'cooltoken'});
+        localStorage.setItem('sessionToken', 'cooltoken');
         tree = shallow(<HistoryView viewLoaded={false} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
         expect(mockLoadHistoryViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();

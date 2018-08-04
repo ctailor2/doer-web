@@ -15,14 +15,13 @@ describe('TodosView', () => {
 	});
 
     it('redirects to the login page if a sessionToken is not present', () => {
-		localStorage.getItem = jest.fn(() => {return null});
         tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />, {lifecycleExperimental: true});
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadTodosViewActionFn).not.toBeCalled();
     });
 
     it('fires load todos view action when mounted if a sessionToken is present', () => {
-		localStorage.getItem = jest.fn(() => {return 'cooltoken'});
+        localStorage.setItem('sessionToken', 'cooltoken')
         tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />, {lifecycleExperimental: true});
         expect(mockLoadTodosViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();

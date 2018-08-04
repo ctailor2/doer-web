@@ -10,7 +10,6 @@ describe('Header', () => {
     beforeEach(() => {
         logoutRequestActionFn = jest.fn();
         dismissGlobalAlertActionFn = jest.fn();
-        localStorage.getItem = jest.fn();
         globalErrors = []
         tree = shallow(<Header globalErrors={globalErrors}
                                dismissGlobalAlertAction={dismissGlobalAlertActionFn}
@@ -111,7 +110,7 @@ describe('Header', () => {
 
         describe('when localStorage contains a session token', () => {
             beforeEach(() => {
-                localStorage.getItem = jest.fn(() => {return 'cooltoken'});
+                localStorage.setItem('sessionToken', 'cooltoken');
                 // Calling update wasn't re-rendering
                 tree = shallow(<Header globalErrors={globalErrors} logoutRequestAction={logoutRequestActionFn}/>);
                 nav = tree.find(Nav);

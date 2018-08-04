@@ -190,8 +190,8 @@ describe('logoutRequest', () => {
     };
 
     beforeEach(() => {
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
-        localStorage.removeItem = jest.fn();
+        localStorage.setItem('sessionToken', 'socooltoken');
+        localStorage.setItem('link', 'someLink');
         browserHistory.push = jest.fn();
         iterator = logoutRequest(action);
     });
@@ -199,13 +199,13 @@ describe('logoutRequest', () => {
     describe('on request success', () => {
         it('removes token from localStorage', () => {
             iterator.next();
-            expect(localStorage.removeItem).toBeCalledWith('sessionToken');
+            expect(localStorage.getItem('sessionToken')).toEqual(null);
         });
 
         it('removes link from localStorage', () => {
             iterator.next();
             iterator.next();
-            expect(localStorage.removeItem).toBeCalledWith('link');
+            expect(localStorage.getItem('link')).toEqual(null);
         });
 
         it('redirects to login', () => {
@@ -234,13 +234,12 @@ describe('storeSession', () => {
     };
 
     beforeEach(() => {
-        localStorage.setItem = jest.fn();
         iterator = storeSession(action);
     });
 
     it('sets token on localStorage', () => {
         iterator.next();
-        expect(localStorage.setItem).toBeCalledWith('sessionToken', 'wowCoolToken');
+        expect(localStorage.getItem('sessionToken')).toEqual('wowCoolToken');
     });
 });
 

@@ -11,22 +11,9 @@ describe('loadTodosView', () => {
 
     beforeEach(() => {
         url = 'http://some.api/endpoint';
-        localStorage.getItem = jest.fn((key) => {
-            switch(key) {
-                case 'link':
-                    return url;
-                case 'sessionToken':
-                    return 'socooltoken';
-                default:
-                    break;
-            }
-        });
+        localStorage.setItem('link', url);
+        localStorage.setItem('sessionToken', 'socooltoken');
         iterator = loadTodosView(action);
-    });
-
-    it('gets link from localStorage', () => {
-        iterator.next();
-        expect(localStorage.getItem).toBeCalledWith('link');
     });
 
     it('calls endpoint with link from localStorage', () => {
@@ -83,22 +70,9 @@ describe('loadHistoryView', () => {
 
     beforeEach(() => {
         url = 'http://some.api/endpoint';
-        localStorage.getItem = jest.fn((key) => {
-            switch(key) {
-                case 'link':
-                    return url;
-                case 'sessionToken':
-                    return 'socooltoken';
-                default:
-                    break;
-            }
-        });
+        localStorage.setItem('link', url);
+        localStorage.setItem('sessionToken', 'socooltoken');
         iterator = loadHistoryView(action);
-    });
-
-    it('gets link from localStorage', () => {
-        iterator.next();
-        expect(localStorage.getItem).toBeCalledWith('link');
     });
 
     it('calls endpoint with link from localStorage', () => {

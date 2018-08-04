@@ -9,7 +9,6 @@ describe('SignupView', () => {
 
     beforeEach(() => {
         signupLink = {href: 'http://some.api/signup'};
-        localStorage.getItem = jest.fn();
         signupRequestActionFn = jest.fn();
         getBaseResourcesRequestActionFn = jest.fn();
         tree = shallow(<SignupView signupLink={signupLink} signupRequestAction={signupRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
@@ -48,7 +47,7 @@ describe('SignupView', () => {
     });
 
     it('redirects to the root if a sessionToken is present', () => {
-        localStorage.getItem = jest.fn(() => {return 'cooltoken'});
+        localStorage.setItem('sessionToken', 'cooltoken');
         browserHistory.push = jest.fn();
         tree = shallow(<SignupView signupRequestAction={signupRequestActionFn}/>);
         expect(browserHistory.push).toBeCalledWith('/');

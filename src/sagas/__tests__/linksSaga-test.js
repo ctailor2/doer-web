@@ -10,13 +10,12 @@ describe('persistLink', () => {
 	};
 
     beforeEach(() => {
-        localStorage.setItem = jest.fn();
         iterator = persistLink(action);
     });
 
     it('sets link on localStorage', () => {
         iterator.next();
-        expect(localStorage.setItem).toBeCalledWith('link', link.href);
+        expect(localStorage.getItem('link')).toEqual(link.href);
     });
 });
 
