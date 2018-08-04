@@ -70,7 +70,6 @@
   "proxy": "http://localhost:8080",
   "jest": {
     "testURL": "http://localhost",
-    "testEnvironment": "node",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/react-dom",
