@@ -1,8 +1,6 @@
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {
-	watchGetTodosRequest,
-	watchGetDeferredTodosRequest,
 	watchGetCompletedTodosRequest,
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
@@ -11,8 +9,6 @@ import {
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
 	watchPullTodosRequest,
-	getTodosRequest,
-	getDeferredTodosRequest,
 	getCompletedTodosRequest,
 	deleteTodoRequest,
 	postRequestWithNoData,
@@ -20,64 +16,6 @@ import {
 	putRequestWithTodoData
 } from '../todoSaga';
 import {fetchData, postData, deleteData, putData} from '../sagaHelper'
-
-describe('getTodosRequest', () => {
-	let iterator;
-
-	let url = 'http://some.api/someLink';
-    let action = {
-        type: 'GET_TODOS_REQUEST_ACTION',
-        link: {href: url}
-    };
-    let links = {
-        something: {href: "tisket"},
-        somethingElse: {href: "tasket"}
-    };
-
-	beforeEach(() => {
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
-		iterator = getTodosRequest(action);
-	});
-
-	it('calls endpoint with action href', () => {
-        expect(iterator.next().value).toEqual(call(fetchData, url, {headers: {'Session-Token': 'socooltoken'}}));
-	});
-
-	it('fires store todos action', () => {
-        iterator.next();
-        expect(iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}}).value)
-            .toEqual(put({type: 'STORE_TODOS_ACTION', todos: [1, 2, 3]}));
-    });
-});
-
-describe('getDeferredTodosRequest', () => {
-	let iterator;
-
-	let url = 'http://some.api/someLink';
-    let action = {
-        type: 'GET_DEFERRED_TODOS_REQUEST_ACTION',
-        link: {href: url}
-    };
-    let links = {
-        something: {href: "tisket"},
-        somethingElse: {href: "tasket"}
-    };
-
-	beforeEach(() => {
-        localStorage.getItem = jest.fn(() => {return 'socooltoken'});
-		iterator = getDeferredTodosRequest(action);
-	});
-
-	it('calls endpoint with action href', () => {
-        expect(iterator.next().value).toEqual(call(fetchData, url, {headers: {'Session-Token': 'socooltoken'}}));
-	});
-
-	it('fires store deferred todos action', () => {
-        iterator.next();
-        expect(iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}}).value)
-            .toEqual(put({type: 'STORE_DEFERRED_TODOS_ACTION', todos: [1, 2, 3]}));
-    });
-});
 
 describe('getCompletedTodosRequest', () => {
 	let iterator;
@@ -287,22 +225,6 @@ describe('postRequestWithNoData', () => {
             expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
         });
     });
-});
-
-describe('watchGetTodosRequest', () => {
-	let iterator = watchGetTodosRequest();
-
-	it('calls get todos request saga with every get todos request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('GET_TODOS_REQUEST_ACTION', getTodosRequest).next().value);
-	});
-});
-
-describe('watchGetDeferredTodosRequest', () => {
-	let iterator = watchGetDeferredTodosRequest();
-
-	it('calls get deferred todos request saga with every get deferred todos request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('GET_DEFERRED_TODOS_REQUEST_ACTION', getDeferredTodosRequest).next().value);
-	});
 });
 
 describe('watchGetCompletedTodosRequest', () => {

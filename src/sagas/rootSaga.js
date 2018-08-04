@@ -1,6 +1,5 @@
 import {watchSignupRequest, watchLoginRequest, watchLogoutRequest, watchStoreSession} from './sessionSaga';
 import {
-	watchGetTodosRequest,
 	watchGetCompletedTodosRequest,
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
@@ -8,8 +7,7 @@ import {
 	watchUpdateTodoRequest,
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
-	watchPullTodosRequest,
-	watchGetDeferredTodosRequest
+	watchPullTodosRequest
 } from './todoSaga';
 import {
     watchGetBaseResourcesRequest,
@@ -32,7 +30,6 @@ export default function* rootSaga() {
         fork(watchLoginRequest),
         fork(watchLogoutRequest),
         fork(watchStoreSession),
-        fork(watchGetTodosRequest),
         fork(watchCreateTodoRequest),
         fork(watchDeleteTodoRequest),
         fork(watchGetBaseResourcesRequest),
@@ -48,7 +45,6 @@ export default function* rootSaga() {
         fork(watchLoadHistoryView),
         fork(watchGetCompletedTodosRequest),
         fork(watchPullTodosRequest),
-        fork(watchGetDeferredTodosRequest),
         fork(watchGetListRequest),
         fork(watchGetCompletedListRequest),
         fork(watchUnlockListRequest)

@@ -1,37 +1,9 @@
 import * as actionTypes from '../constants/actionTypes';
 
-export function getTodosRequestAction(link = {}) {
-	return {
-		type: actionTypes.GET_TODOS_REQUEST_ACTION,
-		link: link
-	}
-}
-
-export function getDeferredTodosRequestAction(link = {}) {
-	return {
-		type: actionTypes.GET_DEFERRED_TODOS_REQUEST_ACTION,
-		link: link
-	}
-}
-
 export function getCompletedTodosRequestAction(link = {}) {
 	return {
 		type: actionTypes.GET_COMPLETED_TODOS_REQUEST_ACTION,
 		link: link
-	}
-}
-
-export function storeTodosAction(todos = []) {
-	return {
-		type: actionTypes.STORE_TODOS_ACTION,
-		todos: todos
-	}
-}
-
-export function storeDeferredTodosAction(todos = []) {
-	return {
-		type: actionTypes.STORE_DEFERRED_TODOS_ACTION,
-		todos: todos
 	}
 }
 

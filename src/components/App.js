@@ -158,7 +158,7 @@ export class App extends Component {
 		        <Tab eventKey={this.props.list.name} title={_.capitalize(this.props.list.name)}>
 					<ListGroup>
                         {this.renderDisplaceButton()}
-                        {this.props.nowTodos.map((todo, index) => {
+                        {this.props.list.todos.map((todo, index) => {
                             return this.renderListItem(todo, index);
                         })}
                         {this.renderReplenishButton()}
@@ -166,7 +166,7 @@ export class App extends Component {
 		        </Tab>
 		        <Tab eventKey={this.props.list.deferredName} title={this.renderDeferredTodosTabTitle()} disabled={this.deferredTodosTabIsDisabled()}>
 					<ListGroup>
-                        {this.props.laterTodos.map((todo, index) => {
+                        {this.props.list.deferredTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
                         })}
                     </ListGroup>

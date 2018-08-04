@@ -54,6 +54,8 @@ describe('App', () => {
             name: 'name',
             deferredName: 'deferredname',
             unlockDuration: 1700900,
+            todos: [],
+            deferredTodos: [],
             _links: {
                 create: todoNowLink,
                 createDeferred: todoLaterLink
@@ -631,24 +633,24 @@ describe('App', () => {
     });
 
     describe('list', () => {
-        let list;
+        let listGroup;
 
         beforeEach(() => {
-            list = tree.find('ListGroup');
+            listGroup = tree.find('ListGroup');
         });
 
         it('renders for now and later todos', () => {
-            expect(list.length).toBe(2);
+            expect(listGroup.length).toBe(2);
         });
 
         describe('without todos', () => {
             it('does not contain any items', () => {
-                expect(list.find('ListGroupItem').length).toBe(0);
+                expect(listGroup.find('ListGroupItem').length).toBe(0);
             });
         });
 
         describe('with todos', () => {
-            let todo1, todo2, laterTodo1, laterTodo2, deleteLinkOne;
+            let todo1, todo2, laterTodo1, laterTodo2, deleteLinkOne, listWithProps;
 
             beforeEach(() => {
                 deleteLinkOne = {href: 'http://some.api/deleteTodoOne'};
@@ -658,19 +660,22 @@ describe('App', () => {
                 laterTodo2 = {task: 'later thing two'};
                 let todos = [todo1, todo2];
                 let laterTodos = [laterTodo1, laterTodo2];
-                tree.setProps({nowTodos: todos, laterTodos: laterTodos});
-                list = tree.find('ListGroup');
+                listWithProps = _.clone(list);
+                listWithProps.todos = todos;
+                listWithProps.deferredTodos = laterTodos;
+                tree.setProps({list: listWithProps});
+                listGroup = tree.find('ListGroup');
             });
 
 	        it('contains a Todo for each todo', () => {
-	            expect(list.find(Todo).length).toBe(4);
+	            expect(listGroup.find(Todo).length).toBe(4);
 	        });
 
 	        describe('each todo', () => {
 	            let todo;
 
 	            beforeEach(() => {
-	                todo = list.find(Todo).at(0);
+	                todo = listGroup.find(Todo).at(0);
 	            });
 
 	            it('has an index', () => {
@@ -697,8 +702,8 @@ describe('App', () => {
 
 	            it('is readonly when submitting', () => {
 	                tree.setState({submitting: true});
-                    list = tree.find('ListGroup');
-	                todo = list.find(Todo).at(0);
+                    listGroup = tree.find('ListGroup');
+	                todo = listGroup.find(Todo).at(0);
 	                expect(todo.prop('readOnly')).toBe(true);
 	            });
 

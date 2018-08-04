@@ -2,26 +2,10 @@ import * as actionTypes from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {fetchData, postData, deleteData, putData} from './sagaHelper';
-import {storeTodosAction, storeDeferredTodosAction, storeCompletedTodosAction} from '../actions/todoActions';
+import {storeCompletedTodosAction} from '../actions/todoActions';
 import {storeLinksAction} from '../actions/linkActions';
 import {getListRequestAction} from '../actions/listActions';
 import {storeErrorsAction, clearErrorsAction} from '../actions/errorActions';
-
-export function* getTodosRequest(action) {
-	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
-	if(response) {
-		yield put(storeTodosAction(response.data.todos));
-	} else  if (error) {
-	}
-}
-
-export function* getDeferredTodosRequest(action) {
-	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
-	if(response) {
-		yield put(storeDeferredTodosAction(response.data.todos));
-	} else  if (error) {
-	}
-}
 
 export function* getCompletedTodosRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
@@ -68,14 +52,6 @@ export function* postRequestWithNoData(action) {
         yield put(getListRequestAction(response.data._links.list));
     } else if (error) {
     }
-}
-
-export function* watchGetTodosRequest() {
-	yield* takeEvery(actionTypes.GET_TODOS_REQUEST_ACTION, getTodosRequest);
-}
-
-export function* watchGetDeferredTodosRequest() {
-	yield* takeEvery(actionTypes.GET_DEFERRED_TODOS_REQUEST_ACTION, getDeferredTodosRequest);
 }
 
 export function* watchGetCompletedTodosRequest() {

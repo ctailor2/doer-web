@@ -9,8 +9,6 @@ import {
     storeCompletedListAction,
 } from '../actions/listActions';
 import {
-    getTodosRequestAction,
-    getDeferredTodosRequestAction,
     getCompletedTodosRequestAction
 } from '../actions/todoActions';
 
@@ -18,11 +16,6 @@ export function* getListRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(storeListAction(response.data.list));
-        yield put(getTodosRequestAction(response.data.list._links.todos));
-        let deferredTodosLink = response.data.list._links.deferredTodos;
-        if (!_.isUndefined(deferredTodosLink)) {
-            yield put(getDeferredTodosRequestAction(deferredTodosLink));
-        }
 	} else  if (error) {
 	}
 }

@@ -2,7 +2,6 @@ import rootSaga from '../rootSaga';
 import {call, fork} from 'redux-saga/effects';
 import {watchSignupRequest, watchLoginRequest, watchLogoutRequest, watchStoreSession} from '../sessionSaga';
 import {
-	watchGetTodosRequest,
 	watchGetCompletedTodosRequest,
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
@@ -11,7 +10,6 @@ import {
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
 	watchPullTodosRequest,
-	watchGetDeferredTodosRequest,
 } from '../todoSaga';
 import {
     watchGetBaseResourcesRequest,
@@ -36,7 +34,6 @@ describe('rootSaga', () => {
             fork(watchLoginRequest),
             fork(watchLogoutRequest),
             fork(watchStoreSession),
-            fork(watchGetTodosRequest),
             fork(watchCreateTodoRequest),
             fork(watchDeleteTodoRequest),
             fork(watchGetBaseResourcesRequest),
@@ -52,7 +49,6 @@ describe('rootSaga', () => {
             fork(watchLoadHistoryView),
             fork(watchGetCompletedTodosRequest),
             fork(watchPullTodosRequest),
-            fork(watchGetDeferredTodosRequest),
             fork(watchGetListRequest),
             fork(watchGetCompletedListRequest),
             fork(watchUnlockListRequest)

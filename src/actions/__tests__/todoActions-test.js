@@ -1,9 +1,5 @@
 import {
-	getTodosRequestAction,
-	getDeferredTodosRequestAction,
 	getCompletedTodosRequestAction,
-	storeTodosAction,
-	storeDeferredTodosAction,
 	storeCompletedTodosAction,
 	createTodoRequestAction,
 	deleteTodoRequestAction,
@@ -13,40 +9,6 @@ import {
 	moveTodoRequestAction,
 	pullTodosRequestAction
 } from '../todoActions';
-
-describe('getTodosRequestAction', () => {
-	it('creates a get todos request action with empty link by default', () => {
-		expect(getTodosRequestAction()).toEqual({
-			type: 'GET_TODOS_REQUEST_ACTION',
-			link: {}
-		});
-	});
-
-	it('creates a get todos request action with supplied link', () => {
-		let link = {href: 'http://some.api/todos'};
-		expect(getTodosRequestAction(link)).toEqual({
-			type: 'GET_TODOS_REQUEST_ACTION',
-			link: link
-		});
-	});
-});
-
-describe('getDeferredTodosRequestAction', () => {
-	it('creates a get deferred todos request action with empty link by default', () => {
-		expect(getDeferredTodosRequestAction()).toEqual({
-			type: 'GET_DEFERRED_TODOS_REQUEST_ACTION',
-			link: {}
-		});
-	});
-
-	it('creates a get deferred todos request action with supplied link', () => {
-		let link = {href: 'http://some.api/todos'};
-		expect(getDeferredTodosRequestAction(link)).toEqual({
-			type: 'GET_DEFERRED_TODOS_REQUEST_ACTION',
-			link: link
-		});
-	});
-});
 
 describe('getCompletedTodosRequestAction', () => {
 	it('creates a get completed todos request action with empty link by default', () => {
@@ -61,38 +23,6 @@ describe('getCompletedTodosRequestAction', () => {
 		expect(getCompletedTodosRequestAction(link)).toEqual({
 			type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
 			link: link
-		});
-	});
-});
-
-describe('storeTodosAction', () => {
-	it('creates a store todos action with empty todos by default', () => {
-		expect(storeTodosAction()).toEqual({
-			type: 'STORE_TODOS_ACTION',
-			todos: []
-		});
-	});
-
-	it('creates a store todos action with supplied todos', () => {
-		expect(storeTodosAction([1, 2, 3])).toEqual({
-			type: 'STORE_TODOS_ACTION',
-			todos: [1, 2, 3]
-		});
-	});
-});
-
-describe('storeDeferredTodosAction', () => {
-	it('creates a store deferred todos action with empty todos by default', () => {
-		expect(storeDeferredTodosAction()).toEqual({
-			type: 'STORE_DEFERRED_TODOS_ACTION',
-			todos: []
-		});
-	});
-
-	it('creates a store deferred todos action with supplied todos', () => {
-		expect(storeDeferredTodosAction([1, 2, 3])).toEqual({
-			type: 'STORE_DEFERRED_TODOS_ACTION',
-			todos: [1, 2, 3]
 		});
 	});
 });
