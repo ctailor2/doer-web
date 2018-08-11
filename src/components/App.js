@@ -194,7 +194,7 @@ export class App extends Component {
 	}
 
 	canViewDeferredTodos() {
-	    return !_.isUndefined(this.props.list._links.deferredTodos);
+	    return !_.isEmpty(this.props.list.deferredTodos);
 	}
 
 	renderReplenishButton() {
@@ -247,8 +247,6 @@ export class App extends Component {
 
 export const mapStateToProps = (state) => {
 	return {
-		nowTodos: state.todos.active,
-		laterTodos: state.todos.inactive,
 		list: state.list,
 		listLink: state.links.list
 	};

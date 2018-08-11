@@ -338,10 +338,10 @@ describe('App', () => {
                     expect(tree.state().showUnlockConfirmation).toEqual(true);
                 });
 
-                describe('when the deferredTodos link is present', () => {
+                describe('when the deferredTodos list is not empty', () => {
                     beforeEach(() => {
                         let listWithProps = _.clone(list);
-                        listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                        listWithProps.deferredTodos = [{task: 'some task'}];
                         listWithProps.unlockDuration = 1700000;
                         tree.setProps({list: listWithProps});
                     });
@@ -502,11 +502,11 @@ describe('App', () => {
                 });
             });
 
-            describe('when the deferredTodos link is present', () => {
+            describe('when the deferredTodos list is not empty', () => {
                 beforeEach(() => {
                     let listWithProps = _.clone(list);
-                    listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
                     listWithProps.unlockDuration = 1700000;
+                    listWithProps.deferredTodos = [{task: 'some task'}];
                     tree.setProps({list: listWithProps});
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(1);
@@ -532,10 +532,10 @@ describe('App', () => {
                     expect(titleNode.find('Glyphicon').length).toEqual(1);
                 });
 
-                describe('when the deferredTodos link is present', () => {
+                describe('when the deferredTodos list is not empty', () => {
                     beforeEach(() => {
                         let listWithProps = _.clone(list);
-                        listWithProps._links.deferredTodos = {href: 'http://some.api/deferredTodos'}
+                        listWithProps.deferredTodos = [{task: 'some task'}];
                         tree.setProps({list: listWithProps});
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(1);
@@ -717,7 +717,6 @@ describe('App', () => {
 
     it('maps state to props', () => {
         let state = {
-            todos: {active: [1], inactive: [3]},
             list: {name: 'cool list'},
             links: {
                 list: {href: 'http://some.api/list'}
@@ -725,8 +724,6 @@ describe('App', () => {
         };
 
         expect(mapStateToProps(state)).toEqual({
-            nowTodos: [1],
-            laterTodos: [3],
             list: {name: 'cool list'},
             listLink: {href: 'http://some.api/list'}
         });
