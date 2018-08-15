@@ -1,6 +1,4 @@
 import {
-	getCompletedTodosRequestAction,
-	storeCompletedTodosAction,
 	createTodoRequestAction,
 	deleteTodoRequestAction,
 	displaceTodoRequestAction,
@@ -9,39 +7,6 @@ import {
 	moveTodoRequestAction,
 	pullTodosRequestAction
 } from '../todoActions';
-
-describe('getCompletedTodosRequestAction', () => {
-	it('creates a get completed todos request action with empty link by default', () => {
-		expect(getCompletedTodosRequestAction()).toEqual({
-			type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
-			link: {}
-		});
-	});
-
-	it('creates a get completed todos request action with supplied link', () => {
-		let link = {href: 'http://some.api/todos'};
-		expect(getCompletedTodosRequestAction(link)).toEqual({
-			type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
-			link: link
-		});
-	});
-});
-
-describe('storeCompletedTodosAction', () => {
-	it('creates a store completed todos action with empty todos by default', () => {
-		expect(storeCompletedTodosAction()).toEqual({
-			type: 'STORE_COMPLETED_TODOS_ACTION',
-			todos: []
-		});
-	});
-
-	it('creates a store completed todos action with supplied todos', () => {
-		expect(storeCompletedTodosAction([1, 2, 3])).toEqual({
-			type: 'STORE_COMPLETED_TODOS_ACTION',
-			todos: [1, 2, 3]
-		});
-	});
-});
 
 describe('createTodoRequestAction', () => {
 	it('creates a create todo request action with empty link and todo by default', () => {

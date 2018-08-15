@@ -14,7 +14,7 @@ describe('History', () => {
     });
 
     it('maps state to props', () => {
-        let state = {todos: {completed: [1, 2, 3]}};
+        let state = {completedList: {todos: [1, 2, 3]}};
         expect(mapStateToProps(state)).toEqual({
             todos: [1, 2, 3]
         });
@@ -23,9 +23,9 @@ describe('History', () => {
     describe('when there are todos', () => {
         beforeEach(() => {
             tree.setProps({todos: [
-                {task: 'celebrate', completedAt: new Date('1/1/2017')},
-                {task: 'feel so good', completedAt: new Date('1/1/2017')},
-                {task: 'another day', completedAt: new Date('1/10/2017')}
+                {task: 'celebrate', completedAt: '2017-01-01T10:50:44+0000'},
+                {task: 'feel so good', completedAt: '2017-01-01T11:50:44+0000'},
+                {task: 'another day', completedAt: '2017-01-10T02:50:44+0000'}
             ]});
         });
 

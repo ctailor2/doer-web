@@ -8,9 +8,6 @@ import {
     getListRequestAction,
     storeCompletedListAction,
 } from '../actions/listActions';
-import {
-    getCompletedTodosRequestAction
-} from '../actions/todoActions';
 
 export function* getListRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
@@ -28,7 +25,6 @@ export function* getCompletedListRequest(action) {
 	const {response, error} = yield call(fetchData, action.link.href, {headers: {'Session-Token': localStorage.getItem('sessionToken')}});
 	if(response) {
         yield put(storeCompletedListAction(response.data.list));
-        yield put(getCompletedTodosRequestAction(response.data.list._links.todos));
 	} else  if (error) {
 	}
 }

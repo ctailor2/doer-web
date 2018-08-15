@@ -1,6 +1,5 @@
 import {watchSignupRequest, watchLoginRequest, watchLogoutRequest, watchStoreSession} from './sessionSaga';
 import {
-	watchGetCompletedTodosRequest,
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
 	watchDisplaceTodoRequest,
@@ -43,7 +42,6 @@ export default function* rootSaga() {
         fork(watchMoveTodoRequest),
         fork(watchLoadTodosView),
         fork(watchLoadHistoryView),
-        fork(watchGetCompletedTodosRequest),
         fork(watchPullTodosRequest),
         fork(watchGetListRequest),
         fork(watchGetCompletedListRequest),

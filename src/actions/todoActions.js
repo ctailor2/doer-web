@@ -1,19 +1,5 @@
 import * as actionTypes from '../constants/actionTypes';
 
-export function getCompletedTodosRequestAction(link = {}) {
-	return {
-		type: actionTypes.GET_COMPLETED_TODOS_REQUEST_ACTION,
-		link: link
-	}
-}
-
-export function storeCompletedTodosAction(todos = []) {
-	return {
-		type: actionTypes.STORE_COMPLETED_TODOS_ACTION,
-		todos: todos
-	}
-}
-
 export function createTodoRequestAction(link = {}, todo = {}) {
 	return {
 		type: actionTypes.CREATE_TODO_REQUEST_ACTION,

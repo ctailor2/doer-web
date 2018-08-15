@@ -21,7 +21,9 @@ export class History extends Component {
 	}
 
 	renderHistory() {
-		let groupedTodos = _.groupBy(this.props.todos, (todo) => { return todo.completedAt.toLocaleDateString() });
+		let groupedTodos = _.groupBy(this.props.todos, (todo) => {
+		    return new Date(Date.parse(todo.completedAt)).toLocaleDateString()
+        });
 		return _.map(groupedTodos, (todos, dateString) => {
 			return (<Panel header={dateString} key={dateString}>
 				{this.renderTodoList(todos)}
@@ -40,7 +42,7 @@ export class History extends Component {
 
 export const mapStateToProps = (state) => {
 	return {
-		todos: state.todos.completed
+		todos: state.completedList.todos
 	};
 }
 

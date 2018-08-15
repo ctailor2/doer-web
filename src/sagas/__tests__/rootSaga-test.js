@@ -2,7 +2,6 @@ import rootSaga from '../rootSaga';
 import {call, fork} from 'redux-saga/effects';
 import {watchSignupRequest, watchLoginRequest, watchLogoutRequest, watchStoreSession} from '../sessionSaga';
 import {
-	watchGetCompletedTodosRequest,
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
 	watchDisplaceTodoRequest,
@@ -47,7 +46,6 @@ describe('rootSaga', () => {
             fork(watchMoveTodoRequest),
             fork(watchLoadTodosView),
             fork(watchLoadHistoryView),
-            fork(watchGetCompletedTodosRequest),
             fork(watchPullTodosRequest),
             fork(watchGetListRequest),
             fork(watchGetCompletedListRequest),

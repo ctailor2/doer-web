@@ -1,7 +1,6 @@
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {
-	watchGetCompletedTodosRequest,
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
 	watchDisplaceTodoRequest,
@@ -9,7 +8,6 @@ import {
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
 	watchPullTodosRequest,
-	getCompletedTodosRequest,
 	deleteTodoRequest,
 	postRequestWithNoData,
 	postRequestWithTodoData,
@@ -17,48 +15,13 @@ import {
 } from '../todoSaga';
 import {fetchData, postData, deleteData, putData} from '../sagaHelper'
 
-describe('getCompletedTodosRequest', () => {
-	let iterator;
-
-	let url = 'http://some.api/someLink';
-    let action = {
-        type: 'GET_COMPLETED_TODOS_REQUEST_ACTION',
-        link: {href: url}
-    };
-    let links = {
-        something: {href: "tisket"},
-        somethingElse: {href: "tasket"}
-    };
-
-	beforeEach(() => {
-        localStorage.setItem('sessionToken', 'socooltoken');
-		iterator = getCompletedTodosRequest(action);
-	});
-
-	it('calls endpoint with action href', () => {
-        expect(iterator.next().value).toEqual(call(fetchData, url, {headers: {'Session-Token': 'socooltoken'}}));
-	});
-
-	it('fires store completed todos action', () => {
-        iterator.next();
-        expect(iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}}).value)
-            .toEqual(put({type: 'STORE_COMPLETED_TODOS_ACTION', todos: [1, 2, 3]}));
-    });
-
-    it('fires store links action', () => {
-        iterator.next();
-        iterator.next({response: {data: {todos: [1, 2, 3], _links: links}}});
-        expect(iterator.next({response: {data: {_links: links}}}).value)
-            .toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
-    });
-});
-
 describe('deleteTodoRequest', () => {
 	let link = {href: 'http://some.api/todo'};
 	let action = {type: 'DELETE_TODO_REQUEST_ACTION', link: link};
 	let iterator;
 
 	beforeEach(() => {
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = deleteTodoRequest(action);
 	});
 
@@ -91,6 +54,7 @@ describe('postRequestWithTodoData', () => {
 	let iterator;
 
 	beforeEach(() => {
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = postRequestWithTodoData(action);
 	});
 
@@ -147,6 +111,7 @@ describe('putRequestWithTodoData', () => {
 	let iterator;
 
 	beforeEach(() => {
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = putRequestWithTodoData(action);
 	});
 
@@ -202,6 +167,7 @@ describe('postRequestWithNoData', () => {
 	let iterator;
 
 	beforeEach(() => {
+        localStorage.setItem('sessionToken', 'socooltoken');
 		iterator = postRequestWithNoData(action);
 	});
 
@@ -225,14 +191,6 @@ describe('postRequestWithNoData', () => {
             expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
         });
     });
-});
-
-describe('watchGetCompletedTodosRequest', () => {
-	let iterator = watchGetCompletedTodosRequest();
-
-	it('calls get completed todos request saga with every get completed todos request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('GET_COMPLETED_TODOS_REQUEST_ACTION', getCompletedTodosRequest).next().value);
-	});
 });
 
 describe('watchDeleteTodoRequest', () => {

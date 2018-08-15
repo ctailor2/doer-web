@@ -77,13 +77,6 @@ describe('getCompletedListRequest', () => {
         expect(iterator.next({response: {data: {list: {someProperty: 'someValue'}}}}).value)
             .toEqual(put({type: 'STORE_COMPLETED_LIST_ACTION', list: {someProperty: 'someValue'}}));
     });
-
-	it('fires get completed todos request action with todos link', () => {
-        iterator.next();
-        iterator.next({response: {data: {list: {_links: links}}}});
-        expect(iterator.next({response: {data: {list: {_links: links}}}}).value)
-            .toEqual(put({type: 'GET_COMPLETED_TODOS_REQUEST_ACTION', link: todosLink}));
-    });
 });
 
 describe('watchGetCompletedListRequest', () => {
