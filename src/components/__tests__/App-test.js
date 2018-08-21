@@ -280,6 +280,9 @@ describe('App', () => {
         let tabs;
 
         beforeEach(() => {
+            let listWithProps = _.clone(list);
+            listWithProps.unlockDuration = 0;
+            tree.setProps({list: listWithProps});
             tabs = tree.find(Tabs);
         });
 
@@ -338,10 +341,9 @@ describe('App', () => {
                     expect(tree.state().showUnlockConfirmation).toEqual(true);
                 });
 
-                describe('when the deferredTodos list is not empty', () => {
+                describe('when the unlock duration is greater than zero', () => {
                     beforeEach(() => {
                         let listWithProps = _.clone(list);
-                        listWithProps.deferredTodos = [{task: 'some task'}];
                         listWithProps.unlockDuration = 1700000;
                         tree.setProps({list: listWithProps});
                     });
@@ -502,11 +504,10 @@ describe('App', () => {
                 });
             });
 
-            describe('when the deferredTodos list is not empty', () => {
+            describe('when the unlock duration is greater than zero', () => {
                 beforeEach(() => {
                     let listWithProps = _.clone(list);
                     listWithProps.unlockDuration = 1700000;
-                    listWithProps.deferredTodos = [{task: 'some task'}];
                     tree.setProps({list: listWithProps});
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(1);
@@ -532,10 +533,10 @@ describe('App', () => {
                     expect(titleNode.find('Glyphicon').length).toEqual(1);
                 });
 
-                describe('when the deferredTodos list is not empty', () => {
+                describe('when the unlock duration is greater than zero', () => {
                     beforeEach(() => {
                         let listWithProps = _.clone(list);
-                        listWithProps.deferredTodos = [{task: 'some task'}];
+                        listWithProps.unlockDuration = 1700000;
                         tree.setProps({list: listWithProps});
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(1);

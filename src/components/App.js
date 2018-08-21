@@ -194,7 +194,7 @@ export class App extends Component {
 	}
 
 	canViewDeferredTodos() {
-	    return !_.isEmpty(this.props.list.deferredTodos);
+	    return this.state.unlockDuration > 0;
 	}
 
 	renderReplenishButton() {
