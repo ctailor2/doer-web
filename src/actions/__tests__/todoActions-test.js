@@ -5,7 +5,8 @@ import {
 	updateTodoRequestAction,
 	completeTodoRequestAction,
 	moveTodoRequestAction,
-	pullTodosRequestAction
+	pullTodosRequestAction,
+	escalateTodosRequestAction
 } from '../todoActions';
 
 describe('createTodoRequestAction', () => {
@@ -131,6 +132,23 @@ describe('pullTodosRequestAction', () => {
 		let link = {href: 'http://some.api/pullTodos'}
 		expect(pullTodosRequestAction(link)).toEqual({
             type: 'PULL_TODOS_REQUEST_ACTION',
+            link: link
+        });
+	});
+});
+
+describe('escalateTodosRequestAction', () => {
+	it('creates a escalate todo request action with empty link by default', () => {
+		expect(escalateTodosRequestAction()).toEqual({
+			type: 'ESCALATE_TODOS_REQUEST_ACTION',
+			link: {}
+		});
+	});
+
+	it('creates a escalate todo request action with supplied link', () => {
+		let link = {href: 'http://some.api/escalateTodos'}
+		expect(escalateTodosRequestAction(link)).toEqual({
+            type: 'ESCALATE_TODOS_REQUEST_ACTION',
             link: link
         });
 	});

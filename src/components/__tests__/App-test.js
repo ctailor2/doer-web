@@ -21,10 +21,12 @@ describe('App', () => {
     todoNowLink,
     todoLaterLink,
     pullLink,
+    escalateLink,
     displaceLink,
     listLink,
     mockDisplaceTodoActionFn,
     mockPullTodosActionFn,
+    mockEscalateTodosActionFn,
     mockMoveTodoActionFn,
     mockUnlockListActionFn,
     mockGetListActionFn,
@@ -34,6 +36,7 @@ describe('App', () => {
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
         mockPullTodosActionFn = jest.fn();
+        mockEscalateTodosActionFn = jest.fn();
         mockUnlockListActionFn = jest.fn();
         mockGetListActionFn = jest.fn();
         eventListenerCallbacks = {};
@@ -48,6 +51,7 @@ describe('App', () => {
         todoNowLink = {href: 'http://some.api/todoNow'};
         todoLaterLink = {href: 'http://some.api/todoLater'};
         pullLink = {href: 'http://some.api/pullTodos'};
+        escalateLink = {href: 'http://some.api/escalateTodos'};
         displaceLink = {href: 'http://some.api/displaceTodo'};
         listLink = {href: 'http://some.api/list'};
         list = {
@@ -68,6 +72,7 @@ describe('App', () => {
                           displaceTodoRequestAction={mockDisplaceTodoActionFn}
                           moveTodoRequestAction={mockMoveTodoActionFn}
                           pullTodosRequestAction={mockPullTodosActionFn}
+                          escalateTodosRequestAction={mockEscalateTodosActionFn}
                           unlockListRequestAction={mockUnlockListActionFn}
                           getListRequestAction={mockGetListActionFn}/>);
     });
@@ -505,16 +510,56 @@ describe('App', () => {
             });
 
             describe('when the unlock duration is greater than zero', () => {
+                let listWithProps;
+
                 beforeEach(() => {
-                    let listWithProps = _.clone(list);
+                    listWithProps = _.clone(list);
                     listWithProps.unlockDuration = 1700000;
-                    tree.setProps({list: listWithProps});
+                    tree.setProps({list: listWithProps, name: 'deferredname'});
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(1);
                 });
 
                 it('is not disabled', () => {
                     expect(tab.prop('disabled')).toBe(false);
+                });
+
+                describe('escalate button', () => {
+                    let button;
+
+                    beforeEach(() => {
+                        button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
+                    });
+
+                    it('does not render by default', () => {
+                        expect(button.length).toBe(0);
+                    });
+
+                    it('renders when the escalate link is present', () => {
+                        let listWithEscalateLink = _.clone(listWithProps);
+                        listWithEscalateLink._links.escalate = escalateLink;
+                        tree.setProps({list: listWithEscalateLink});
+                        tabs = tree.find(Tabs);
+                        tab = tabs.find(Tab).at(1);
+                        button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
+                        expect(button.length).toBe(1);
+                    });
+
+                    describe('when rendered', () => {
+                        beforeEach(() => {
+                            let listWithEscalateLink = _.clone(listWithProps);
+                            listWithEscalateLink._links.escalate = escalateLink;
+                            tree.setProps({list: listWithEscalateLink});
+                            tabs = tree.find(Tabs);
+                            tab = tabs.find(Tab).at(1);
+                            button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
+                        });
+
+                        it('fires escalate todos action with pullLink', () => {
+                            button.simulate('click');
+                            expect(mockEscalateTodosActionFn).toBeCalledWith(escalateLink);
+                        });
+                    });
                 });
             });
 

@@ -6,7 +6,8 @@ import {
 	watchUpdateTodoRequest,
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
-	watchPullTodosRequest
+	watchPullTodosRequest,
+	watchEscalateTodosRequest
 } from './todoSaga';
 import {
     watchGetBaseResourcesRequest,
@@ -43,6 +44,7 @@ export default function* rootSaga() {
         fork(watchLoadTodosView),
         fork(watchLoadHistoryView),
         fork(watchPullTodosRequest),
+        fork(watchEscalateTodosRequest),
         fork(watchGetListRequest),
         fork(watchGetCompletedListRequest),
         fork(watchUnlockListRequest)

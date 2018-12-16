@@ -70,3 +70,7 @@ export function* watchMoveTodoRequest() {
 export function* watchPullTodosRequest() {
 	yield* takeEvery(actionTypes.PULL_TODOS_REQUEST_ACTION, postRequestWithNoData);
 }
+
+export function* watchEscalateTodosRequest() {
+	yield* takeEvery(actionTypes.ESCALATE_TODOS_REQUEST_ACTION, postRequestWithNoData);
+}

@@ -8,6 +8,7 @@ import {
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
 	watchPullTodosRequest,
+	watchEscalateTodosRequest,
 	deleteTodoRequest,
 	postRequestWithNoData,
 	postRequestWithTodoData,
@@ -246,5 +247,13 @@ describe('watchPullTodoRequest', () => {
 
 	it('calls post request with no data saga with every pull todos request action', () => {
 		expect(iterator.next().value).toEqual(takeEvery('PULL_TODOS_REQUEST_ACTION', postRequestWithNoData).next().value);
+	});
+});
+
+describe('watchEscalateTodoRequest', () => {
+	let iterator = watchEscalateTodosRequest();
+
+	it('calls post request with no data saga with every escalate todos request action', () => {
+		expect(iterator.next().value).toEqual(takeEvery('ESCALATE_TODOS_REQUEST_ACTION', postRequestWithNoData).next().value);
 	});
 });

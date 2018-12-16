@@ -5,7 +5,8 @@ import {connect} from 'react-redux';
 import {
     displaceTodoRequestAction,
     moveTodoRequestAction,
-    pullTodosRequestAction
+    pullTodosRequestAction,
+    escalateTodosRequestAction
 } from '../actions/todoActions';
 import {
     getListRequestAction,
@@ -166,6 +167,7 @@ export class App extends Component {
 		        </Tab>
 		        <Tab eventKey={this.props.list.deferredName} title={this.renderDeferredTodosTabTitle()} disabled={this.deferredTodosTabIsDisabled()}>
 					<ListGroup>
+					    {this.renderEscalateButton()}
                         {this.props.list.deferredTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
                         })}
@@ -208,6 +210,18 @@ export class App extends Component {
 	handlePullClick() {
 		this.props.pullTodosRequestAction(this.props.list._links.pull);
 	}
+
+	renderEscalateButton() {
+        if(!_.isUndefined(this.props.list._links.escalate)) {
+            return (<ListGroupItem onClick={this.handleEscalateClick.bind(this)} bsStyle="info" className="escalate">
+                Escalate <Glyphicon glyph="sort" />
+            </ListGroupItem>);
+        }
+    }
+
+    handleEscalateClick() {
+		this.props.escalateTodosRequestAction(this.props.list._links.escalate);
+    }
 
 	renderDisplaceButton() {
         if(!_.isUndefined(this.props.list._links.displace) && this.state.submitting) {
@@ -256,6 +270,7 @@ export default connect(mapStateToProps, {
 	displaceTodoRequestAction,
 	moveTodoRequestAction,
 	pullTodosRequestAction,
+	escalateTodosRequestAction,
 	unlockListRequestAction,
 	getListRequestAction
 })(App);

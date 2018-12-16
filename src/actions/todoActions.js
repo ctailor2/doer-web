@@ -51,3 +51,10 @@ export function pullTodosRequestAction(link = {}) {
 		link: link
 	}
 }
+
+export function escalateTodosRequestAction(link = {}) {
+	return {
+		type: actionTypes.ESCALATE_TODOS_REQUEST_ACTION,
+		link: link
+	}
+}

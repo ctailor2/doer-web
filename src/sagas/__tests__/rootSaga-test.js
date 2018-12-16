@@ -9,6 +9,7 @@ import {
 	watchCompleteTodoRequest,
 	watchMoveTodoRequest,
 	watchPullTodosRequest,
+	watchEscalateTodosRequest,
 } from '../todoSaga';
 import {
     watchGetBaseResourcesRequest,
@@ -47,6 +48,7 @@ describe('rootSaga', () => {
             fork(watchLoadTodosView),
             fork(watchLoadHistoryView),
             fork(watchPullTodosRequest),
+            fork(watchEscalateTodosRequest),
             fork(watchGetListRequest),
             fork(watchGetCompletedListRequest),
             fork(watchUnlockListRequest)
