@@ -55,7 +55,18 @@ module.exports = {
         // Disable autoprefixer in css-loader itself:
         // https://github.com/webpack/css-loader/issues/281
         // We already have it thanks to postcss.
-        use: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss')
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                autoprefixer: false
+              }
+            },
+            'postcss-loader'
+          ]
+        })
       },
       {
         test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
@@ -111,6 +122,6 @@ module.exports = {
         screw_ie8: true
       }
     }),
-    new ExtractTextPlugin('[name].[contenthash].css')
+    new ExtractTextPlugin({filename: '[name].[contenthash].css'})
   ]
 };
