@@ -13,7 +13,6 @@ if (process.argv[2] === '--debug-template') {
   relativePath = '../template';
 }
 var srcPath = path.resolve(__dirname, relativePath, 'src');
-var nodeModulesPath = path.join(__dirname, '..', 'node_modules');
 var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html');
 var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico');
 var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build');
@@ -34,26 +33,21 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['', '.js'],
-  },
-  resolveLoader: {
-    root: nodeModulesPath,
-    moduleTemplates: ['*-loader']
+    extensions: ['.js'],
   },
   module: {
-    preLoaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'eslint',
-        include: srcPath
-      }
-    ],
-    loaders: [
+        use: 'eslint-loader',
+        include: srcPath,
+        enforce: 'pre'
+      },
       {
         test: /\.js$/,
         include: srcPath,
-        loader: 'babel',
-        query: require('./babel.prod')
+        use: 'babel-loader',
+        options: require('./babel.dev')
       },
       {
         test: /\.css$/,
@@ -61,19 +55,18 @@ module.exports = {
         // Disable autoprefixer in css-loader itself:
         // https://github.com/webpack/css-loader/issues/281
         // We already have it thanks to postcss.
-        loader: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss')
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
+        use: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss')
       },
       {
         test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
-        loader: 'file',
+        use: 'file-loader',
       },
       {
         test: /\.(mp4|webm)$/,
-        loader: 'url?limit=10000'
+        use: 'url-loader',
+        options: {
+          limit: 10000
+        }
       }
     ]
   },
@@ -105,8 +98,6 @@ module.exports = {
       }
     }),
     new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
         screw_ie8: true,

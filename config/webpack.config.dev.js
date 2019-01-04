@@ -15,7 +15,6 @@ if (isInDebugMode) {
   relativePath = '../template';
 }
 var srcPath = path.resolve(__dirname, relativePath, 'src');
-var nodeModulesPath = path.join(__dirname, '..', 'node_modules');
 var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html');
 var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico');
 var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build');
@@ -36,43 +35,37 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['', '.js'],
-  },
-  resolveLoader: {
-    root: nodeModulesPath,
-    moduleTemplates: ['*-loader']
+    extensions: ['.js'],
   },
   module: {
-    preLoaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'eslint',
+        use: 'eslint-loader',
         include: srcPath,
-      }
-    ],
-    loaders: [
+        enforce: 'pre'
+      },
       {
         test: /\.js$/,
         include: srcPath,
-        loader: 'babel',
-        query: require('./babel.dev')
+        use: 'babel-loader',
+        options: require('./babel.dev')
       },
       {
         test: /\.css$/,
         include: srcPath,
-        loader: 'style!css!postcss'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
+        use: ['style-loader', 'css-loader', 'postcss-loader']
       },
       {
         test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
-        loader: 'file',
+        use: 'file-loader',
       },
       {
         test: /\.(mp4|webm)$/,
-        loader: 'url?limit=10000'
+        use: 'url-loader',
+        options: {
+          limit: 10000
+        }
       }
     ]
   },
