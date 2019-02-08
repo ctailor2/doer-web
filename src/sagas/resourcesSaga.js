@@ -1,7 +1,7 @@
 import {fetchData} from './sagaHelper';
 import {call, put} from 'redux-saga/effects';
 import {storeLinksAction} from '../actions/linkActions';
-import * as actionTypes from '../constants/actionTypes';
+import {ActionTypes} from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 
 const baseResourcesPath = '/v1/resources/base';
@@ -16,7 +16,7 @@ export function* getBaseResourcesRequest() {
 }
 
 export function* watchGetBaseResourcesRequest() {
-    yield* takeEvery(actionTypes.GET_BASE_RESOURCES_REQUEST_ACTION, getBaseResourcesRequest);
+    yield* takeEvery(ActionTypes.GET_BASE_RESOURCES_REQUEST_ACTION, getBaseResourcesRequest);
 }
 
 export function* getRootResourcesRequest(action) {
@@ -29,7 +29,7 @@ export function* getRootResourcesRequest(action) {
 }
 
 export function* watchGetRootResourcesRequest() {
-    yield* takeEvery(actionTypes.GET_ROOT_RESOURCES_REQUEST_ACTION, getRootResourcesRequest);
+    yield* takeEvery(ActionTypes.GET_ROOT_RESOURCES_REQUEST_ACTION, getRootResourcesRequest);
 }
 
 export function* getTodoResourcesRequest(action) {
@@ -42,7 +42,7 @@ export function* getTodoResourcesRequest(action) {
 }
 
 export function* watchGetTodoResourcesRequest() {
-    yield* takeEvery(actionTypes.GET_TODO_RESOURCES_REQUEST_ACTION, getTodoResourcesRequest);
+    yield* takeEvery(ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION, getTodoResourcesRequest);
 }
 
 export function* getHistoryResourcesRequest(action) {
@@ -55,5 +55,5 @@ export function* getHistoryResourcesRequest(action) {
 }
 
 export function* watchGetHistoryResourcesRequest() {
-    yield* takeEvery(actionTypes.GET_HISTORY_RESOURCES_REQUEST_ACTION, getHistoryResourcesRequest);
+    yield* takeEvery(ActionTypes.GET_HISTORY_RESOURCES_REQUEST_ACTION, getHistoryResourcesRequest);
 }

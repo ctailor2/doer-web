@@ -1,4 +1,5 @@
 import {list} from '../listReducer';
+import {ActionTypes} from '../../constants/actionTypes';
 
 describe('list', () => {
 	it('has initial state', () => {
@@ -7,7 +8,7 @@ describe('list', () => {
 
     it('stores the links from a STORE_LIST_ACTION when received', () => {
         let action = {
-            type: 'STORE_LIST_ACTION',
+            type: ActionTypes.STORE_LIST_ACTION,
             list: {someProperty: 'someValue'}
         }
         let todosState = list({}, action);

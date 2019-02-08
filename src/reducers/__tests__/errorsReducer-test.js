@@ -1,4 +1,5 @@
 import {errors} from '../errorsReducer';
+import {ActionTypes} from '../../constants/actionTypes';
 
 describe('errors', () => {
 	it('has initial state', () => {
@@ -8,7 +9,7 @@ describe('errors', () => {
 	it('stores the errors from a STORE_ERRORS_ACTION when received', () => {
 		let newErrors = {a: 1, b: 2};
 		let action = {
-			type: 'STORE_ERRORS_ACTION',
+			type: ActionTypes.STORE_ERRORS_ACTION,
 			errors: newErrors
 		};
 		let errorsState = errors({c: 3, d: 2}, action);
@@ -18,7 +19,7 @@ describe('errors', () => {
 	it('removes the referenced global error from a DISMISS_GLOBAL_ALERT_ACTION when received', () => {
 		let index = 1;
 		let action = {
-			type: 'DISMISS_GLOBAL_ALERT_ACTION',
+			type: ActionTypes.DISMISS_GLOBAL_ALERT_ACTION,
 			index: index
 		};
 		let currentState = {globalErrors: [3, 5, 7], fieldErrors: [2, 4, 6]};
@@ -29,7 +30,7 @@ describe('errors', () => {
 
 	it('clears errors when a CLEAR_ERRORS_ACTION is received', () => {
         let action = {
-            type: 'CLEAR_ERRORS_ACTION'
+            type: ActionTypes.CLEAR_ERRORS_ACTION
         };
         let errorsState = errors({globalErrors: [{a: 1}], fieldErrors: [{b: 2}]}, action);
 		let expectedState = {globalErrors: [], fieldErrors: []}

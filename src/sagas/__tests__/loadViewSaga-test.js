@@ -7,7 +7,7 @@ import {ActionTypes} from '../../constants/actionTypes'
 describe('loadTodosView', () => {
 	let iterator, url;
 	let action = {
-		type: 'LOAD_TODOS_VIEW_ACTION'
+		type: ActionTypes.LOAD_TODOS_VIEW_ACTION
 	};
 
     beforeEach(() => {
@@ -49,7 +49,7 @@ describe('loadTodosView', () => {
 
             it('fires get list request action with list link', () => {
                 iterator.next(todoResourcesResponse);
-                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
+                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: ActionTypes.GET_LIST_REQUEST_ACTION, link: listLink}));
             });
         });
     });
@@ -59,14 +59,14 @@ describe('watchLoadTodosView', () => {
     let iterator = watchLoadTodosView();
 
     it('calls load todos view saga with latest load todos view action', () => {
-        expect(iterator.next().value).toEqual(takeLatest('LOAD_TODOS_VIEW_ACTION', loadTodosView).next().value);
+        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.LOAD_TODOS_VIEW_ACTION, loadTodosView).next().value);
     });
 });
 
 describe('loadHistoryView', () => {
 	let iterator, url;
 	let action = {
-		type: 'LOAD_HISTORY_VIEW_ACTION'
+		type: ActionTypes.LOAD_HISTORY_VIEW_ACTION
 	};
 
     beforeEach(() => {
@@ -108,7 +108,7 @@ describe('loadHistoryView', () => {
 
             it('fires get completed list request action', () => {
                 iterator.next(historyResourcesResponse);
-                expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'GET_COMPLETED_LIST_REQUEST_ACTION', link: completedListLink}));
+                expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: ActionTypes.GET_COMPLETED_LIST_REQUEST_ACTION, link: completedListLink}));
             });
         });
     });
@@ -118,6 +118,6 @@ describe('watchLoadHistoryView', () => {
     let iterator = watchLoadHistoryView();
 
     it('calls load history view saga with latest load history view action', () => {
-        expect(iterator.next().value).toEqual(takeLatest('LOAD_HISTORY_VIEW_ACTION', loadHistoryView).next().value);
+        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.LOAD_HISTORY_VIEW_ACTION, loadHistoryView).next().value);
     });
 });

@@ -1,4 +1,4 @@
-import * as actionTypes from '../constants/actionTypes';
+import {ActionTypes} from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {postData, deleteData, putData} from './sagaHelper';
@@ -44,33 +44,33 @@ export function* postRequestWithNoData(action) {
 }
 
 export function* watchDeleteTodoRequest() {
-	yield* takeEvery(actionTypes.DELETE_TODO_REQUEST_ACTION, deleteTodoRequest);
+	yield* takeEvery(ActionTypes.DELETE_TODO_REQUEST_ACTION, deleteTodoRequest);
 }
 
 export function* watchCreateTodoRequest() {
-	yield* takeEvery(actionTypes.CREATE_TODO_REQUEST_ACTION, postRequestWithTodoData);
+	yield* takeEvery(ActionTypes.CREATE_TODO_REQUEST_ACTION, postRequestWithTodoData);
 }
 
 export function* watchDisplaceTodoRequest() {
-	yield* takeEvery(actionTypes.DISPLACE_TODO_REQUEST_ACTION, postRequestWithTodoData);
+	yield* takeEvery(ActionTypes.DISPLACE_TODO_REQUEST_ACTION, postRequestWithTodoData);
 }
 
 export function* watchUpdateTodoRequest() {
-	yield* takeEvery(actionTypes.UPDATE_TODO_REQUEST_ACTION, putRequestWithTodoData);
+	yield* takeEvery(ActionTypes.UPDATE_TODO_REQUEST_ACTION, putRequestWithTodoData);
 }
 
 export function* watchCompleteTodoRequest() {
-	yield* takeEvery(actionTypes.COMPLETE_TODO_REQUEST_ACTION, postRequestWithNoData);
+	yield* takeEvery(ActionTypes.COMPLETE_TODO_REQUEST_ACTION, postRequestWithNoData);
 }
 
 export function* watchMoveTodoRequest() {
-	yield* takeEvery(actionTypes.MOVE_TODO_REQUEST_ACTION, postRequestWithNoData);
+	yield* takeEvery(ActionTypes.MOVE_TODO_REQUEST_ACTION, postRequestWithNoData);
 }
 
 export function* watchPullTodosRequest() {
-	yield* takeEvery(actionTypes.PULL_TODOS_REQUEST_ACTION, postRequestWithNoData);
+	yield* takeEvery(ActionTypes.PULL_TODOS_REQUEST_ACTION, postRequestWithNoData);
 }
 
 export function* watchEscalateTodosRequest() {
-	yield* takeEvery(actionTypes.ESCALATE_TODOS_REQUEST_ACTION, postRequestWithNoData);
+	yield* takeEvery(ActionTypes.ESCALATE_TODOS_REQUEST_ACTION, postRequestWithNoData);
 }

@@ -1,5 +1,5 @@
 import {takeLatest} from 'redux-saga';
-import * as actionTypes from '../constants/actionTypes';
+import {ActionTypes} from '../constants/actionTypes';
 import {fetchData} from './sagaHelper';
 import {call, put} from 'redux-saga/effects';
 import {storeLinksAction} from '../actions/linkActions';
@@ -24,7 +24,7 @@ export function* loadTodosView() {
 }
 
 export function* watchLoadTodosView() {
-    yield* takeLatest(actionTypes.LOAD_TODOS_VIEW_ACTION, loadTodosView);
+    yield* takeLatest(ActionTypes.LOAD_TODOS_VIEW_ACTION, loadTodosView);
 }
 
 export function* loadHistoryView() {
@@ -45,5 +45,5 @@ export function* loadHistoryView() {
 }
 
 export function* watchLoadHistoryView() {
-    yield* takeLatest(actionTypes.LOAD_HISTORY_VIEW_ACTION, loadHistoryView);
+    yield* takeLatest(ActionTypes.LOAD_HISTORY_VIEW_ACTION, loadHistoryView);
 }

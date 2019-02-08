@@ -1,8 +1,8 @@
-import * as actionTypes from '../constants/actionTypes';
+import {ActionTypes} from '../constants/actionTypes';
 
 export function createTodoRequestAction(link = {}, todo = {}) {
 	return {
-		type: actionTypes.CREATE_TODO_REQUEST_ACTION,
+		type: ActionTypes.CREATE_TODO_REQUEST_ACTION,
 		link: link,
 		todo: todo
 	}
@@ -10,21 +10,21 @@ export function createTodoRequestAction(link = {}, todo = {}) {
 
 export function deleteTodoRequestAction(link = {}) {
 	return {
-		type: actionTypes.DELETE_TODO_REQUEST_ACTION,
+		type: ActionTypes.DELETE_TODO_REQUEST_ACTION,
 		link: link
 	}
 }
 
 export function moveTodoRequestAction(link = {}) {
 	return {
-		type: actionTypes.MOVE_TODO_REQUEST_ACTION,
+		type: ActionTypes.MOVE_TODO_REQUEST_ACTION,
 		link: link
 	}
 }
 
 export function displaceTodoRequestAction(link = {}, todo = {}) {
 	return {
-		type: actionTypes.DISPLACE_TODO_REQUEST_ACTION,
+		type: ActionTypes.DISPLACE_TODO_REQUEST_ACTION,
 		link: link,
 		todo: todo
 	}
@@ -32,7 +32,7 @@ export function displaceTodoRequestAction(link = {}, todo = {}) {
 
 export function updateTodoRequestAction(link = {}, todo = {}) {
 	return {
-		type: actionTypes.UPDATE_TODO_REQUEST_ACTION,
+		type: ActionTypes.UPDATE_TODO_REQUEST_ACTION,
 		link: link,
 		todo: todo
 	}
@@ -40,21 +40,21 @@ export function updateTodoRequestAction(link = {}, todo = {}) {
 
 export function completeTodoRequestAction(link = {}) {
 	return {
-		type: actionTypes.COMPLETE_TODO_REQUEST_ACTION,
+		type: ActionTypes.COMPLETE_TODO_REQUEST_ACTION,
 		link: link
 	}
 }
 
 export function pullTodosRequestAction(link = {}) {
 	return {
-		type: actionTypes.PULL_TODOS_REQUEST_ACTION,
+		type: ActionTypes.PULL_TODOS_REQUEST_ACTION,
 		link: link
 	}
 }
 
 export function escalateTodosRequestAction(link = {}) {
 	return {
-		type: actionTypes.ESCALATE_TODOS_REQUEST_ACTION,
+		type: ActionTypes.ESCALATE_TODOS_REQUEST_ACTION,
 		link: link
 	}
 }

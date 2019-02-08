@@ -14,11 +14,12 @@ import {
 	postRequestWithTodoData,
 	putRequestWithTodoData
 } from '../todoSaga';
-import {fetchData, postData, deleteData, putData} from '../sagaHelper'
+import {fetchData, postData, deleteData, putData} from '../sagaHelper';
+import {ActionTypes} from '../../constants/actionTypes';
 
 describe('deleteTodoRequest', () => {
 	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'DELETE_TODO_REQUEST_ACTION', link: link};
+	let action = {type: ActionTypes.DELETE_TODO_REQUEST_ACTION, link: link};
 	let iterator;
 
 	beforeEach(() => {
@@ -43,7 +44,7 @@ describe('deleteTodoRequest', () => {
         });
 
         it('fires get list request action with list link', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.GET_LIST_REQUEST_ACTION, link: listLink}));
         });
     });
 });
@@ -51,7 +52,7 @@ describe('deleteTodoRequest', () => {
 describe('postRequestWithTodoData', () => {
 	let todo = {task: 'task'};
 	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'CREATE_TODO_REQUEST_ACTION', link: link, todo: todo};
+	let action = {type: ActionTypes.CREATE_TODO_REQUEST_ACTION, link: link, todo: todo};
 	let iterator;
 
 	beforeEach(() => {
@@ -61,7 +62,7 @@ describe('postRequestWithTodoData', () => {
 
     it('fires clear errors action', () => {
         expect(iterator.next().value)
-            .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+            .toEqual(put({type: ActionTypes.CLEAR_ERRORS_ACTION}));
     });
 
 	it('calls endpoint with action link href and todo', () => {
@@ -83,7 +84,7 @@ describe('postRequestWithTodoData', () => {
         });
 
         it('fires get list request action with list link', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.GET_LIST_REQUEST_ACTION, link: listLink}));
         });
     });
 
@@ -100,7 +101,7 @@ describe('postRequestWithTodoData', () => {
         });
 
         it('fires store errors action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.STORE_ERRORS_ACTION, errors: errors}));
         });
     });
 });
@@ -108,7 +109,7 @@ describe('postRequestWithTodoData', () => {
 describe('putRequestWithTodoData', () => {
 	let todo = {task: 'task'};
 	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'UPDATE_TODO_REQUEST_ACTION', link: link, todo: todo};
+	let action = {type: ActionTypes.UPDATE_TODO_REQUEST_ACTION, link: link, todo: todo};
 	let iterator;
 
 	beforeEach(() => {
@@ -118,7 +119,7 @@ describe('putRequestWithTodoData', () => {
 
     it('fires clear errors action', () => {
         expect(iterator.next().value)
-            .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+            .toEqual(put({type: ActionTypes.CLEAR_ERRORS_ACTION}));
     });
 
 	it('calls endpoint with action link href and todo', () => {
@@ -140,7 +141,7 @@ describe('putRequestWithTodoData', () => {
         });
 
         it('fires get list request action with list link', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.GET_LIST_REQUEST_ACTION, link: listLink}));
         });
     });
 
@@ -157,14 +158,14 @@ describe('putRequestWithTodoData', () => {
         });
 
         it('fires store errors action', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.STORE_ERRORS_ACTION, errors: errors}));
         });
     });
 });
 
 describe('postRequestWithNoData', () => {
 	let link = {href: 'http://some.api/todo'};
-	let action = {type: 'PULL_TODOS_REQUEST_ACTION', link: link};
+	let action = {type: ActionTypes.PULL_TODOS_REQUEST_ACTION, link: link};
 	let iterator;
 
 	beforeEach(() => {
@@ -189,7 +190,7 @@ describe('postRequestWithNoData', () => {
         });
 
         it('fires get list request action with list link', () => {
-            expect(iterator.next(response).value).toEqual(put({type: 'GET_LIST_REQUEST_ACTION', link: listLink}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.GET_LIST_REQUEST_ACTION, link: listLink}));
         });
     });
 });
@@ -198,7 +199,7 @@ describe('watchDeleteTodoRequest', () => {
 	let iterator = watchDeleteTodoRequest();
 
 	it('calls delete todo request saga with every delete todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('DELETE_TODO_REQUEST_ACTION', deleteTodoRequest).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.DELETE_TODO_REQUEST_ACTION, deleteTodoRequest).next().value);
 	});
 });
 
@@ -206,7 +207,7 @@ describe('watchCreateTodoRequest', () => {
 	let iterator = watchCreateTodoRequest();
 
 	it('calls create todo request saga with every create todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('CREATE_TODO_REQUEST_ACTION', postRequestWithTodoData).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.CREATE_TODO_REQUEST_ACTION, postRequestWithTodoData).next().value);
 	});
 });
 
@@ -214,7 +215,7 @@ describe('watchDisplaceTodoRequest', () => {
 	let iterator = watchDisplaceTodoRequest();
 
 	it('calls displace todo request saga with every displace todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('DISPLACE_TODO_REQUEST_ACTION', postRequestWithTodoData).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.DISPLACE_TODO_REQUEST_ACTION, postRequestWithTodoData).next().value);
 	});
 });
 
@@ -222,7 +223,7 @@ describe('watchUpdateTodoRequest', () => {
 	let iterator = watchUpdateTodoRequest();
 
 	it('calls update todo request saga with every update todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('UPDATE_TODO_REQUEST_ACTION', putRequestWithTodoData).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.UPDATE_TODO_REQUEST_ACTION, putRequestWithTodoData).next().value);
 	});
 });
 
@@ -230,7 +231,7 @@ describe('watchCompleteTodoRequest', () => {
 	let iterator = watchCompleteTodoRequest();
 
 	it('calls post request with no data saga with every complete todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('COMPLETE_TODO_REQUEST_ACTION', postRequestWithNoData).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.COMPLETE_TODO_REQUEST_ACTION, postRequestWithNoData).next().value);
 	});
 });
 
@@ -238,7 +239,7 @@ describe('watchMoveTodoRequest', () => {
 	let iterator = watchMoveTodoRequest();
 
 	it('calls post request with no data saga with every move todo request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('MOVE_TODO_REQUEST_ACTION', postRequestWithNoData).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.MOVE_TODO_REQUEST_ACTION, postRequestWithNoData).next().value);
 	});
 });
 
@@ -246,7 +247,7 @@ describe('watchPullTodoRequest', () => {
 	let iterator = watchPullTodosRequest();
 
 	it('calls post request with no data saga with every pull todos request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('PULL_TODOS_REQUEST_ACTION', postRequestWithNoData).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.PULL_TODOS_REQUEST_ACTION, postRequestWithNoData).next().value);
 	});
 });
 
@@ -254,6 +255,6 @@ describe('watchEscalateTodoRequest', () => {
 	let iterator = watchEscalateTodosRequest();
 
 	it('calls post request with no data saga with every escalate todos request action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('ESCALATE_TODOS_REQUEST_ACTION', postRequestWithNoData).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.ESCALATE_TODOS_REQUEST_ACTION, postRequestWithNoData).next().value);
 	});
 });

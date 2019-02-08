@@ -1,4 +1,5 @@
 import {completedList} from '../completedListReducer';
+import {ActionTypes} from '../../constants/actionTypes';
 
 describe('completedList', () => {
 	it('has initial state', () => {
@@ -7,7 +8,7 @@ describe('completedList', () => {
 
     it('stores the links from a STORE_COMPLETED_LIST_ACTION when received', () => {
         let action = {
-            type: 'STORE_COMPLETED_LIST_ACTION',
+            type: ActionTypes.STORE_COMPLETED_LIST_ACTION,
             list: {someProperty: 'someValue'}
         }
         let state = completedList({}, action);

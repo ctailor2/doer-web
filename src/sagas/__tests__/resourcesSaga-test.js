@@ -18,7 +18,7 @@ describe('getRootResourcesRequest', () => {
 
 	let link = {href: 'http://some.api/someLink'};
     let action = {
-        type: 'GET_ROOT_RESOURCES_REQUEST_ACTION',
+        type: ActionTypes.GET_ROOT_RESOURCES_REQUEST_ACTION,
         link: link
     };
 
@@ -47,7 +47,7 @@ describe('watchGetRootResourcesRequest', () => {
 	let iterator = watchGetRootResourcesRequest();
 
 	it('calls get root resources request saga with latest get home resources request action action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('GET_ROOT_RESOURCES_REQUEST_ACTION', getRootResourcesRequest).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.GET_ROOT_RESOURCES_REQUEST_ACTION, getRootResourcesRequest).next().value);
 	});
 });
 
@@ -79,7 +79,7 @@ describe('watchGetBaseResourcesRequest', () => {
 	let iterator = watchGetBaseResourcesRequest();
 
 	it('calls get base resources request saga with latest get base resources request action action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('GET_BASE_RESOURCES_REQUEST_ACTION', getBaseResourcesRequest).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.GET_BASE_RESOURCES_REQUEST_ACTION, getBaseResourcesRequest).next().value);
 	});
 });
 
@@ -88,7 +88,7 @@ describe('getTodoResourcesRequest', () => {
 
 	let link = {href: 'http://some.api/someLink'};
     let action = {
-        type: 'GET_TODO_RESOURCES_REQUEST_ACTION',
+        type: ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION,
         link: link
     };
 
@@ -117,7 +117,7 @@ describe('watchGetTodoResourcesRequest', () => {
 	let iterator = watchGetTodoResourcesRequest();
 
 	it('calls get todo resources request saga with latest get todo resources request action action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('GET_TODO_RESOURCES_REQUEST_ACTION', getTodoResourcesRequest).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION, getTodoResourcesRequest).next().value);
 	});
 });
 
@@ -126,7 +126,7 @@ describe('getHistoryResourcesRequest', () => {
 
 	let link = {href: 'http://some.api/someLink'};
     let action = {
-        type: 'GET_HISTORY_RESOURCES_REQUEST_ACTION',
+        type: ActionTypes.GET_HISTORY_RESOURCES_REQUEST_ACTION,
         link: link
     };
 
@@ -155,6 +155,6 @@ describe('watchGetHistoryResourcesRequest', () => {
 	let iterator = watchGetHistoryResourcesRequest();
 
 	it('calls get history resources request saga with latest get history resources request action action', () => {
-		expect(iterator.next().value).toEqual(takeEvery('GET_HISTORY_RESOURCES_REQUEST_ACTION', getHistoryResourcesRequest).next().value);
+		expect(iterator.next().value).toEqual(takeEvery(ActionTypes.GET_HISTORY_RESOURCES_REQUEST_ACTION, getHistoryResourcesRequest).next().value);
 	});
 });

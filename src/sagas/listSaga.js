@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import * as actionTypes from '../constants/actionTypes';
+import {ActionTypes} from '../constants/actionTypes';
 import {takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {fetchData, postData} from './sagaHelper';
@@ -18,7 +18,7 @@ export function* getListRequest(action) {
 }
 
 export function* watchGetListRequest() {
-	yield* takeEvery(actionTypes.GET_LIST_REQUEST_ACTION, getListRequest);
+	yield* takeEvery(ActionTypes.GET_LIST_REQUEST_ACTION, getListRequest);
 }
 
 export function* getCompletedListRequest(action) {
@@ -30,7 +30,7 @@ export function* getCompletedListRequest(action) {
 }
 
 export function* watchGetCompletedListRequest() {
-	yield* takeEvery(actionTypes.GET_COMPLETED_LIST_REQUEST_ACTION, getCompletedListRequest);
+	yield* takeEvery(ActionTypes.GET_COMPLETED_LIST_REQUEST_ACTION, getCompletedListRequest);
 }
 
 export function* unlockListRequest(action) {
@@ -42,5 +42,5 @@ export function* unlockListRequest(action) {
 }
 
 export function* watchUnlockListRequest() {
-	yield* takeEvery(actionTypes.UNLOCK_LIST_REQUEST_ACTION, unlockListRequest);
+	yield* takeEvery(ActionTypes.UNLOCK_LIST_REQUEST_ACTION, unlockListRequest);
 }

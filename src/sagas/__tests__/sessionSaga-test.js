@@ -39,7 +39,7 @@ describe('signupRequest', () => {
 
     it('fires clear errors action', () => {
         expect(iterator.next().value)
-            .toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+            .toEqual(put({type: ActionTypes.CLEAR_ERRORS_ACTION}));
     });
 
     it('calls endpoint with action href and action data', () => {
@@ -94,7 +94,7 @@ describe('signupRequest', () => {
 			iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
+                .toEqual(put({type: ActionTypes.STORE_ERRORS_ACTION, errors: errors}));
         });
     });
 });
@@ -123,7 +123,7 @@ describe('loginRequest', () => {
     });
 
     it('fires clear errors action', () => {
-        expect(iterator.next().value).toEqual(put({type: 'CLEAR_ERRORS_ACTION'}));
+        expect(iterator.next().value).toEqual(put({type: ActionTypes.CLEAR_ERRORS_ACTION}));
     });
 
     it('calls endpoint with action href and action data', () => {
@@ -178,7 +178,7 @@ describe('loginRequest', () => {
             iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'STORE_ERRORS_ACTION', errors: errors}));
+                .toEqual(put({type: ActionTypes.STORE_ERRORS_ACTION, errors: errors}));
         });
     });
 });

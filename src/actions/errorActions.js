@@ -1,21 +1,21 @@
-import * as actionTypes from '../constants/actionTypes';
+import {ActionTypes} from '../constants/actionTypes';
 
 export function storeErrorsAction(errors = {}) {
 	return {
-		type: actionTypes.STORE_ERRORS_ACTION,
+		type: ActionTypes.STORE_ERRORS_ACTION,
 		errors: errors
 	}
 }
 
 export function dismissGlobalAlertAction(index = null) {
 	return {
-		type: actionTypes.DISMISS_GLOBAL_ALERT_ACTION,
+		type: ActionTypes.DISMISS_GLOBAL_ALERT_ACTION,
 		index: index
 	}
 }
 
 export function clearErrorsAction() {
     return {
-        type: actionTypes.CLEAR_ERRORS_ACTION
+        type: ActionTypes.CLEAR_ERRORS_ACTION
     }
 }
