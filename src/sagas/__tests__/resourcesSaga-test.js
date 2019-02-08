@@ -11,6 +11,7 @@ import {
 import {fetchData} from '../sagaHelper';
 import {call, put} from 'redux-saga/effects';
 import {takeEvery} from 'redux-saga';
+import {ActionTypes} from '../../constants/actionTypes';
 
 describe('getRootResourcesRequest', () => {
 	let iterator;
@@ -37,7 +38,7 @@ describe('getRootResourcesRequest', () => {
 
         it('fires store links action', () => {
             iterator.next();
-            expect(iterator.next(response).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.STORE_LINKS_ACTION, links: links}));
         });
     });
 });
@@ -69,7 +70,7 @@ describe('getBaseResourcesRequest', () => {
                 somethingElse: {href: "tasket"}
             };
             expect(iterator.next({response: {data: {_links: links}}}).value)
-                .toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+                .toEqual(put({type: ActionTypes.STORE_LINKS_ACTION, links: links}));
         });
     });
 });
@@ -107,7 +108,7 @@ describe('getTodoResourcesRequest', () => {
 
         it('fires store links action', () => {
             iterator.next();
-            expect(iterator.next(response).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.STORE_LINKS_ACTION, links: links}));
         });
     });
 });
@@ -145,7 +146,7 @@ describe('getHistoryResourcesRequest', () => {
 
         it('fires store links action', () => {
             iterator.next();
-            expect(iterator.next(response).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+            expect(iterator.next(response).value).toEqual(put({type: ActionTypes.STORE_LINKS_ACTION, links: links}));
         });
     });
 });

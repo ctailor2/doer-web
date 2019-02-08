@@ -12,12 +12,13 @@ import {takeLatest, takeEvery} from 'redux-saga';
 import {call, put} from 'redux-saga/effects';
 import {postData, fetchData} from '../sagaHelper';
 import {browserHistory} from 'react-router';
+import {ActionTypes} from '../../constants/actionTypes';
 
 describe('watchSignupRequest', () => {
     let iterator = watchSignupRequest();
 
     it('calls signup request saga with latest signup request action', () => {
-        expect(iterator.next().value).toEqual(takeLatest('SIGNUP_REQUEST_ACTION', signupRequest).next().value);
+        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.SIGNUP_REQUEST_ACTION, signupRequest).next().value);
     });
 });
 
@@ -26,7 +27,7 @@ describe('signupRequest', () => {
 
 	let url = 'http://some.api/someLink';
     let action = {
-        type: 'SIGNUP_REQUEST_ACTION',
+        type: ActionTypes.SIGNUP_REQUEST_ACTION,
         data: {cool: 'beans'},
         link: {href: url}
     };
@@ -61,7 +62,7 @@ describe('signupRequest', () => {
             iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
+                .toEqual(put({type: ActionTypes.STORE_SESSION_ACTION, token: 'tokenz'}));
         });
 
         it('fires persist link action', () => {
@@ -69,7 +70,7 @@ describe('signupRequest', () => {
             iterator.next();
             iterator.next(response);
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
+                .toEqual(put({type: ActionTypes.PERSIST_LINK_ACTION, link: rootLink}));
         });
 
 		it('redirects to the root', () => {
@@ -102,7 +103,7 @@ describe('watchLoginRequest', () => {
     let iterator = watchLoginRequest();
 
     it('calls login request saga with latest login request action', () => {
-        expect(iterator.next().value).toEqual(takeLatest('LOGIN_REQUEST_ACTION', loginRequest).next().value);
+        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.LOGIN_REQUEST_ACTION, loginRequest).next().value);
     });
 });
 
@@ -111,7 +112,7 @@ describe('loginRequest', () => {
 
 	let url = 'http://some.api/someLink';
     let action = {
-        type: 'LOGIN_REQUEST_ACTION',
+        type: ActionTypes.LOGIN_REQUEST_ACTION,
         data: {cool: 'beans'},
         link: {href: url}
     };
@@ -145,7 +146,7 @@ describe('loginRequest', () => {
             iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'STORE_SESSION_ACTION', token: 'tokenz'}));
+                .toEqual(put({type: ActionTypes.STORE_SESSION_ACTION, token: 'tokenz'}));
         });
 
         it('fires persist link action', () => {
@@ -153,7 +154,7 @@ describe('loginRequest', () => {
             iterator.next();
             iterator.next(response);
             expect(iterator.next(response).value)
-                .toEqual(put({type: 'PERSIST_LINK_ACTION', link: rootLink}));
+                .toEqual(put({type: ActionTypes.PERSIST_LINK_ACTION, link: rootLink}));
         });
 
 		it('redirects to the root', () => {
@@ -186,7 +187,7 @@ describe('logoutRequest', () => {
     let iterator;
 
     let action = {
-        type: 'LOGOUT_REQUEST_ACTION'
+        type: ActionTypes.LOGOUT_REQUEST_ACTION
     };
 
     beforeEach(() => {
@@ -221,7 +222,7 @@ describe('watchLogoutRequest', () => {
     let iterator = watchLogoutRequest();
 
     it('calls logout request saga with latest logout request action', () => {
-        expect(iterator.next().value).toEqual(takeLatest('LOGOUT_REQUEST_ACTION', logoutRequest).next().value);
+        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.LOGOUT_REQUEST_ACTION, logoutRequest).next().value);
     });
 });
 
@@ -229,7 +230,7 @@ describe('storeSession', () => {
     let iterator;
 
     let action = {
-        type: 'STORE_SESSION_ACTION',
+        type: ActionTypes.STORE_SESSION_ACTION,
         token: 'wowCoolToken'
     };
 
@@ -247,6 +248,6 @@ describe('watchStoreSession', () => {
 	let iterator = watchStoreSession();
 
 	it('calls store session saga with every store session action', () => {
-        expect(iterator.next().value).toEqual(takeEvery('STORE_SESSION_ACTION', storeSession).next().value);
+        expect(iterator.next().value).toEqual(takeEvery(ActionTypes.STORE_SESSION_ACTION, storeSession).next().value);
 	});
 });

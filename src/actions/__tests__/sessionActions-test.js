@@ -4,11 +4,12 @@ import {
 	logoutRequestAction,
 	storeSessionAction
 } from '../sessionActions';
+import {ActionTypes} from '../../constants/actionTypes';
 
 describe('signupRequestAction', () => {
     it('creates a signup request action with empty link and empty data by default', () => {
         expect(signupRequestAction()).toEqual({
-            type: 'SIGNUP_REQUEST_ACTION',
+            type: ActionTypes.SIGNUP_REQUEST_ACTION,
             link: {},
             data: {}
         });
@@ -18,7 +19,7 @@ describe('signupRequestAction', () => {
         let data = {cool: 'beans'};
         let link = {href: 'http://some.api/signup'};
         expect(signupRequestAction(link, data)).toEqual({
-            type: 'SIGNUP_REQUEST_ACTION',
+            type: ActionTypes.SIGNUP_REQUEST_ACTION,
             link: link,
             data: data
         });
@@ -28,7 +29,7 @@ describe('signupRequestAction', () => {
 describe('loginRequestAction', () => {
     it('creates a login request action with empty link and empty data by default', () => {
         expect(loginRequestAction()).toEqual({
-            type: 'LOGIN_REQUEST_ACTION',
+            type: ActionTypes.LOGIN_REQUEST_ACTION,
             link: {},
             data: {}
         });
@@ -38,7 +39,7 @@ describe('loginRequestAction', () => {
         let data = {cool: 'beans'};
         let link = {href: 'http://some.api/login'};
         expect(loginRequestAction(link, data)).toEqual({
-            type: 'LOGIN_REQUEST_ACTION',
+            type: ActionTypes.LOGIN_REQUEST_ACTION,
             link: link,
             data: data
         });
@@ -48,7 +49,7 @@ describe('loginRequestAction', () => {
 describe('logoutRequestAction', () => {
     it('creates a logout request action', () => {
         expect(logoutRequestAction()).toEqual({
-            type: 'LOGOUT_REQUEST_ACTION'
+            type: ActionTypes.LOGOUT_REQUEST_ACTION
         });
     });
 });
@@ -56,7 +57,7 @@ describe('logoutRequestAction', () => {
 describe('storeSessionAction', () => {
 	it('creates a store session action with empty string by default', () => {
 		expect(storeSessionAction()).toEqual({
-			type: 'STORE_SESSION_ACTION',
+			type: ActionTypes.STORE_SESSION_ACTION,
 			token: ''
 		});
 	});

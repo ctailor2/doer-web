@@ -2,6 +2,7 @@ import {loadTodosView, watchLoadTodosView, loadHistoryView, watchLoadHistoryView
 import {takeLatest} from 'redux-saga';
 import {fetchData} from '../sagaHelper'
 import {call, put} from 'redux-saga/effects';
+import {ActionTypes} from '../../constants/actionTypes'
 
 describe('loadTodosView', () => {
 	let iterator, url;
@@ -43,7 +44,7 @@ describe('loadTodosView', () => {
             });
 
             it('fires store links action', () => {
-                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+                expect(iterator.next(todoResourcesResponse).value).toEqual(put({type: ActionTypes.STORE_LINKS_ACTION, links: links}));
             });
 
             it('fires get list request action with list link', () => {
@@ -102,7 +103,7 @@ describe('loadHistoryView', () => {
             });
 
             it('fires store links action', () => {
-                expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: 'STORE_LINKS_ACTION', links: links}));
+                expect(iterator.next(historyResourcesResponse).value).toEqual(put({type: ActionTypes.STORE_LINKS_ACTION, links: links}));
             });
 
             it('fires get completed list request action', () => {

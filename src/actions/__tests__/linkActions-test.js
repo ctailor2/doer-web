@@ -1,9 +1,10 @@
 import {storeLinksAction, persistLinkAction} from '../linkActions';
+import {ActionTypes} from '../../constants/actionTypes'
 
 describe('storeLinksAction', () => {
 	it('creates a store links action with empty links by default', () => {
 		expect(storeLinksAction()).toEqual({
-			type: 'STORE_LINKS_ACTION',
+			type: ActionTypes.STORE_LINKS_ACTION,
 			links: {}
 		});
 	});
@@ -11,7 +12,7 @@ describe('storeLinksAction', () => {
 	it('creates a store links action with the supplied links', () => {
 		let links = {a: 1, b: 2};
 		expect(storeLinksAction(links)).toEqual({
-			type: 'STORE_LINKS_ACTION',
+			type: ActionTypes.STORE_LINKS_ACTION,
 			links: links
 		});
 	});
@@ -20,7 +21,7 @@ describe('storeLinksAction', () => {
 describe('persistLinkAction', () => {
 	it('creates a persist links action with empty links by default', () => {
 		expect(persistLinkAction()).toEqual({
-			type: 'PERSIST_LINK_ACTION',
+			type: ActionTypes.PERSIST_LINK_ACTION,
 			link: {}
 		});
 	});
@@ -28,7 +29,7 @@ describe('persistLinkAction', () => {
 	it('creates a persist links action with the supplied links', () => {
 		let link = {a: 1};
 		expect(persistLinkAction(link)).toEqual({
-			type: 'PERSIST_LINK_ACTION',
+			type: ActionTypes.PERSIST_LINK_ACTION,
 			link: link
 		});
 	});

@@ -1,11 +1,12 @@
 import {persistLink, watchPersistLink} from '../linksSaga';
 import {takeLatest} from 'redux-saga';
+import {ActionTypes} from '../../constants/actionTypes'
 
 describe('persistLink', () => {
 	let iterator;
 	let link = {href: 'http://some.api/endpoint'};
 	let action = {
-		type: 'PERSIST_LINK_ACTION',
+		type: ActionTypes.PERSIST_LINK_ACTION,
 		link: link
 	};
 
@@ -23,6 +24,6 @@ describe('watchPersistLink', () => {
     let iterator = watchPersistLink();
 
     it('calls persist link saga with latest persist link action', () => {
-        expect(iterator.next().value).toEqual(takeLatest('PERSIST_LINK_ACTION', persistLink).next().value);
+        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.PERSIST_LINK_ACTION, persistLink).next().value);
     });
 });
