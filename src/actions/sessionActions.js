@@ -1,8 +1,8 @@
-import * as actionTypes from '../constants/actionTypes';
+import {ActionTypes} from '../constants/actionTypes'
 
 export function signupRequestAction(link = {}, data = {}) {
     return {
-        type: actionTypes.SIGNUP_REQUEST_ACTION,
+        type: ActionTypes.SIGNUP_REQUEST_ACTION,
         link: link,
         data: data
     }
@@ -10,7 +10,7 @@ export function signupRequestAction(link = {}, data = {}) {
 
 export function loginRequestAction(link = {}, data = {}) {
     return {
-        type: actionTypes.LOGIN_REQUEST_ACTION,
+        type: ActionTypes.LOGIN_REQUEST_ACTION,
         link: link,
         data: data
     }
@@ -18,13 +18,13 @@ export function loginRequestAction(link = {}, data = {}) {
 
 export function logoutRequestAction() {
     return {
-        type: actionTypes.LOGOUT_REQUEST_ACTION
+        type: ActionTypes.LOGOUT_REQUEST_ACTION
     }
 }
 
 export function storeSessionAction(token = '') {
 	return {
-		type: actionTypes.STORE_SESSION_ACTION,
+		type: ActionTypes.STORE_SESSION_ACTION,
 		token: token
 	}
 }

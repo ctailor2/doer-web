@@ -6,6 +6,7 @@ import {browserHistory} from 'react-router';
 import {storeSessionAction} from '../actions/sessionActions';
 import {persistLinkAction} from '../actions/linkActions';
 import {storeErrorsAction, clearErrorsAction} from '../actions/errorActions';
+import {ActionTypes} from '../constants/actionTypes'
 
 export function* signupRequest(action) {
     yield put(clearErrorsAction());
@@ -20,7 +21,7 @@ export function* signupRequest(action) {
 }
 
 export function* watchSignupRequest() {
-    yield* takeLatest(actionTypes.SIGNUP_REQUEST_ACTION, signupRequest);
+    yield* takeLatest(ActionTypes.SIGNUP_REQUEST_ACTION, signupRequest);
 }
 
 export function* loginRequest(action) {
@@ -36,7 +37,7 @@ export function* loginRequest(action) {
 }
 
 export function* watchLoginRequest() {
-    yield* takeLatest(actionTypes.LOGIN_REQUEST_ACTION, loginRequest);
+    yield* takeLatest(ActionTypes.LOGIN_REQUEST_ACTION, loginRequest);
 }
 
 export function* logoutRequest() {
@@ -46,7 +47,7 @@ export function* logoutRequest() {
 }
 
 export function* watchLogoutRequest() {
-    yield* takeLatest(actionTypes.LOGOUT_REQUEST_ACTION, logoutRequest);
+    yield* takeLatest(ActionTypes.LOGOUT_REQUEST_ACTION, logoutRequest);
 }
 
 export function* storeSession(action) {
@@ -54,5 +55,5 @@ export function* storeSession(action) {
 }
 
 export function* watchStoreSession() {
-    yield* takeEvery(actionTypes.STORE_SESSION_ACTION, storeSession);
+    yield* takeEvery(ActionTypes.STORE_SESSION_ACTION, storeSession);
 }
