@@ -16,6 +16,8 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-bootstrap": "^0.32.16",
     "@types/lodash": "^4.14.120",
+    "@types/react-router": "^3.0.1",
+    "@types/axios": "^0.14.0",
     "axios": "^0.14.0",
     "immutability-helper": "^2.1.2",
     "lodash": "^4.15.0",
@@ -29,7 +31,8 @@
     "react-router": "^2.6.0",
     "redux": "^3.5.2",
     "redux-saga": "^0.11.1",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "io-ts": "^1.8.1"
   },
   "eslintConfig": {
     "extends": "react-app"
