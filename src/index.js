@@ -11,8 +11,8 @@ import HistoryView from './components/views/HistoryView';
 import './styles/index.css';
 import './styles/bootstrap-overrides.css';
 import rootSaga from './sagas/rootSaga';
-import rootReducer from './reducers/rootReducer';
 import {HotKeys} from 'react-hotkeys';
+import { reducer } from './store';
 
 const keyMap = {
   submit: 'enter',
@@ -22,7 +22,7 @@ const keyMap = {
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-	rootReducer,
+	reducer,
     applyMiddleware(sagaMiddleware)
 );
 

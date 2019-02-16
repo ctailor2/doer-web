@@ -5,8 +5,6 @@ export interface Link {
     href: string;
 }
 
-export type ApplicationAction = SignupRequestAction | LoginRequestAction
-
 export interface SignupRequestAction {
     type: ActionTypes.SIGNUP_REQUEST_ACTION;
     link: Link;

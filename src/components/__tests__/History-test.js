@@ -1,6 +1,10 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import {History, mapStateToProps} from '../History';
+import {
+	ListGroupItem,
+	Panel
+} from 'react-bootstrap';
 
 describe('History', () => {
     let tree;
@@ -30,14 +34,14 @@ describe('History', () => {
         });
 
         it('renders a panel for each date', () => {
-            expect(tree.find('Panel').length).toBe(2);
+            expect(tree.find(Panel).length).toBe(2);
         });
 
         describe('each panel', () => {
             let panel;
 
             beforeEach(() => {
-                panel = tree.find('Panel').at(0);
+                panel = tree.find(Panel).at(0);
             });
 
             it('displays the date as a header', () => {
@@ -45,7 +49,7 @@ describe('History', () => {
             });
 
             it('renders each todo completed on the date', () => {
-                expect(panel.find('ListGroupItem').length).toBe(2);
+                expect(panel.find(ListGroupItem).length).toBe(2);
             });
         });
     });

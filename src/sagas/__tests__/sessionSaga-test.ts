@@ -8,27 +8,33 @@ import {
     watchStoreSession,
     storeSession
 } from '../sessionSaga';
-import {takeLatest, takeEvery} from 'redux-saga';
-import {call, put} from 'redux-saga/effects';
+import {takeLatest, takeEvery, SagaIterator} from 'redux-saga';
+import {call, put, PutEffect, CallEffect, take, TakeEffect} from 'redux-saga/effects';
 import {postData, fetchData} from '../sagaHelper';
 import {browserHistory} from 'react-router';
 import {ActionTypes} from '../../constants/actionTypes';
+import { SignupRequestAction, LoginRequestAction, LogoutRequestAction, StoreSessionAction } from '../../actions/sessionActions';
 
 describe('watchSignupRequest', () => {
     let iterator = watchSignupRequest();
 
     it('calls signup request saga with latest signup request action', () => {
-        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.SIGNUP_REQUEST_ACTION, signupRequest).next().value);
+        let expected: any = takeLatest(ActionTypes.SIGNUP_REQUEST_ACTION, signupRequest);
+        expect(iterator.next().value).toEqual(expected.next().value);
     });
 });
 
 describe('signupRequest', () => {
-    let iterator;
+    let iterator: Iterator<void | PutEffect<{ type: ActionTypes; }> | CallEffect>;
 
 	let url = 'http://some.api/someLink';
-    let action = {
+    let action: SignupRequestAction = {
         type: ActionTypes.SIGNUP_REQUEST_ACTION,
-        data: {cool: 'beans'},
+        signupInfo: {
+            email: 'someEmail',
+            password: 'somePassword',
+            passwordConfirmation: 'somePasswordConfirmation',
+        },
         link: {href: url}
     };
 
@@ -44,7 +50,7 @@ describe('signupRequest', () => {
 
     it('calls endpoint with action href and action data', () => {
         iterator.next();
-        expect(iterator.next().value).toEqual(call(postData, url, action.data));
+        expect(iterator.next().value).toEqual(call(postData, url, action.signupInfo));
     });
 
     describe('on request success', () => {
@@ -103,17 +109,21 @@ describe('watchLoginRequest', () => {
     let iterator = watchLoginRequest();
 
     it('calls login request saga with latest login request action', () => {
-        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.LOGIN_REQUEST_ACTION, loginRequest).next().value);
+        let expected: any = takeLatest(ActionTypes.LOGIN_REQUEST_ACTION, loginRequest);
+        expect(iterator.next().value).toEqual(expected.next().value);
     });
 });
 
 describe('loginRequest', () => {
-    let iterator;
+    let iterator: Iterator<void | PutEffect<{ type: ActionTypes; }> | CallEffect>;
 
 	let url = 'http://some.api/someLink';
-    let action = {
+    let action: LoginRequestAction = {
         type: ActionTypes.LOGIN_REQUEST_ACTION,
-        data: {cool: 'beans'},
+        loginInfo: {
+            email: 'someEmail',
+            password: 'somePassword',
+        },
         link: {href: url}
     };
 
@@ -128,7 +138,7 @@ describe('loginRequest', () => {
 
     it('calls endpoint with action href and action data', () => {
         iterator.next();
-        expect(iterator.next().value).toEqual(call(postData, url, action.data));
+        expect(iterator.next().value).toEqual(call(postData, url, action.loginInfo));
     });
 
     describe('on request success', () => {
@@ -184,17 +194,13 @@ describe('loginRequest', () => {
 });
 
 describe('logoutRequest', () => {
-    let iterator;
-
-    let action = {
-        type: ActionTypes.LOGOUT_REQUEST_ACTION
-    };
+    let iterator: Iterator<void>;
 
     beforeEach(() => {
         localStorage.setItem('sessionToken', 'socooltoken');
         localStorage.setItem('link', 'someLink');
         browserHistory.push = jest.fn();
-        iterator = logoutRequest(action);
+        iterator = logoutRequest();
     });
 
     describe('on request success', () => {
@@ -222,14 +228,15 @@ describe('watchLogoutRequest', () => {
     let iterator = watchLogoutRequest();
 
     it('calls logout request saga with latest logout request action', () => {
-        expect(iterator.next().value).toEqual(takeLatest(ActionTypes.LOGOUT_REQUEST_ACTION, logoutRequest).next().value);
+        let expected: any = takeLatest(ActionTypes.LOGOUT_REQUEST_ACTION, logoutRequest);
+        expect(iterator.next().value).toEqual(expected.next().value);
     });
 });
 
 describe('storeSession', () => {
-    let iterator;
+    let iterator: IterableIterator<void>;
 
-    let action = {
+    let action: StoreSessionAction = {
         type: ActionTypes.STORE_SESSION_ACTION,
         token: 'wowCoolToken'
     };
@@ -248,6 +255,7 @@ describe('watchStoreSession', () => {
 	let iterator = watchStoreSession();
 
 	it('calls store session saga with every store session action', () => {
-        expect(iterator.next().value).toEqual(takeEvery(ActionTypes.STORE_SESSION_ACTION, storeSession).next().value);
+        let expected: any = takeEvery(ActionTypes.STORE_SESSION_ACTION, storeSession);
+        expect(iterator.next().value).toEqual(expected.next().value);
 	});
 });
