@@ -21,21 +21,30 @@ const SignupResult = io.interface({
     })
 })
 
+const ErrorResponseIO = io.interface({
+    fieldErrors: io.array(io.interface({
+        field: io.string,
+        message: io.string,
+    })),
+    globalErrors: io.array(io.interface({
+        message: io.string,
+    }))
+})
+
 const responseValidators = {
-    signup: SignupResult
+    signup: SignupResult,
+    error: ErrorResponseIO
 }
 
 type Requests = {
     signup: SignupInfo,
 }
 
-type Responses = {
+type SuccessResponses = {
     signup: io.TypeOf<typeof SignupResult>
 }
 
-type ApiSuccess<T> = {
-    success: T
-}
+type ErrorResponse = io.TypeOf<typeof ErrorResponseIO>;
 
 type ApiError = {
     error: any
@@ -53,15 +62,20 @@ export function postData(url: string, data?: any, configs?: AxiosRequestConfig) 
         .catch((error) => ({ error }));
 }
 
-export async function postCommand<Command extends Commands>(command: Command, link: Link, request: Requests[Command]): Promise<ApiSuccess<Responses[Command]> | ApiError> {
-    return client.post(link.href, request)
-        .then((response) => {
-            const validation = responseValidators[command].decode(response.data)
+export function postCommand<Command extends Commands>(command: Command, link: Link, request: Requests[Command], onSuccess: (response: SuccessResponses[Command]) => void, onError: (errorResponse: ErrorResponse) => void = (errorResponse) => console.log(errorResponse)): void {
+    client.post(link.href, request)
+        .then((successResponse) => {
+            const validation = responseValidators[command].decode(successResponse.data)
             if (validation.isRight()) {
-                return { success: validation.value }
+                onSuccess(validation.value);
             }
         })
-        .catch((error) => ({ error }))
+        .catch(({response: errorResponse}) => {
+            const validation = responseValidators.error.decode(errorResponse.data)
+            if (validation.isRight()) {
+                onError(validation.value);
+            }
+        })
 }
 
 export function deleteData(url: string, configs?: AxiosRequestConfig) {

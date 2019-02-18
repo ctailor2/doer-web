@@ -1,6 +1,6 @@
 import rootSaga from '../rootSaga';
-import {call, fork} from 'redux-saga/effects';
-import {watchSignupRequest, watchLoginRequest, watchLogoutRequest, watchStoreSession} from '../sessionSaga';
+import {fork} from 'redux-saga/effects';
+import {watchLoginRequest, watchLogoutRequest, watchStoreSession} from '../sessionSaga';
 import {
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
@@ -30,7 +30,6 @@ describe('rootSaga', () => {
 
     it('forks the watch sagas', () => {
         expect(iterator.next().value).toEqual([
-            fork(watchSignupRequest),
             fork(watchLoginRequest),
             fork(watchLogoutRequest),
             fork(watchStoreSession),

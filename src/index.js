@@ -13,6 +13,7 @@ import './styles/bootstrap-overrides.css';
 import rootSaga from './sagas/rootSaga';
 import {HotKeys} from 'react-hotkeys';
 import { reducer } from './store';
+import sessionMiddleware from './middleware/sessionMiddleware';
 
 const keyMap = {
   submit: 'enter',
@@ -23,7 +24,10 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
 	reducer,
-    applyMiddleware(sagaMiddleware)
+  applyMiddleware(
+		sagaMiddleware,
+		sessionMiddleware,
+	)
 );
 
 sagaMiddleware.run(rootSaga);

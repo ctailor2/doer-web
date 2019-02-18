@@ -1,14 +1,8 @@
-import { createStore, ReducersMapObject, combineReducers, Action, Store, Reducer } from "redux";
-import { SignupRequestAction, LoginRequestAction } from "./actions/sessionActions";
-import { ActionTypes } from "./constants/actionTypes";
+import { ReducersMapObject, combineReducers, Store, Reducer } from "redux";
 import { reducers } from "./reducers/rootReducer";
+import { ApplicationAction } from "./actions/actions";
 
 export type ApplicationState = ReturnType<typeof reducer>;
-
-export type ApplicationAction = Action<ActionTypes> & (
-    | SignupRequestAction
-    | LoginRequestAction
-)
 
 export type ApplicationStore = Store<ApplicationState, ApplicationAction>;
 
