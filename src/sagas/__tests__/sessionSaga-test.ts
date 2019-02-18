@@ -1,23 +1,23 @@
-import {
-    watchLoginRequest,
-    loginRequest,
-    watchLogoutRequest,
-    logoutRequest,
-    watchStoreSession,
-    storeSession
-} from '../sessionSaga';
-import {takeLatest, takeEvery} from 'redux-saga';
-import {call, put, PutEffect, CallEffect} from 'redux-saga/effects';
-import {postData} from '../sagaHelper';
-import {browserHistory} from 'react-router';
-import {ActionTypes} from '../../constants/actionTypes';
+import { browserHistory } from 'react-router';
+import { takeEvery, takeLatest } from 'redux-saga';
+import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
 import { LoginRequestAction, StoreSessionAction } from '../../actions/sessionActions';
+import { ActionTypes } from '../../constants/actionTypes';
+import { postData } from '../sagaHelper';
+import {
+    loginRequest,
+    logoutRequest,
+    storeSession,
+    watchLoginRequest,
+    watchLogoutRequest,
+    watchStoreSession,
+} from '../sessionSaga';
 
 describe('watchLoginRequest', () => {
-    let iterator = watchLoginRequest();
+    const iterator = watchLoginRequest();
 
     it('calls login request saga with latest login request action', () => {
-        let expected: any = takeLatest(ActionTypes.LOGIN_REQUEST_ACTION, loginRequest);
+        const expected: any = takeLatest(ActionTypes.LOGIN_REQUEST_ACTION, loginRequest);
         expect(iterator.next().value).toEqual(expected.next().value);
     });
 });
@@ -25,14 +25,14 @@ describe('watchLoginRequest', () => {
 describe('loginRequest', () => {
     let iterator: Iterator<void | PutEffect<{ type: ActionTypes; }> | CallEffect>;
 
-	let url = 'http://some.api/someLink';
-    let action: LoginRequestAction = {
+    const url = 'http://some.api/someLink';
+    const action: LoginRequestAction = {
         type: ActionTypes.LOGIN_REQUEST_ACTION,
         loginInfo: {
             email: 'someEmail',
             password: 'somePassword',
         },
-        link: {href: url}
+        link: { href: url },
     };
 
     beforeEach(() => {
@@ -41,7 +41,7 @@ describe('loginRequest', () => {
     });
 
     it('fires clear errors action', () => {
-        expect(iterator.next().value).toEqual(put({type: ActionTypes.CLEAR_ERRORS_ACTION}));
+        expect(iterator.next().value).toEqual(put({ type: ActionTypes.CLEAR_ERRORS_ACTION }));
     });
 
     it('calls endpoint with action href and action data', () => {
@@ -50,21 +50,25 @@ describe('loginRequest', () => {
     });
 
     describe('on request success', () => {
-        let rootLink = {href: 'http://some.api/root'};
-        let response = {response: {data: {
-            session: {
-                token: 'tokenz'
-            },
-            _links: {
-                root: rootLink
+        const rootLink = { href: 'http://some.api/root' };
+        const response = {
+            response: {
+                data: {
+                    session: {
+                        token: 'tokenz',
+                    },
+                    _links: {
+                        root: rootLink,
+                    },
+                }
             }
-        }}};
+        };
 
         it('fires store session action', () => {
             iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
-                .toEqual(put({type: ActionTypes.STORE_SESSION_ACTION, token: 'tokenz'}));
+                .toEqual(put({ type: ActionTypes.STORE_SESSION_ACTION, token: 'tokenz' }));
         });
 
         it('fires persist link action', () => {
@@ -72,31 +76,31 @@ describe('loginRequest', () => {
             iterator.next();
             iterator.next(response);
             expect(iterator.next(response).value)
-                .toEqual(put({type: ActionTypes.PERSIST_LINK_ACTION, link: rootLink}));
+                .toEqual(put({ type: ActionTypes.PERSIST_LINK_ACTION, link: rootLink }));
         });
 
-		it('redirects to the root', () => {
-			iterator.next();
-			iterator.next();
-			iterator.next(response);
-			iterator.next(response);
-			iterator.next(response);
-			expect(browserHistory.push).toBeCalledWith('/');
-		});
+        it('redirects to the root', () => {
+            iterator.next();
+            iterator.next();
+            iterator.next(response);
+            iterator.next(response);
+            iterator.next(response);
+            expect(browserHistory.push).toBeCalledWith('/');
+        });
     });
 
     describe('on request failure', () => {
-        let errors = {
+        const errors = {
             fieldErrors: [],
-            globalErrors: []
+            globalErrors: [],
         };
-        let response = {error: {response: {data: errors}}};
+        const response = { error: { response: { data: errors } } };
 
         it('fires store errors action', () => {
             iterator.next();
             iterator.next();
             expect(iterator.next(response).value)
-                .toEqual(put({type: ActionTypes.STORE_ERRORS_ACTION, errors: errors}));
+                .toEqual(put({ type: ActionTypes.STORE_ERRORS_ACTION, errors }));
         });
     });
 });
@@ -133,10 +137,10 @@ describe('logoutRequest', () => {
 });
 
 describe('watchLogoutRequest', () => {
-    let iterator = watchLogoutRequest();
+    const iterator = watchLogoutRequest();
 
     it('calls logout request saga with latest logout request action', () => {
-        let expected: any = takeLatest(ActionTypes.LOGOUT_REQUEST_ACTION, logoutRequest);
+        const expected: any = takeLatest(ActionTypes.LOGOUT_REQUEST_ACTION, logoutRequest);
         expect(iterator.next().value).toEqual(expected.next().value);
     });
 });
@@ -144,9 +148,9 @@ describe('watchLogoutRequest', () => {
 describe('storeSession', () => {
     let iterator: IterableIterator<void>;
 
-    let action: StoreSessionAction = {
+    const action: StoreSessionAction = {
         type: ActionTypes.STORE_SESSION_ACTION,
-        token: 'wowCoolToken'
+        token: 'wowCoolToken',
     };
 
     beforeEach(() => {
@@ -160,10 +164,10 @@ describe('storeSession', () => {
 });
 
 describe('watchStoreSession', () => {
-	let iterator = watchStoreSession();
+    const iterator = watchStoreSession();
 
-	it('calls store session saga with every store session action', () => {
-        let expected: any = takeEvery(ActionTypes.STORE_SESSION_ACTION, storeSession);
+    it('calls store session saga with every store session action', () => {
+        const expected: any = takeEvery(ActionTypes.STORE_SESSION_ACTION, storeSession);
         expect(iterator.next().value).toEqual(expected.next().value);
-	});
+    });
 });

@@ -1,5 +1,4 @@
-import { ActionTypes } from '../constants/actionTypes'
-import { Action } from 'redux';
+import { ActionTypes } from "../constants/actionTypes";
 
 export interface Link {
     href: string;
@@ -20,8 +19,8 @@ export interface SignupInfo {
 export const signupRequestAction = (link: Link, signupInfo: SignupInfo): SignupRequestAction => ({
     type: ActionTypes.SIGNUP_REQUEST_ACTION,
     link,
-    signupInfo
-})
+    signupInfo,
+});
 
 export interface LoginRequestAction {
     type: ActionTypes.LOGIN_REQUEST_ACTION;
@@ -38,15 +37,15 @@ export const loginRequestAction = (link: Link, loginInfo: LoginInfo): LoginReque
     type: ActionTypes.LOGIN_REQUEST_ACTION,
     link,
     loginInfo,
-})
+});
 
 export interface LogoutRequestAction {
     type: ActionTypes.LOGOUT_REQUEST_ACTION;
 }
 
 export const logoutRequestAction = (): LogoutRequestAction => ({
-    type: ActionTypes.LOGOUT_REQUEST_ACTION
-})
+    type: ActionTypes.LOGOUT_REQUEST_ACTION,
+});
 
 export interface StoreSessionAction {
     type: ActionTypes.STORE_SESSION_ACTION;
@@ -55,5 +54,5 @@ export interface StoreSessionAction {
 
 export const storeSessionAction = (token: string): StoreSessionAction => ({
     type: ActionTypes.STORE_SESSION_ACTION,
-    token
-})
+    token,
+});

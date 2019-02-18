@@ -1,8 +1,8 @@
-import { SignupRequestAction, LoginRequestAction, StoreSessionAction } from "./sessionActions";
 import { Action } from "redux";
 import { ActionTypes } from "../constants/actionTypes";
-import { PersistLinkAction } from "./linkActions";
 import { ClearErrorsAction, StoreErrorsAction } from "./errorActions";
+import { PersistLinkAction } from "./linkActions";
+import { LoginRequestAction, SignupRequestAction, StoreSessionAction } from "./sessionActions";
 
 export type ApplicationAction = Action<ActionTypes> & (
     | SignupRequestAction
@@ -11,4 +11,4 @@ export type ApplicationAction = Action<ActionTypes> & (
     | PersistLinkAction
     | ClearErrorsAction
     | StoreErrorsAction
-)
+);
