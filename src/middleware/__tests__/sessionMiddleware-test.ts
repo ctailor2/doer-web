@@ -45,6 +45,7 @@ describe('session middleware', () => {
         capturedActions = [];
         store = createStore(reducer, applyMiddleware(sessionMiddleware, actionCapturingMiddleware(capturedActions)));
         mockAdapter.reset();
+        localStorage.clear();
     });
 
     it('clears errors on signup request', () => {
@@ -173,5 +174,43 @@ describe('session middleware', () => {
                 done();
             });
         });
+    });
+
+    it('stores the sessionToken in localstorage', () => {
+        store.dispatch({
+            type: ActionTypes.STORE_SESSION_ACTION,
+            token: 'someToken',
+        });
+        expect(localStorage.getItem('sessionToken')).toEqual('someToken');
+    });
+
+    it('clears the sessionToken from localStorage on logout', () => {
+        store.dispatch({
+            type: ActionTypes.STORE_SESSION_ACTION,
+            token: 'someToken',
+        });
+        store.dispatch({
+            type: ActionTypes.LOGOUT_REQUEST_ACTION,
+        });
+        expect(localStorage.getItem("sessionToken")).toBeNull();
+    });
+
+    it('stores the root link in localStorage', () => {
+        store.dispatch({
+            type: ActionTypes.PERSIST_LINK_ACTION,
+            link: { href: 'someLinkToPersist' },
+        });
+        expect(localStorage.getItem('link')).toEqual('someLinkToPersist');
+    });
+
+    it('clears the link from localStorage on logout', () => {
+        store.dispatch({
+            type: ActionTypes.PERSIST_LINK_ACTION,
+            link: { href: 'persistLink' },
+        });
+        store.dispatch({
+            type: ActionTypes.LOGOUT_REQUEST_ACTION,
+        });
+        expect(localStorage.getItem("link")).toBeNull();
     });
 });

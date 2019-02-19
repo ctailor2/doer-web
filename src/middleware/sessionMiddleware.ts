@@ -44,7 +44,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                         type: ActionTypes.PERSIST_LINK_ACTION,
                         link: signupResult._links.root,
                     });
-                    browserHistory.push("/");
+                    browserHistory.push('/');
                 },
                 (error) => {
                     store.dispatch({
@@ -52,6 +52,20 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                         errors: error,
                     });
                 });
+            break;
+        }
+        case ActionTypes.STORE_SESSION_ACTION: {
+            localStorage.setItem("sessionToken", action.token);
+            break;
+        }
+        case ActionTypes.PERSIST_LINK_ACTION: {
+            localStorage.setItem("link", action.link.href);
+            break;
+        }
+        case ActionTypes.LOGOUT_REQUEST_ACTION: {
+            localStorage.removeItem("sessionToken");
+            localStorage.removeItem("link");
+            browserHistory.push('/login');
             break;
         }
     }
