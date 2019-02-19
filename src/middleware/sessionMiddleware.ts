@@ -1,11 +1,10 @@
 import { browserHistory } from "react-router";
-import { Dispatch } from "redux";
+import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
 import { ActionTypes } from "../constants/actionTypes";
 import { postCommand } from "../sagas/sagaHelper";
-import { ApplicationStore } from "../store";
 
-export default (store: ApplicationStore) => (next: Dispatch) => (action: ApplicationAction) => {
+export default (store: MiddlewareAPI) => (next: Dispatch) => (action: ApplicationAction) => {
     switch (action.type) {
         case ActionTypes.SIGNUP_REQUEST_ACTION: {
             store.dispatch({

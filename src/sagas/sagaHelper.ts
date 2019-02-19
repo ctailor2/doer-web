@@ -1,14 +1,14 @@
-import axios, { AxiosRequestConfig } from 'axios'
-import * as io from 'io-ts'
-import { SignupInfo, Link } from '../actions/sessionActions';
+import axios, { AxiosRequestConfig } from 'axios';
+import * as io from 'io-ts';
+import { Link, SignupInfo } from '../actions/sessionActions';
 
-let client = axios.create();
+export const client = axios.create();
 
 client.defaults.headers = {
-    'Content-Type': 'application/json'
-}
+    'Content-Type': 'application/json',
+};
 
-type Commands = 'signup'
+type Commands = 'signup';
 
 const SignupResult = io.interface({
     session: io.interface({
@@ -17,9 +17,9 @@ const SignupResult = io.interface({
     _links: io.interface({
         root: io.interface({
             href: io.string,
-        })
-    })
-})
+        }),
+    }),
+});
 
 const ErrorResponseIO = io.interface({
     fieldErrors: io.array(io.interface({
@@ -28,27 +28,23 @@ const ErrorResponseIO = io.interface({
     })),
     globalErrors: io.array(io.interface({
         message: io.string,
-    }))
-})
+    })),
+});
 
 const responseValidators = {
     signup: SignupResult,
-    error: ErrorResponseIO
+    error: ErrorResponseIO,
+};
+
+interface Requests {
+    signup: SignupInfo;
 }
 
-type Requests = {
-    signup: SignupInfo,
-}
-
-type SuccessResponses = {
-    signup: io.TypeOf<typeof SignupResult>
+interface SuccessResponses {
+    signup: io.TypeOf<typeof SignupResult>;
 }
 
 type ErrorResponse = io.TypeOf<typeof ErrorResponseIO>;
-
-type ApiError = {
-    error: any
-}
 
 export function fetchData(url: string, configs?: AxiosRequestConfig) {
     return client.get(url, configs)
@@ -62,20 +58,26 @@ export function postData(url: string, data?: any, configs?: AxiosRequestConfig) 
         .catch((error) => ({ error }));
 }
 
-export function postCommand<Command extends Commands>(command: Command, link: Link, request: Requests[Command], onSuccess: (response: SuccessResponses[Command]) => void, onError: (errorResponse: ErrorResponse) => void = (errorResponse) => console.log(errorResponse)): void {
+export function postCommand<Command extends Commands>(
+    command: Command,
+    link: Link,
+    request: Requests[Command],
+    onSuccess: (response: SuccessResponses[Command]) => void,
+    // tslint:disable-next-line:no-console
+    onError: (errorResponse: ErrorResponse) => void = (errorResponse) => console.log(errorResponse)): void {
     client.post(link.href, request)
         .then((successResponse) => {
-            const validation = responseValidators[command].decode(successResponse.data)
+            const validation = responseValidators[command].decode(successResponse.data);
             if (validation.isRight()) {
                 onSuccess(validation.value);
             }
         })
-        .catch(({response: errorResponse}) => {
-            const validation = responseValidators.error.decode(errorResponse.data)
+        .catch(({ response: errorResponse }) => {
+            const validation = responseValidators.error.decode(errorResponse.data);
             if (validation.isRight()) {
                 onError(validation.value);
             }
-        })
+        });
 }
 
 export function deleteData(url: string, configs?: AxiosRequestConfig) {
