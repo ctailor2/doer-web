@@ -1,4 +1,4 @@
-import {watchLoginRequest, watchLogoutRequest, watchStoreSession} from './sessionSaga';
+import {watchLogoutRequest, watchStoreSession} from './sessionSaga';
 import {
 	watchCreateTodoRequest,
 	watchDeleteTodoRequest,
@@ -26,7 +26,6 @@ import {fork} from 'redux-saga/effects';
 
 export default function* rootSaga() {
     yield [
-        fork(watchLoginRequest),
         fork(watchLogoutRequest),
         fork(watchStoreSession),
         fork(watchCreateTodoRequest),

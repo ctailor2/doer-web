@@ -5,105 +5,11 @@ import { LoginRequestAction, StoreSessionAction } from '../../actions/sessionAct
 import { ActionTypes } from '../../constants/actionTypes';
 import { postData } from '../sagaHelper';
 import {
-    loginRequest,
     logoutRequest,
     storeSession,
-    watchLoginRequest,
     watchLogoutRequest,
     watchStoreSession,
 } from '../sessionSaga';
-
-describe('watchLoginRequest', () => {
-    const iterator = watchLoginRequest();
-
-    it('calls login request saga with latest login request action', () => {
-        const expected: any = takeLatest(ActionTypes.LOGIN_REQUEST_ACTION, loginRequest);
-        expect(iterator.next().value).toEqual(expected.next().value);
-    });
-});
-
-describe('loginRequest', () => {
-    let iterator: Iterator<void | PutEffect<{ type: ActionTypes; }> | CallEffect>;
-
-    const url = 'http://some.api/someLink';
-    const action: LoginRequestAction = {
-        type: ActionTypes.LOGIN_REQUEST_ACTION,
-        loginInfo: {
-            email: 'someEmail',
-            password: 'somePassword',
-        },
-        link: { href: url },
-    };
-
-    beforeEach(() => {
-        iterator = loginRequest(action);
-        browserHistory.push = jest.fn();
-    });
-
-    it('fires clear errors action', () => {
-        expect(iterator.next().value).toEqual(put({ type: ActionTypes.CLEAR_ERRORS_ACTION }));
-    });
-
-    it('calls endpoint with action href and action data', () => {
-        iterator.next();
-        expect(iterator.next().value).toEqual(call(postData, url, action.loginInfo));
-    });
-
-    describe('on request success', () => {
-        const rootLink = { href: 'http://some.api/root' };
-        const response = {
-            response: {
-                data: {
-                    session: {
-                        token: 'tokenz',
-                    },
-                    _links: {
-                        root: rootLink,
-                    },
-                }
-            }
-        };
-
-        it('fires store session action', () => {
-            iterator.next();
-            iterator.next();
-            expect(iterator.next(response).value)
-                .toEqual(put({ type: ActionTypes.STORE_SESSION_ACTION, token: 'tokenz' }));
-        });
-
-        it('fires persist link action', () => {
-            iterator.next();
-            iterator.next();
-            iterator.next(response);
-            expect(iterator.next(response).value)
-                .toEqual(put({ type: ActionTypes.PERSIST_LINK_ACTION, link: rootLink }));
-        });
-
-        it('redirects to the root', () => {
-            iterator.next();
-            iterator.next();
-            iterator.next(response);
-            iterator.next(response);
-            iterator.next(response);
-            expect(browserHistory.push).toBeCalledWith('/');
-        });
-    });
-
-    describe('on request failure', () => {
-        const errors = {
-            fieldErrors: [],
-            globalErrors: [],
-        };
-        const response = { error: { response: { data: errors } } };
-
-        it('fires store errors action', () => {
-            iterator.next();
-            iterator.next();
-            expect(iterator.next(response).value)
-                .toEqual(put({ type: ActionTypes.STORE_ERRORS_ACTION, errors }));
-        });
-    });
-});
 
 describe('logoutRequest', () => {
     let iterator: Iterator<void>;

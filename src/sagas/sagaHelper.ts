@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as io from 'io-ts';
-import { Link, SignupInfo } from '../actions/sessionActions';
+import { Link, LoginInfo, SignupInfo } from '../actions/sessionActions';
 
 export const client = axios.create();
 
@@ -8,9 +8,11 @@ client.defaults.headers = {
     'Content-Type': 'application/json',
 };
 
-type Commands = 'signup';
+type Commands =
+    | 'signup'
+    | 'login';
 
-const SignupResult = io.interface({
+const SessionResponseIO = io.interface({
     session: io.interface({
         token: io.string,
     }),
@@ -32,16 +34,19 @@ const ErrorResponseIO = io.interface({
 });
 
 const responseValidators = {
-    signup: SignupResult,
+    signup: SessionResponseIO,
+    login: SessionResponseIO,
     error: ErrorResponseIO,
 };
 
 interface Requests {
     signup: SignupInfo;
+    login: LoginInfo;
 }
 
 interface SuccessResponses {
-    signup: io.TypeOf<typeof SignupResult>;
+    signup: io.TypeOf<typeof SessionResponseIO>;
+    login: io.TypeOf<typeof SessionResponseIO>;
 }
 
 type ErrorResponse = io.TypeOf<typeof ErrorResponseIO>;

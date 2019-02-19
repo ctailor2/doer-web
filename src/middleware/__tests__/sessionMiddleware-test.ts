@@ -3,6 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { applyMiddleware, createStore } from 'redux';
 import { ApplicationAction } from '../../actions/actions';
+import { StoreSessionAction } from '../../actions/sessionActions';
 import { ActionTypes } from '../../constants/actionTypes';
 import { client } from '../../sagas/sagaHelper';
 import { ApplicationStore, reducer } from '../../store';
@@ -11,7 +12,6 @@ import sessionMiddleware from '../sessionMiddleware';
 
 describe('session middleware', () => {
     const mockAdapter = new MockAdapter(client);
-    const capturedActions: ApplicationAction[] = [];
     const signupRequestAction: ApplicationAction = {
         type: ActionTypes.SIGNUP_REQUEST_ACTION,
         link: { href: 'signupHref' },
@@ -21,25 +21,54 @@ describe('session middleware', () => {
             passwordConfirmation: 'somePasswordConfirmation',
         },
     };
+    const loginRequestAction: ApplicationAction = {
+        type: ActionTypes.LOGIN_REQUEST_ACTION,
+        link: { href: 'loginHref' },
+        loginInfo: {
+            email: 'someEmail',
+            password: 'somePassword',
+        },
+    };
+    const errorResponse = {
+        fieldErrors: [{
+            field: 'email',
+            message: 'no good',
+        }],
+        globalErrors: [{
+            message: 'womp',
+        }],
+    };
+    let capturedActions: ApplicationAction[];
     let store: ApplicationStore;
 
     beforeEach(() => {
+        capturedActions = [];
         store = createStore(reducer, applyMiddleware(sessionMiddleware, actionCapturingMiddleware(capturedActions)));
         mockAdapter.reset();
     });
 
+    it('clears errors on signup request', () => {
+        store.dispatch(signupRequestAction);
+
+        expect(capturedActions).toContainEqual({
+            type: ActionTypes.CLEAR_ERRORS_ACTION,
+        });
+    });
+
     describe('on successful signup request', () => {
         beforeEach(() => {
-            mockAdapter.onPost('signupHref').reply(201, {
-                session: {
-                    token: 'someToken',
-                },
-                _links: {
-                    root: {
-                        href: 'rootHref',
+            mockAdapter
+                .onPost(signupRequestAction.link.href, signupRequestAction.signupInfo)
+                .reply(201, {
+                    session: {
+                        token: 'someToken',
                     },
-                },
-            });
+                    _links: {
+                        root: {
+                            href: 'rootHref',
+                        },
+                    },
+                });
             store.dispatch(signupRequestAction);
         });
 
@@ -65,19 +94,74 @@ describe('session middleware', () => {
     });
 
     describe('on failed signup request', () => {
-        const errorResponse = {
-            fieldErrors: [{
-                field: 'email',
-                message: 'no good',
-            }],
-            globalErrors: [{
-                message: 'womp',
-            }],
-        };
-
         beforeEach(() => {
-            mockAdapter.onPost('signupHref').reply(401, errorResponse);
+            mockAdapter
+                .onPost(signupRequestAction.link.href, signupRequestAction.signupInfo)
+                .reply(401, errorResponse);
             store.dispatch(signupRequestAction);
+        });
+
+        it('stores the errors', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.STORE_ERRORS_ACTION,
+                    errors: errorResponse,
+                });
+                done();
+            });
+        });
+    });
+
+    it('clears errors on login request', () => {
+        store.dispatch(loginRequestAction);
+
+        expect(capturedActions).toContainEqual({
+            type: ActionTypes.CLEAR_ERRORS_ACTION,
+        });
+    });
+
+    describe('on successful login request', () => {
+        beforeEach(() => {
+            mockAdapter
+                .onPost(loginRequestAction.link.href, loginRequestAction.loginInfo)
+                .reply(200, {
+                    session: {
+                        token: 'someToken',
+                    },
+                    _links: {
+                        root: { href: 'rootHref' },
+                    },
+                });
+            store.dispatch(loginRequestAction);
+        });
+
+        it('stores the session token', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.STORE_SESSION_ACTION,
+                    token: 'someToken',
+                });
+                done();
+            });
+        });
+
+        it('stores the root link', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.PERSIST_LINK_ACTION,
+                    link: { href: 'rootHref' },
+                });
+                done();
+            });
+        });
+    });
+
+    describe('on failed signup request', () => {
+        beforeEach(() => {
+            mockAdapter
+                .onPost(loginRequestAction.link.href, loginRequestAction.loginInfo)
+                .reply(401, errorResponse);
+            store.dispatch(loginRequestAction);
         });
 
         it('stores the errors', (done) => {
