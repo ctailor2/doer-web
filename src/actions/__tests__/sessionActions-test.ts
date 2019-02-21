@@ -1,13 +1,9 @@
+import { LoginInfo, SignupInfo } from '../../api/session';
 import { ActionTypes } from '../../constants/actionTypes';
 import {
-    LoginInfo,
     loginRequestAction,
-    LoginRequestAction,
     logoutRequestAction,
-    SignupInfo,
     signupRequestAction,
-    SignupRequestAction,
-    storeSessionAction,
 } from '../sessionActions';
 
 describe('signupRequestAction', () => {
@@ -16,7 +12,7 @@ describe('signupRequestAction', () => {
             email: 'someEmail',
             password: 'somePassword',
             passwordConfirmation: 'somePasswordConfirmation',
-         };
+        };
         const link = { href: 'http://some.api/signup' };
         expect(signupRequestAction(link, signupInfo)).toEqual({
             type: ActionTypes.SIGNUP_REQUEST_ACTION,

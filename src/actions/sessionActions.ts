@@ -1,19 +1,11 @@
+import { Link } from '../api/api';
+import { LoginInfo, SignupInfo } from '../api/session';
 import { ActionTypes } from "../constants/actionTypes";
-
-export interface Link {
-    href: string;
-}
 
 export interface SignupRequestAction {
     type: ActionTypes.SIGNUP_REQUEST_ACTION;
     link: Link;
     signupInfo: SignupInfo;
-}
-
-export interface SignupInfo {
-    email: string;
-    password: string;
-    passwordConfirmation: string;
 }
 
 export const signupRequestAction = (link: Link, signupInfo: SignupInfo): SignupRequestAction => ({
@@ -26,11 +18,6 @@ export interface LoginRequestAction {
     type: ActionTypes.LOGIN_REQUEST_ACTION;
     link: Link;
     loginInfo: LoginInfo;
-}
-
-export interface LoginInfo {
-    email: string;
-    password: string;
 }
 
 export const loginRequestAction = (link: Link, loginInfo: LoginInfo): LoginRequestAction => ({
