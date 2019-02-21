@@ -1,21 +1,22 @@
 import { Link } from '../api/api';
 import { ActionTypes } from '../constants/actionTypes';
 
-export function storeLinksAction(links = {}) {
-    return {
-        type: ActionTypes.STORE_LINKS_ACTION,
-        links,
-    };
+export interface StoreLinksAction {
+    type: ActionTypes.STORE_LINKS_ACTION;
+    links: { [name: string]: Link };
 }
+
+export const storeLinksAction = (links: { [name: string]: Link }): StoreLinksAction => ({
+    type: ActionTypes.STORE_LINKS_ACTION,
+    links,
+});
 
 export interface PersistLinkAction {
     type: ActionTypes.PERSIST_LINK_ACTION;
     link: Link;
 }
 
-export function persistLinkAction(link = {}) {
-    return {
-        type: ActionTypes.PERSIST_LINK_ACTION,
-        link,
-    };
-}
+export const persistLinkAction = (link: Link): PersistLinkAction => ({
+    type: ActionTypes.PERSIST_LINK_ACTION,
+    link,
+});
