@@ -1,8 +1,8 @@
 {
   "root": "build/",
   "proxies": {
-    "/v1/": {
-      "origin": "${API_URL}/v1/"
+    "/v1": {
+      "origin": "${API_URL}/v1"
     }
   },
   "routes": {
