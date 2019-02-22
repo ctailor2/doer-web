@@ -3,7 +3,7 @@ import { ApplicationAction } from "../actions/actions";
 import { ActionTypes } from "../constants/actionTypes";
 import { perform } from "../sagas/sagaHelper";
 
-const rootLink = { href: '/v1' };
+export const rootLink = { href: '/v1' };
 
 export default (store: MiddlewareAPI) => (next: Dispatch) => (action: ApplicationAction) => {
     switch (action.type) {

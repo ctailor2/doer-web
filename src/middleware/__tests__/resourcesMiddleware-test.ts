@@ -6,7 +6,7 @@ import { ActionTypes } from "../../constants/actionTypes";
 import { client } from "../../sagas/sagaHelper";
 import { ApplicationStore, reducer } from "../../store";
 import actionCapturingMiddleware from "../../utils/actionCapturingMiddleware";
-import resourcesMiddleware from "../resourcesMiddleware";
+import resourcesMiddleware, { rootLink } from "../resourcesMiddleware";
 
 describe('resources middleware', () => {
     const mockAdapter = new MockAdapter(client);
@@ -27,7 +27,7 @@ describe('resources middleware', () => {
             login: { href: '123' },
             signup: { href: '123' },
         };
-        mockAdapter.onGet('/v1/resources/base')
+        mockAdapter.onGet(rootLink.href)
             .reply(200, {
                 _links: links,
             });
