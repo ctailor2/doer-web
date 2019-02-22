@@ -1,9 +1,7 @@
 export default undefined;
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { applyMiddleware, createStore } from 'redux';
 import { ApplicationAction } from '../../actions/actions';
-import { StoreSessionAction } from '../../actions/sessionActions';
 import { ActionTypes } from '../../constants/actionTypes';
 import { client } from '../../sagas/sagaHelper';
 import { ApplicationStore, reducer } from '../../store';

@@ -9,12 +9,6 @@ import {
 	watchEscalateTodosRequest
 } from './todoSaga';
 import {
-    watchGetBaseResourcesRequest,
-    watchGetRootResourcesRequest,
-    watchGetTodoResourcesRequest,
-    watchGetHistoryResourcesRequest
-} from './resourcesSaga';
-import {
     watchGetListRequest,
     watchGetCompletedListRequest,
     watchUnlockListRequest
@@ -26,10 +20,6 @@ export default function* rootSaga() {
     yield [
         fork(watchCreateTodoRequest),
         fork(watchDeleteTodoRequest),
-        fork(watchGetBaseResourcesRequest),
-        fork(watchGetRootResourcesRequest),
-        fork(watchGetTodoResourcesRequest),
-        fork(watchGetHistoryResourcesRequest),
         fork(watchDisplaceTodoRequest),
         fork(watchUpdateTodoRequest),
         fork(watchCompleteTodoRequest),

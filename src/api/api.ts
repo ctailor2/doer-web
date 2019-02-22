@@ -7,7 +7,15 @@ export interface Link {
 
 export type Commands =
     | 'signup'
-    | 'login';
+    | 'login'
+    | 'baseResources'
+    | 'rootResources'
+    | 'todoResources'
+    | 'historyResources';
+
+const linkValidator = io.interface({
+    href: io.string,
+});
 
 export const successResponseValidators = {
     signup: io.interface({
@@ -15,9 +23,7 @@ export const successResponseValidators = {
             token: io.string,
         }),
         _links: io.interface({
-            root: io.interface({
-                href: io.string,
-            }),
+            root: linkValidator,
         }),
     }),
     login: io.interface({
@@ -25,9 +31,29 @@ export const successResponseValidators = {
             token: io.string,
         }),
         _links: io.interface({
-            root: io.interface({
-                href: io.string,
-            }),
+            root: linkValidator,
+        }),
+    }),
+    baseResources: io.interface({
+        _links: io.interface({
+            login: linkValidator,
+            signup: linkValidator,
+        }),
+    }),
+    rootResources: io.interface({
+        _links: io.interface({
+            todoResources: linkValidator,
+            historyResources: linkValidator,
+        }),
+    }),
+    todoResources: io.interface({
+        _links: io.interface({
+            list: linkValidator,
+        }),
+    }),
+    historyResources: io.interface({
+        _links: io.interface({
+            completedList: linkValidator,
         }),
     }),
 };
@@ -35,6 +61,10 @@ export const successResponseValidators = {
 export interface Requests {
     signup: SignupInfo;
     login: LoginInfo;
+    baseResources: undefined;
+    rootResources: undefined;
+    todoResources: undefined;
+    historyResources: undefined;
 }
 
 export type SuccessResponses = {

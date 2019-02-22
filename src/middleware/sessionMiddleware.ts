@@ -2,7 +2,7 @@ import { browserHistory } from "react-router";
 import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
 import { ActionTypes } from "../constants/actionTypes";
-import { postCommand } from "../sagas/sagaHelper";
+import { perform } from "../sagas/sagaHelper";
 
 export default (store: MiddlewareAPI) => (next: Dispatch) => (action: ApplicationAction) => {
     switch (action.type) {
@@ -10,7 +10,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
             store.dispatch({
                 type: ActionTypes.CLEAR_ERRORS_ACTION,
             });
-            postCommand(action.type, action.link, action.signupInfo,
+            perform('post', action.type, action.link,
                 (signupResult) => {
                     store.dispatch({
                         type: ActionTypes.STORE_SESSION_ACTION,
@@ -27,14 +27,16 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                         type: ActionTypes.STORE_ERRORS_ACTION,
                         errors: error,
                     });
-                });
+                },
+                { 'Content-Type': 'application/json' },
+                action.signupInfo);
             break;
         }
         case ActionTypes.LOGIN_REQUEST_ACTION: {
             store.dispatch({
                 type: ActionTypes.CLEAR_ERRORS_ACTION,
             });
-            postCommand(action.type, action.link, action.loginInfo,
+            perform('post', action.type, action.link,
                 (signupResult) => {
                     store.dispatch({
                         type: ActionTypes.STORE_SESSION_ACTION,
@@ -51,7 +53,9 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                         type: ActionTypes.STORE_ERRORS_ACTION,
                         errors: error,
                     });
-                });
+                },
+                { 'Content-Type': 'application/json' },
+                action.loginInfo);
             break;
         }
         case ActionTypes.STORE_SESSION_ACTION: {

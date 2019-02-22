@@ -11,12 +11,6 @@ import {
 	watchEscalateTodosRequest,
 } from '../todoSaga';
 import {
-    watchGetBaseResourcesRequest,
-    watchGetRootResourcesRequest,
-    watchGetTodoResourcesRequest,
-    watchGetHistoryResourcesRequest
-} from '../resourcesSaga';
-import {
     watchGetListRequest,
     watchGetCompletedListRequest,
     watchUnlockListRequest
@@ -30,10 +24,6 @@ describe('rootSaga', () => {
         expect(iterator.next().value).toEqual([
             fork(watchCreateTodoRequest),
             fork(watchDeleteTodoRequest),
-            fork(watchGetBaseResourcesRequest),
-            fork(watchGetRootResourcesRequest),
-            fork(watchGetTodoResourcesRequest),
-            fork(watchGetHistoryResourcesRequest),
             fork(watchDisplaceTodoRequest),
             fork(watchUpdateTodoRequest),
             fork(watchCompleteTodoRequest),

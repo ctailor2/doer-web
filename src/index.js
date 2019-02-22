@@ -11,37 +11,39 @@ import HistoryView from './components/views/HistoryView';
 import './styles/index.css';
 import './styles/bootstrap-overrides.css';
 import rootSaga from './sagas/rootSaga';
-import {HotKeys} from 'react-hotkeys';
+import { HotKeys } from 'react-hotkeys';
 import { reducer } from './store';
 import sessionMiddleware from './middleware/sessionMiddleware';
+import resourcesMiddleware from './middleware/resourcesMiddleware';
 
 const keyMap = {
-  submit: 'enter',
-  cancel: 'esc'
+    submit: 'enter',
+    cancel: 'esc'
 };
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-	reducer,
-  applyMiddleware(
-		sagaMiddleware,
-		sessionMiddleware,
-	)
+    reducer,
+    applyMiddleware(
+        sagaMiddleware,
+        sessionMiddleware,
+        resourcesMiddleware,
+    )
 );
 
 sagaMiddleware.run(rootSaga);
 
 render(
-	<HotKeys keyMap={keyMap}>
-	  <Provider store={store}>
-	    <Router history={browserHistory}>
-	      <Route path="/" component={TodosView}></Route>
-	      <Route path="/signup" component={SignupView}></Route>
-	      <Route path="/login" component={LoginView}></Route>
-	      <Route path="/history" component={HistoryView}></Route>
-	    </Router>
-	  </Provider>
-	</HotKeys>,
-	document.getElementById('root')
+    <HotKeys keyMap={keyMap}>
+        <Provider store={store}>
+            <Router history={browserHistory}>
+                <Route path="/" component={TodosView}></Route>
+                <Route path="/signup" component={SignupView}></Route>
+                <Route path="/login" component={LoginView}></Route>
+                <Route path="/history" component={HistoryView}></Route>
+            </Router>
+        </Provider>
+    </HotKeys>,
+    document.getElementById('root')
 );

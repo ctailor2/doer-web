@@ -27,14 +27,18 @@ export function postData(url: string, data?: any, configs?: AxiosRequestConfig) 
         .catch((error) => ({ error }));
 }
 
-export function postCommand<Command extends Commands>(
+export function perform<Command extends Commands>(
+    httpMethod: string,
     command: Command,
     link: Link,
-    request: Requests[Command],
     onSuccess: (response: SuccessResponses[Command]) => void,
     // tslint:disable-next-line:no-console
-    onError: (errorResponse: ErrorResponse) => void = (errorResponse) => console.log(errorResponse)): void {
-    client.post(link.href, request)
+    onError: (errorResponse: ErrorResponse) => void = (errorResponse) => console.log(errorResponse),
+    httpHeaders = {},
+    request?: Requests[Command],
+    ): void {
+    const requestConfig = { method: httpMethod, url: link.href, data: request, headers: httpHeaders };
+    client.request(requestConfig)
         .then((successResponse) => {
             const validation = successResponseValidators[command].decode(successResponse.data);
             if (validation.isRight()) {
