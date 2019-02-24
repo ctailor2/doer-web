@@ -10,11 +10,6 @@ import {
 	watchPullTodosRequest,
 	watchEscalateTodosRequest,
 } from '../todoSaga';
-import {
-    watchGetListRequest,
-    watchGetCompletedListRequest,
-    watchUnlockListRequest
-} from '../listSaga';
 
 describe('rootSaga', () => {
     let iterator = rootSaga();
@@ -29,9 +24,6 @@ describe('rootSaga', () => {
             fork(watchMoveTodoRequest),
             fork(watchPullTodosRequest),
             fork(watchEscalateTodosRequest),
-            fork(watchGetListRequest),
-            fork(watchGetCompletedListRequest),
-            fork(watchUnlockListRequest)
         ]);
     });
 });

@@ -11,7 +11,10 @@ export type Commands =
     | 'baseResources'
     | 'rootResources'
     | 'todoResources'
-    | 'historyResources';
+    | 'historyResources'
+    | 'list'
+    | 'completedList'
+    | 'unlock';
 
 const linkValidator = io.interface({
     href: io.string,
@@ -56,6 +59,44 @@ export const successResponseValidators = {
             completedList: linkValidator,
         }),
     }),
+    list: io.interface({
+        list: io.interface({
+            name: io.string,
+            deferredName: io.string,
+            todos: io.array(io.interface({
+                task: io.string,
+            })),
+            deferredTodos: io.array(io.interface({
+                task: io.string,
+            })),
+            unlockDuration: io.number,
+            _links: io.intersection([
+                io.type({
+                    createDeferred: linkValidator,
+                }),
+                io.partial({
+                    create: io.union([linkValidator, io.undefined]),
+                    pull: io.union([linkValidator, io.undefined]),
+                    displace: io.union([linkValidator, io.undefined]),
+                    escalate: io.union([linkValidator, io.undefined]),
+                    unlock: io.union([linkValidator, io.undefined]),
+                }),
+            ]),
+        }),
+    }),
+    completedList: io.interface({
+        list: io.interface({
+            todos: io.array(io.interface({
+                task: io.string,
+                completedAt: io.string,
+            })),
+        }),
+    }),
+    unlock: io.interface({
+        _links: io.interface({
+            list: linkValidator,
+        }),
+    }),
 };
 
 export interface Requests {
@@ -65,6 +106,9 @@ export interface Requests {
     rootResources: undefined;
     todoResources: undefined;
     historyResources: undefined;
+    list: undefined;
+    completedList: undefined;
+    unlock: undefined;
 }
 
 export type SuccessResponses = {

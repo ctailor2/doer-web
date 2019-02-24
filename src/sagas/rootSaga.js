@@ -8,11 +8,6 @@ import {
 	watchPullTodosRequest,
 	watchEscalateTodosRequest
 } from './todoSaga';
-import {
-    watchGetListRequest,
-    watchGetCompletedListRequest,
-    watchUnlockListRequest
-} from './listSaga';
 import {fork} from 'redux-saga/effects';
 
 export default function* rootSaga() {
@@ -25,8 +20,5 @@ export default function* rootSaga() {
         fork(watchMoveTodoRequest),
         fork(watchPullTodosRequest),
         fork(watchEscalateTodosRequest),
-        fork(watchGetListRequest),
-        fork(watchGetCompletedListRequest),
-        fork(watchUnlockListRequest)
     ];
 }

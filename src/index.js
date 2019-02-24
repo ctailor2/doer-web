@@ -16,6 +16,7 @@ import { reducer } from './store';
 import sessionMiddleware from './middleware/sessionMiddleware';
 import resourcesMiddleware from './middleware/resourcesMiddleware';
 import loadViewMiddleware from './middleware/loadViewMiddleware';
+import listMiddleware from './middleware/listMiddleware';
 
 const keyMap = {
     submit: 'enter',
@@ -31,6 +32,7 @@ const store = createStore(
         sessionMiddleware,
         resourcesMiddleware,
         loadViewMiddleware,
+        listMiddleware,
     )
 );
 

@@ -36,7 +36,7 @@ export function perform<Command extends Commands>(
     onError: (errorResponse: ErrorResponse) => void = (errorResponse) => console.log(errorResponse),
     httpHeaders = {},
     request?: Requests[Command],
-    ): void {
+): void {
     const requestConfig = { method: httpMethod, url: link.href, data: request, headers: httpHeaders };
     client.request(requestConfig)
         .then((successResponse) => {

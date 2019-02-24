@@ -21,7 +21,6 @@ describe('load view middleware', () => {
         );
         mockAdapter.reset();
         localStorage.setItem('link', 'rootHref');
-        localStorage.setItem('sessionToken', 'someToken');
     });
 
     describe('loading todos view', () => {
