@@ -26,7 +26,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                         links: resources._links,
                     });
                 },
-                undefined,
+                () => null,
                 { 'Session-Token': localStorage.getItem('sessionToken') });
             break;
         }

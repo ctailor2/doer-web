@@ -15,7 +15,6 @@ import {
     watchGetCompletedListRequest,
     watchUnlockListRequest
 } from '../listSaga';
-import {watchLoadTodosView, watchLoadHistoryView} from '../loadViewSaga';
 
 describe('rootSaga', () => {
     let iterator = rootSaga();
@@ -28,8 +27,6 @@ describe('rootSaga', () => {
             fork(watchUpdateTodoRequest),
             fork(watchCompleteTodoRequest),
             fork(watchMoveTodoRequest),
-            fork(watchLoadTodosView),
-            fork(watchLoadHistoryView),
             fork(watchPullTodosRequest),
             fork(watchEscalateTodosRequest),
             fork(watchGetListRequest),

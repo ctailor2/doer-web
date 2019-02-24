@@ -15,6 +15,7 @@ import { HotKeys } from 'react-hotkeys';
 import { reducer } from './store';
 import sessionMiddleware from './middleware/sessionMiddleware';
 import resourcesMiddleware from './middleware/resourcesMiddleware';
+import loadViewMiddleware from './middleware/loadViewMiddleware';
 
 const keyMap = {
     submit: 'enter',
@@ -29,6 +30,7 @@ const store = createStore(
         sagaMiddleware,
         sessionMiddleware,
         resourcesMiddleware,
+        loadViewMiddleware,
     )
 );
 

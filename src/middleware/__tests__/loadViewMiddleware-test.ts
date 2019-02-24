@@ -1,0 +1,124 @@
+export default undefined;
+import MockAdapter from "axios-mock-adapter";
+import { applyMiddleware, createStore } from "redux";
+import { ApplicationAction } from "../../actions/actions";
+import { ActionTypes } from "../../constants/actionTypes";
+import { client } from "../../sagas/sagaHelper";
+import { ApplicationStore, reducer } from "../../store";
+import actionCapturingMiddleware from "../../utils/actionCapturingMiddleware";
+import loadViewMiddleware from "../loadViewMiddleware";
+
+describe('load view middleware', () => {
+    const mockAdapter = new MockAdapter(client);
+    let capturedActions: ApplicationAction[];
+    let store: ApplicationStore;
+
+    beforeEach(() => {
+        capturedActions = [];
+        store = createStore(
+            reducer,
+            applyMiddleware(loadViewMiddleware, actionCapturingMiddleware(capturedActions)),
+        );
+        mockAdapter.reset();
+        localStorage.setItem('link', 'rootHref');
+        localStorage.setItem('sessionToken', 'someToken');
+    });
+
+    describe('loading todos view', () => {
+        const links = {
+            list: {
+                href: 'listHref',
+            },
+        };
+
+        beforeEach(() => {
+            mockAdapter.onGet('rootHref')
+                .reply(200, {
+                    _links: {
+                        todoResources: {
+                            href: 'todoResourcesHref',
+                        },
+                        historyResources: {
+                            href: 'historyResourcesHref',
+                        },
+                    },
+                });
+            mockAdapter.onGet('todoResourcesHref')
+                .reply(200, {
+                    _links: links,
+                });
+            store.dispatch({
+                type: ActionTypes.LOAD_TODOS_VIEW_ACTION,
+            });
+        });
+
+        it('stores the todo resources links', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.STORE_LINKS_ACTION,
+                    links,
+                });
+                done();
+            });
+        });
+
+        it('gets the list', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.GET_LIST_REQUEST_ACTION,
+                    link: links.list,
+                });
+                done();
+            });
+        });
+    });
+
+    describe('history view', () => {
+        const links = {
+            completedList: {
+                href: 'completedListHref',
+            },
+        };
+
+        beforeEach(() => {
+            mockAdapter.onGet('rootHref')
+                .reply(200, {
+                    _links: {
+                        todoResources: {
+                            href: 'todoResourcesHref',
+                        },
+                        historyResources: {
+                            href: 'historyResourcesHref',
+                        },
+                    },
+                });
+            mockAdapter.onGet('historyResourcesHref')
+                .reply(200, {
+                    _links: links,
+                });
+            store.dispatch({
+                type: ActionTypes.LOAD_HISTORY_VIEW_ACTION,
+            });
+        });
+
+        it('stores the history resources links', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.STORE_LINKS_ACTION,
+                    links,
+                });
+                done();
+            });
+        });
+
+        it('gets the completed list', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.GET_COMPLETED_LIST_REQUEST_ACTION,
+                    link: links.completedList,
+                });
+                done();
+            });
+        });
+    });
+});
