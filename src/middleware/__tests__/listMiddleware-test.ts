@@ -88,7 +88,7 @@ describe('list middleware', () => {
     it('gets list after unlocking it', (done) => {
         const unlockLink = { href: 'unlockHref' };
         const listLink = { href: 'listHref' };
-        mockAdapter.onPut(unlockLink.href)
+        mockAdapter.onPost(unlockLink.href)
             .reply(202, {
                 _links: {
                     list: listLink,
