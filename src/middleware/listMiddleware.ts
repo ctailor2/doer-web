@@ -34,7 +34,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
         }
         case ActionTypes.UNLOCK_LIST_REQUEST_ACTION: {
             const headers = { 'Session-Token': localStorage.getItem('sessionToken') };
-            perform('put', action.type, action.link,
+            perform('post', action.type, action.link,
                 (unlockResponse) => {
                     store.dispatch({
                         type: ActionTypes.GET_LIST_REQUEST_ACTION,
