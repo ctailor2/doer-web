@@ -34,8 +34,8 @@ describe('list middleware', () => {
             _links: {
                 createDeferred: {
                     href: 'createDeferredHref',
-                }
-            }
+                },
+            },
         };
         mockAdapter.onGet(link.href)
             .reply(200, {

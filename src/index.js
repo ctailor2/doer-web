@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
 import { Router, Route, browserHistory } from 'react-router';
 import SignupView from './components/views/SignupView';
 import LoginView from './components/views/LoginView';
@@ -10,33 +9,29 @@ import TodosView from './components/views/TodosView';
 import HistoryView from './components/views/HistoryView';
 import './styles/index.css';
 import './styles/bootstrap-overrides.css';
-import rootSaga from './sagas/rootSaga';
 import { HotKeys } from 'react-hotkeys';
 import { reducer } from './store';
 import sessionMiddleware from './middleware/sessionMiddleware';
 import resourcesMiddleware from './middleware/resourcesMiddleware';
 import loadViewMiddleware from './middleware/loadViewMiddleware';
 import listMiddleware from './middleware/listMiddleware';
+import todoMiddleware from './middleware/todoMiddleware';
 
 const keyMap = {
     submit: 'enter',
     cancel: 'esc'
 };
 
-const sagaMiddleware = createSagaMiddleware();
-
 const store = createStore(
     reducer,
     applyMiddleware(
-        sagaMiddleware,
         sessionMiddleware,
         resourcesMiddleware,
         loadViewMiddleware,
         listMiddleware,
+        todoMiddleware,
     )
 );
-
-sagaMiddleware.run(rootSaga);
 
 render(
     <HotKeys keyMap={keyMap}>

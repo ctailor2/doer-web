@@ -1,5 +1,6 @@
 import * as io from 'io-ts';
 import { LoginInfo, SignupInfo } from './session';
+import { Todo } from './todo';
 
 export interface Link {
     href: string;
@@ -14,10 +15,24 @@ export type Commands =
     | 'historyResources'
     | 'list'
     | 'completedList'
-    | 'unlock';
+    | 'unlock'
+    | 'deleteTodo'
+    | 'createTodo'
+    | 'displaceTodo'
+    | 'completeTodo'
+    | 'moveTodo'
+    | 'pullTodo'
+    | 'escalateTodo'
+    | 'updateTodo';
 
 const linkValidator = io.interface({
     href: io.string,
+});
+
+const todoActionResponseValidator = io.interface({
+    _links: io.interface({
+        list: linkValidator,
+    }),
 });
 
 export const successResponseValidators = {
@@ -92,11 +107,15 @@ export const successResponseValidators = {
             })),
         }),
     }),
-    unlock: io.interface({
-        _links: io.interface({
-            list: linkValidator,
-        }),
-    }),
+    unlock: todoActionResponseValidator,
+    deleteTodo: todoActionResponseValidator,
+    createTodo: todoActionResponseValidator,
+    updateTodo: todoActionResponseValidator,
+    displaceTodo: todoActionResponseValidator,
+    completeTodo: todoActionResponseValidator,
+    moveTodo: todoActionResponseValidator,
+    pullTodo: todoActionResponseValidator,
+    escalateTodo: todoActionResponseValidator,
 };
 
 export interface Requests {
@@ -109,6 +128,14 @@ export interface Requests {
     list: undefined;
     completedList: undefined;
     unlock: undefined;
+    deleteTodo: undefined;
+    createTodo: Todo;
+    displaceTodo: Todo;
+    updateTodo: Todo;
+    completeTodo: undefined;
+    moveTodo: undefined;
+    pullTodo: undefined;
+    escalateTodo: undefined;
 }
 
 export type SuccessResponses = {
