@@ -5,7 +5,7 @@ import { UpdateTodoRequestAction } from "../../actions/todoActions";
 import { Link } from "../../api/api";
 import { Todo } from "../../api/todo";
 import { ActionTypes } from "../../constants/actionTypes";
-import { client } from "../../sagas/sagaHelper";
+import { client } from "../apiClient";
 import { ApplicationStore, reducer } from "../../store";
 import actionCapturingMiddleware from "../../utils/actionCapturingMiddleware";
 import todoMiddleware from "../todoMiddleware";

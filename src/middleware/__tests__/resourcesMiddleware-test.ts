@@ -3,7 +3,7 @@ import MockAdapter from "axios-mock-adapter";
 import { applyMiddleware, createStore } from "redux";
 import { ApplicationAction } from "../../actions/actions";
 import { ActionTypes } from "../../constants/actionTypes";
-import { client } from "../../sagas/sagaHelper";
+import { client } from "../apiClient";
 import { ApplicationStore, reducer } from "../../store";
 import actionCapturingMiddleware from "../../utils/actionCapturingMiddleware";
 import resourcesMiddleware, { rootLink } from "../resourcesMiddleware";

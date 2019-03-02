@@ -15,18 +15,6 @@ client.defaults.headers = {
     'Content-Type': 'application/json',
 };
 
-export function fetchData(url: string, configs?: AxiosRequestConfig) {
-    return client.get(url, configs)
-        .then((response) => ({ response }))
-        .catch((error) => ({ error }));
-}
-
-export function postData(url: string, data?: any, configs?: AxiosRequestConfig) {
-    return client.post(url, data, configs)
-        .then((response) => ({ response }))
-        .catch((error) => ({ error }));
-}
-
 export function perform<Command extends Commands>(
     httpMethod: string,
     command: Command,
@@ -51,16 +39,4 @@ export function perform<Command extends Commands>(
                 onError(validation.value);
             }
         });
-}
-
-export function deleteData(url: string, configs?: AxiosRequestConfig) {
-    return client.delete(url, configs)
-        .then((response) => ({ response }))
-        .catch((error) => ({ error }));
-}
-
-export function putData(url: string, data?: any, configs?: AxiosRequestConfig) {
-    return client.put(url, data, configs)
-        .then((response) => ({ response }))
-        .catch((error) => ({ error }));
 }

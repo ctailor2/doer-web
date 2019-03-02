@@ -2,7 +2,7 @@ import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
 import { GetListRequestAction } from "../actions/listActions";
 import { ActionTypes } from "../constants/actionTypes";
-import { perform } from "../sagas/sagaHelper";
+import { perform } from "./apiClient";
 
 export default (store: MiddlewareAPI) => (next: Dispatch) => (action: ApplicationAction) => {
     switch (action.type) {

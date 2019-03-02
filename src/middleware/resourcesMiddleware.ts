@@ -1,7 +1,7 @@
 import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
 import { ActionTypes } from "../constants/actionTypes";
-import { perform } from "../sagas/sagaHelper";
+import { perform } from "./apiClient";
 
 export const rootLink = { href: '/v1/' };
 
