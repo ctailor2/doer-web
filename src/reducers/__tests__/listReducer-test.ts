@@ -16,6 +16,7 @@ describe('list', () => {
                 todos: [],
                 deferredTodos: [],
                 unlockDuration: 0,
+                _links: {},
             },
         } as ApplicationAction;
         const todosState = list(defaultState, action);

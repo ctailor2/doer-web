@@ -1,3 +1,4 @@
+import { Link } from "./api";
 import { Todo } from "./todo";
 
 export interface List {
@@ -6,4 +7,7 @@ export interface List {
     todos: Todo[];
     deferredTodos: Todo[];
     unlockDuration: number;
+    _links: {
+        [name: string]: Link;
+    };
 }

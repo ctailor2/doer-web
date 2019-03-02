@@ -4,11 +4,12 @@ import { List } from '../api/list';
 import { ActionTypes } from '../constants/actionTypes';
 
 export const defaultState = {
-    name: '',
-    deferredName: '',
+    name: 'now',
+    deferredName: 'later',
     todos: [],
     deferredTodos: [],
     unlockDuration: 0,
+    _links: {},
 } as List;
 
 export function list(state: List = defaultState, action: ApplicationAction) {
