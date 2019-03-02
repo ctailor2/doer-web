@@ -1,4 +1,5 @@
 import { Link } from '../api/api';
+import { CompletedList } from '../api/completedList';
 import { List } from '../api/list';
 import { ActionTypes } from '../constants/actionTypes';
 
@@ -34,10 +35,10 @@ export const storeListAction = (list: List): StoreListAction => ({
 
 export interface StoreCompletedListAction {
     type: ActionTypes.STORE_COMPLETED_LIST_ACTION;
-    list: List;
+    list: CompletedList;
 }
 
-export const storeCompletedListAction = (list: List): StoreCompletedListAction => ({
+export const storeCompletedListAction = (list: CompletedList): StoreCompletedListAction => ({
     type: ActionTypes.STORE_COMPLETED_LIST_ACTION,
     list,
 });

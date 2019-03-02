@@ -9,5 +9,5 @@ interface GlobalError {
 
 export interface Errors {
     fieldErrors: FieldError[];
-    glboalErrors: GlobalError[];
+    globalErrors: GlobalError[];
 }
