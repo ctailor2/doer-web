@@ -1,17 +1,24 @@
-import {SignupView, mapStateToProps} from '../../views/SignupView';
-import {shallow, mount} from 'enzyme';
+import { mount, shallow, ShallowWrapper } from 'enzyme';
 import React from 'react';
+import { browserHistory } from 'react-router';
+import { Link } from '../../../api/api';
 import Header from '../../Header';
-import {browserHistory} from 'react-router';
+import { mapStateToProps, Props, SignupView, State } from '../../views/SignupView';
 
 describe('SignupView', () => {
-    let tree, signupLink, signupRequestActionFn, getBaseResourcesRequestActionFn;
+    let tree: ShallowWrapper<Props, State, SignupView>;
+    let signupLink: Link;
+    let signupRequestActionFn: jest.Mock;
+    let getBaseResourcesRequestActionFn: jest.Mock;
 
     beforeEach(() => {
-        signupLink = {href: 'http://some.api/signup'};
+        signupLink = { href: 'http://some.api/signup' };
         signupRequestActionFn = jest.fn();
         getBaseResourcesRequestActionFn = jest.fn();
-        tree = shallow(<SignupView signupLink={signupLink} signupRequestAction={signupRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+        tree = shallow(<SignupView
+            signupLink={signupLink}
+            signupRequestAction={signupRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />);
     });
 
     it('renders', () => {
@@ -26,35 +33,41 @@ describe('SignupView', () => {
         expect(tree.state()).toEqual({
             email: '',
             password: '',
-            passwordConfirmation: ''
+            passwordConfirmation: '',
         });
     });
 
     it('fires get base resources action when mounted', () => {
         const store = {
-            subscribe: () => {},
-            dispatch: () => {},
+            subscribe: () => { },
+            dispatch: () => { },
             getState: () => {
-                return {errors: {globalErrors: []}};
+                return { errors: { globalErrors: [] } };
             },
         };
         const options = {
             context: { store },
-            childContextTypes: { store: React.PropTypes.object.isRequired }
-        }
-        mount(<SignupView signupRequestAction={signupRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>, options);
+            childContextTypes: { store: React.PropTypes.object.isRequired },
+        };
+        mount(<SignupView
+            signupLink={signupLink}
+            signupRequestAction={signupRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 
     it('redirects to the root if a sessionToken is present', () => {
         localStorage.setItem('sessionToken', 'cooltoken');
         browserHistory.push = jest.fn();
-        tree = shallow(<SignupView signupRequestAction={signupRequestActionFn}/>);
+        tree = shallow(<SignupView
+            signupLink={signupLink}
+            signupRequestAction={signupRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />);
         expect(browserHistory.push).toBeCalledWith('/');
     });
 
     describe('leading link', () => {
-        let leadingLink
+        let leadingLink: ShallowWrapper;
 
         beforeEach(() => {
             leadingLink = tree.find('.leading-link');
@@ -69,7 +82,7 @@ describe('SignupView', () => {
         });
 
         describe('link', () => {
-            let link;
+            let link: ShallowWrapper;
 
             beforeEach(() => {
                 browserHistory.push = jest.fn();
@@ -92,7 +105,7 @@ describe('SignupView', () => {
     });
 
     describe('form', () => {
-        let form;
+        let form: ShallowWrapper;
 
         beforeEach(() => {
             form = tree.find('form');
@@ -103,7 +116,7 @@ describe('SignupView', () => {
         });
 
         describe('email form group', () => {
-            let formGroup;
+            let formGroup: ShallowWrapper;
 
             beforeEach(() => {
                 formGroup = form.find('FormGroup').at(0);
@@ -118,13 +131,13 @@ describe('SignupView', () => {
             });
 
             it('has an Email label', () => {
-                let label = formGroup.find('ControlLabel');
+                const label = formGroup.find('ControlLabel');
                 expect(label.length).toBe(1);
                 expect(label.childAt(0).text()).toBe('Email');
             });
 
             describe('text input', () => {
-                let input;
+                let input: ShallowWrapper;
 
                 beforeEach(() => {
                     input = formGroup.find('FormControl');
@@ -140,14 +153,14 @@ describe('SignupView', () => {
                 });
 
                 it('updates state on change', () => {
-                    input.simulate('change', {target: {value: 'test@email.com'}});
+                    input.simulate('change', { target: { value: 'test@email.com' } });
                     expect(tree.state().email).toBe('test@email.com');
                 });
             });
         });
 
         describe('password form group', () => {
-            let formGroup;
+            let formGroup: ShallowWrapper;
 
             beforeEach(() => {
                 formGroup = form.find('FormGroup').at(1);
@@ -162,13 +175,13 @@ describe('SignupView', () => {
             });
 
             it('has a Password label', () => {
-                let label = formGroup.find('ControlLabel');
+                const label = formGroup.find('ControlLabel');
                 expect(label.length).toBe(1);
                 expect(label.childAt(0).text()).toBe('Password');
             });
 
             describe('password input', () => {
-                let input;
+                let input: ShallowWrapper;
 
                 beforeEach(() => {
                     input = formGroup.find('FormControl');
@@ -180,14 +193,14 @@ describe('SignupView', () => {
                 });
 
                 it('updates state on change', () => {
-                    input.simulate('change', {target: {value: 'password'}});
+                    input.simulate('change', { target: { value: 'password' } });
                     expect(tree.state().password).toBe('password');
                 });
             });
         });
 
         describe('password confirmation form group', () => {
-            let formGroup;
+            let formGroup: ShallowWrapper;
 
             beforeEach(() => {
                 formGroup = form.find('FormGroup').at(2);
@@ -202,13 +215,13 @@ describe('SignupView', () => {
             });
 
             it('has a Password Confirmation label', () => {
-                let label = formGroup.find('ControlLabel');
+                const label = formGroup.find('ControlLabel');
                 expect(label.length).toBe(1);
                 expect(label.childAt(0).text()).toBe('Password Confirmation');
             });
 
             describe('password input', () => {
-                let input;
+                let input: ShallowWrapper;
 
                 beforeEach(() => {
                     input = formGroup.find('FormControl');
@@ -220,13 +233,13 @@ describe('SignupView', () => {
                 });
 
                 it('updates state on change', () => {
-                    input.simulate('change', {target: {value: 'password'}});
+                    input.simulate('change', { target: { value: 'password' } });
                     expect(tree.state().passwordConfirmation).toBe('password');
                 });
             });
 
             it('shows feedback', () => {
-                let feedback = formGroup.find('FormControlFeedback');
+                const feedback = formGroup.find('FormControlFeedback');
                 expect(feedback.length).toBe(1);
             });
 
@@ -236,13 +249,13 @@ describe('SignupView', () => {
 
             describe('when data is entered', () => {
                 it('has success validation state when entry matches password', () => {
-                    tree.setState({password: 'bananas', passwordConfirmation: 'bananas'});
+                    tree.setState({ password: 'bananas', passwordConfirmation: 'bananas' });
                     formGroup = tree.find('FormGroup').at(2);
                     expect(formGroup.prop('validationState')).toBe('success');
                 });
 
                 it('has error validation state when entry does not match password', () => {
-                    tree.setState({passwordConfirmation: 'bananas'});
+                    tree.setState({ passwordConfirmation: 'bananas' });
                     formGroup = tree.find('FormGroup').at(2);
                     expect(formGroup.prop('validationState')).toBe('error');
                 });
@@ -250,7 +263,7 @@ describe('SignupView', () => {
         });
 
         describe('submit button', () => {
-            let button;
+            let button: ShallowWrapper;
 
             beforeEach(() => {
                 button = form.find('Button');
@@ -269,24 +282,24 @@ describe('SignupView', () => {
 
             describe('when all fields are entered', () => {
                 it('stays disabled if password confirmation does not match password ', () => {
-                    tree.setState({email:'email', password:'password', passwordConfirmation: 'passwordConfirmation'});
+                    tree.setState({ email: 'email', password: 'password', passwordConfirmation: 'passwordConfirmation' });
                     button = tree.find('Button');
                     expect(button.prop('disabled')).toBe(true);
                 });
 
                 it('enables if password confirmation matches password ', () => {
-                    tree.setState({email:'email', password:'password', passwordConfirmation: 'password'});
+                    tree.setState({ email: 'email', password: 'password', passwordConfirmation: 'password' });
                     button = tree.find('Button');
                     expect(button.prop('disabled')).toBe(false);
                 });
             });
 
             it('fires signup request action with form data and signup link on click', () => {
-                let formData = {
+                const formData = {
                     email: 'test@email.com',
                     password: 'password',
-                    passwordConfirmation: 'password'
-                }
+                    passwordConfirmation: 'password',
+                };
                 tree.setState(formData);
                 button.simulate('click');
                 expect(signupRequestActionFn).toBeCalledWith(signupLink, formData);
@@ -295,11 +308,19 @@ describe('SignupView', () => {
     });
 
     it('maps state to props', () => {
-        let signupLink = {href: 'http://some.api/signup'};
-        let links = {signup: signupLink, login: {href: 'http://some.api/login'}};
-        let state = {links: links};
+        const signupLink = { href: 'http://some.api/signup' };
+        const links = { signup: signupLink, login: { href: 'http://some.api/login' } };
+        const state = {
+            links,
+            list: {},
+            completedList: {},
+            errors: {
+                fieldErrors: [],
+                globalErrors: [],
+            },
+        };
         expect(mapStateToProps(state)).toEqual({
-            signupLink: signupLink
+            signupLink,
         });
     });
 });
