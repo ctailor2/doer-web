@@ -1,17 +1,24 @@
-import {LoginView, mapStateToProps} from '../../views/LoginView';
-import {shallow, mount} from 'enzyme';
+import {mount, shallow, ShallowWrapper} from 'enzyme';
 import React from 'react';
-import Header from '../../Header';
 import {browserHistory} from 'react-router';
+import { Link } from '../../../api/api';
+import Header from '../../Header';
+import {LoginView, mapStateToProps, Props, State} from '../../views/LoginView';
 
 describe('LoginView', () => {
-    let tree, loginLink, loginRequestActionFn, getBaseResourcesRequestActionFn;
+    let tree: ShallowWrapper<Props, State, LoginView>;
+    let loginLink: Link;
+    let loginRequestActionFn: jest.Mock;
+    let getBaseResourcesRequestActionFn: jest.Mock;
 
     beforeEach(() => {
         loginLink = {href: 'http://some.api/login'};
         loginRequestActionFn = jest.fn();
         getBaseResourcesRequestActionFn = jest.fn();
-        tree = shallow(<LoginView loginLink={loginLink} loginRequestAction={loginRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+        tree = shallow(<LoginView
+            loginLink={loginLink}
+            loginRequestAction={loginRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
     });
 
     it('renders', () => {
@@ -25,7 +32,7 @@ describe('LoginView', () => {
     it('has default state', () => {
         expect(tree.state()).toEqual({
             email: '',
-            password: ''
+            password: '',
         });
     });
 
@@ -35,25 +42,31 @@ describe('LoginView', () => {
             dispatch: () => {},
             getState: () => {
                 return {errors: {globalErrors: []}};
-            }
+            },
         };
         const options = {
             context: { store },
-            childContextTypes: { store: React.PropTypes.object.isRequired }
-        }
-        mount(<LoginView loginRequestAction={loginRequestActionFn} getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>, options);
+            childContextTypes: { store: React.PropTypes.object.isRequired },
+        };
+        mount(<LoginView
+            loginLink={loginLink}
+            loginRequestAction={loginRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 
     it('redirects to the root if a sessionToken is present', () => {
         localStorage.setItem('sessionToken', 'cooltoken');
         browserHistory.push = jest.fn();
-        tree = shallow(<LoginView loginRequestAction={loginRequestActionFn}/>);
+        tree = shallow(<LoginView
+            loginLink={loginLink}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}
+            loginRequestAction={loginRequestActionFn}/>);
         expect(browserHistory.push).toBeCalledWith('/');
     });
 
     describe('leading link', () => {
-        let leadingLink
+        let leadingLink: ShallowWrapper;
 
         beforeEach(() => {
             leadingLink = tree.find('.leading-link');
@@ -68,7 +81,7 @@ describe('LoginView', () => {
         });
 
         describe('link', () => {
-            let link;
+            let link: ShallowWrapper;
 
             beforeEach(() => {
                 browserHistory.push = jest.fn();
@@ -91,7 +104,7 @@ describe('LoginView', () => {
     });
 
     describe('form', () => {
-        let form;
+        let form: ShallowWrapper;
 
         beforeEach(() => {
             form = tree.find('form');
@@ -102,7 +115,7 @@ describe('LoginView', () => {
         });
 
         describe('email form group', () => {
-            let formGroup;
+            let formGroup: ShallowWrapper;
 
             beforeEach(() => {
                 formGroup = form.find('FormGroup').at(0);
@@ -117,13 +130,13 @@ describe('LoginView', () => {
             });
 
             it('has an Email label', () => {
-                let label = formGroup.find('ControlLabel');
+                const label = formGroup.find('ControlLabel');
                 expect(label.length).toBe(1);
                 expect(label.childAt(0).text()).toBe('Email');
             });
 
             describe('text input', () => {
-                let input;
+                let input: ShallowWrapper;
 
                 beforeEach(() => {
                     input = formGroup.find('FormControl');
@@ -146,7 +159,7 @@ describe('LoginView', () => {
         });
 
         describe('password form group', () => {
-            let formGroup;
+            let formGroup: ShallowWrapper;
 
             beforeEach(() => {
                 formGroup = form.find('FormGroup').at(1);
@@ -161,13 +174,13 @@ describe('LoginView', () => {
             });
 
             it('has a Password label', () => {
-                let label = formGroup.find('ControlLabel');
+                const label = formGroup.find('ControlLabel');
                 expect(label.length).toBe(1);
                 expect(label.childAt(0).text()).toBe('Password');
             });
 
             describe('password input', () => {
-                let input;
+                let input: ShallowWrapper;
 
                 beforeEach(() => {
                     input = formGroup.find('FormControl');
@@ -186,7 +199,7 @@ describe('LoginView', () => {
         });
 
         describe('submit button', () => {
-            let button;
+            let button: ShallowWrapper;
 
             beforeEach(() => {
                 button = form.find('Button');
@@ -204,16 +217,16 @@ describe('LoginView', () => {
             });
 
             it('enables when all fields are entered', () => {
-                tree.setState({email:'email', password:'password'});
+                tree.setState({email: 'email', password: 'password'});
                 button = tree.find('Button');
                 expect(button.prop('disabled')).toBe(false);
             });
 
             it('fires login request action with form login link on click', () => {
-                let formData = {
+                const formData = {
                     email: 'test@email.com',
-                    password: 'password'
-                }
+                    password: 'password',
+                };
                 tree.setState(formData);
                 button.simulate('click');
                 expect(loginRequestActionFn).toBeCalledWith(loginLink, formData);
@@ -222,11 +235,19 @@ describe('LoginView', () => {
     });
 
     it('maps state to props', () => {
-        let loginLink = {href: 'http://some.api/login'};
-        let links = {login: loginLink, signup: {href: 'http://some.api/signup'}};
-        let state = {links: links};
+        const loginLink = {href: 'http://some.api/login'};
+        const links = {login: loginLink, signup: {href: 'http://some.api/signup'}};
+        const state = {
+            links,
+            list: {},
+            completedList: {},
+            errors: {
+                fieldErrors: [],
+                globalErrors: [],
+            },
+        };
         expect(mapStateToProps(state)).toEqual({
-            loginLink: loginLink
+            loginLink,
         });
     });
 });
