@@ -3,16 +3,9 @@ import { ApplicationAction } from '../actions/actions';
 import { List } from '../api/list';
 import { ActionTypes } from '../constants/actionTypes';
 
-export const defaultState = {
-    name: 'now',
-    deferredName: 'later',
-    todos: [],
-    deferredTodos: [],
-    unlockDuration: 0,
-    _links: {},
-} as List;
+export const defaultState = {};
 
-export function list(state: List = defaultState, action: ApplicationAction) {
+export function list(state: List | {} = defaultState, action: ApplicationAction) {
     let newState = _.clone(state);
     switch (action.type) {
         case ActionTypes.STORE_LIST_ACTION:

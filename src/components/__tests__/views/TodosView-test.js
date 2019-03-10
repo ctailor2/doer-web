@@ -4,6 +4,7 @@ import {TodosView, mapStateToProps} from '../../views/TodosView';
 import Header from '../../Header';
 import App from '../../App';
 import {browserHistory} from 'react-router';
+import Loader from '../../views/Loader';
 
 describe('TodosView', () => {
 	let tree, mockLoadTodosViewActionFn;
@@ -36,7 +37,7 @@ describe('TodosView', () => {
 	});
 
     it('renders the loader when view is not loaded', () => {
-        expect(tree.find('Loader').length).toBe(1);
+        expect(tree.find(Loader).length).toBe(1);
     });
 
     it('renders the app when list is not empty', () => {

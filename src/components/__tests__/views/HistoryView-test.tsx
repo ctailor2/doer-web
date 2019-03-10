@@ -1,28 +1,32 @@
-import {shallow} from 'enzyme';
+import {shallow, ShallowWrapper} from 'enzyme';
 import React from 'react';
-import {HistoryView, mapStateToProps} from '../../views/HistoryView';
+import {browserHistory} from 'react-router';
 import Header from '../../Header';
 import History from '../../History';
-import {browserHistory} from 'react-router';
+import {HistoryView, mapStateToProps} from '../../views/HistoryView';
+import Loader from '../../views/Loader';
 
 describe('HistoryView', () => {
-    let tree, mockLoadHistoryViewActionFn;
+    let tree: ShallowWrapper;
+    let mockLoadHistoryViewActionFn: jest.Mock;
 
     beforeEach(() => {
         browserHistory.push = jest.fn();
         mockLoadHistoryViewActionFn = jest.fn();
-        tree = shallow(<HistoryView viewLoaded={false} loadHistoryViewAction={mockLoadHistoryViewActionFn} />);
+        tree = shallow(<HistoryView list={{}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />);
     });
 
     it('redirects to the login page if a sessionToken is not present', () => {
-        tree = shallow(<HistoryView viewLoaded={false} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
+        tree = shallow(<HistoryView
+            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadHistoryViewActionFn).not.toBeCalled();
     });
 
     it('fires load history view action when mounted', () => {
         localStorage.setItem('sessionToken', 'cooltoken');
-        tree = shallow(<HistoryView viewLoaded={false} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
+        tree = shallow(<HistoryView
+            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
         expect(mockLoadHistoryViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });
@@ -36,7 +40,7 @@ describe('HistoryView', () => {
     });
 
     it('renders the loader when view is not loaded', () => {
-        expect(tree.find('Loader').length).toBe(1);
+        expect(tree.find(Loader).length).toBe(1);
     });
 
     it('renders the history when list is not empty', () => {
@@ -45,10 +49,18 @@ describe('HistoryView', () => {
     });
 
     it('maps state to props', () => {
-        let list = {name: 'neat list'}
-        let state = {completedList: list};
+        const completedList = {todos: [{task: 'neat list', completedAt: 'someTime'}]};
+        const state = {
+            completedList,
+            links: {},
+            list: {},
+            errors: {
+                fieldErrors: [],
+                globalErrors: [],
+            }
+        };
         expect(mapStateToProps(state)).toEqual({
-            list: list
+            list: completedList,
         });
     });
 });
