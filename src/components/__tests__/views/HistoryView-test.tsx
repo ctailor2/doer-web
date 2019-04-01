@@ -18,7 +18,7 @@ describe('HistoryView', () => {
 
     it('redirects to the login page if a sessionToken is not present', () => {
         tree = shallow(<HistoryView
-            list={{}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
+            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadHistoryViewActionFn).not.toBeCalled();
     });
@@ -26,7 +26,7 @@ describe('HistoryView', () => {
     it('fires load history view action when mounted', () => {
         localStorage.setItem('sessionToken', 'cooltoken');
         tree = shallow(<HistoryView
-            list={{}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
+            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
         expect(mockLoadHistoryViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });
