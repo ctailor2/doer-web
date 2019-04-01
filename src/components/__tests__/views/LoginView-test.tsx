@@ -1,4 +1,5 @@
 import {mount, shallow, ShallowWrapper} from 'enzyme';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {browserHistory} from 'react-router';
 import { Link } from '../../../api/api';
@@ -46,7 +47,7 @@ describe('LoginView', () => {
         };
         const options = {
             context: { store },
-            childContextTypes: { store: React.PropTypes.object.isRequired },
+            childContextTypes: { store: PropTypes.object.isRequired },
         };
         mount(<LoginView
             loginLink={loginLink}
