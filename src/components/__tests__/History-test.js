@@ -1,15 +1,17 @@
 import React from 'react';
-import {shallow} from 'enzyme';
+import {shallow, configure} from 'enzyme';
 import {History, mapStateToProps} from '../History';
 import {
 	ListGroupItem,
 	Panel
 } from 'react-bootstrap';
+import Adapter from 'enzyme-adapter-react-16';
 
 describe('History', () => {
     let tree;
 
     beforeEach(() => {
+        configure({ adapter: new Adapter() });
         tree = shallow(<History todos={[]}/>);
     });
 

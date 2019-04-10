@@ -1,29 +1,33 @@
-import {shallow} from 'enzyme';
+import {shallow, configure} from 'enzyme';
 import React from 'react';
 import {TodosView, mapStateToProps} from '../../views/TodosView';
 import Header from '../../Header';
 import App from '../../App';
 import {browserHistory} from 'react-router';
 import Loader from '../../views/Loader';
+import Adapter from 'enzyme-adapter-react-16';
 
 describe('TodosView', () => {
 	let tree, mockLoadTodosViewActionFn;
 
 	beforeEach(() => {
+        configure({ adapter: new Adapter() });
 		mockLoadTodosViewActionFn = jest.fn();
         browserHistory.push = jest.fn();
 		tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />);
 	});
 
     it('redirects to the login page if a sessionToken is not present', () => {
-        tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />, {lifecycleExperimental: true});
+        tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />);
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadTodosViewActionFn).not.toBeCalled();
     });
 
     it('fires load todos view action when mounted if a sessionToken is present', () => {
         localStorage.setItem('sessionToken', 'cooltoken')
-        tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />, {lifecycleExperimental: true});
+        mockLoadTodosViewActionFn.mockClear();
+        browserHistory.push.mockClear();
+        tree = shallow(<TodosView viewLoaded={false} loadTodosViewAction={mockLoadTodosViewActionFn} />);
         expect(mockLoadTodosViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });

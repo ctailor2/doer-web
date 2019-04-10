@@ -1,7 +1,8 @@
 import {TaskForm} from '../TaskForm';
 import React from 'react';
-import {mount} from 'enzyme';
+import {mount, configure} from 'enzyme';
 import _ from 'lodash';
+import Adapter from 'enzyme-adapter-react-16';
 
 describe('TaskForm', () => {
     let tree,
@@ -14,6 +15,7 @@ describe('TaskForm', () => {
     mockSubmittingChangeHandlerFn;
 
     beforeEach(() => {
+        configure({ adapter: new Adapter() });
         mockCreateTodoActionFn = jest.fn();
         mockTaskChangeHandlerFn = jest.fn();
         mockSubmittingChangeHandlerFn = jest.fn();
@@ -31,7 +33,7 @@ describe('TaskForm', () => {
                                handleTaskChange={mockTaskChangeHandlerFn}
                                handleSubmitChange={mockSubmittingChangeHandlerFn}
                                createTodoRequestAction={mockCreateTodoActionFn} />);
-        input = tree.node.taskInput;
+        input = tree.instance().taskInput;
     });
 
     it('renders', () => {

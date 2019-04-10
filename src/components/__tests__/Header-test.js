@@ -1,13 +1,15 @@
 import React from 'react';
-import {shallow} from 'enzyme';
+import {shallow, configure} from 'enzyme';
 import {Header, mapStateToProps} from '../Header';
-import {Navbar, Brand, Nav, NavDropdown} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
 import {browserHistory} from 'react-router';
+import Adapter from 'enzyme-adapter-react-16';
 
 describe('Header', () => {
     let tree, globalErrors, dismissGlobalAlertActionFn, logoutRequestActionFn;
 
     beforeEach(() => {
+        configure({ adapter: new Adapter() });
         logoutRequestActionFn = jest.fn();
         dismissGlobalAlertActionFn = jest.fn();
         globalErrors = []

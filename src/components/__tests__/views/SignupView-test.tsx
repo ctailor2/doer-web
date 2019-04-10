@@ -1,4 +1,6 @@
-import { mount, shallow, ShallowWrapper } from 'enzyme';
+import { configure, mount, shallow, ShallowWrapper } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { browserHistory } from 'react-router';
 import { Link } from '../../../api/api';
@@ -12,6 +14,7 @@ describe('SignupView', () => {
     let getBaseResourcesRequestActionFn: jest.Mock;
 
     beforeEach(() => {
+        configure({ adapter: new Adapter() });
         signupLink = { href: 'http://some.api/signup' };
         signupRequestActionFn = jest.fn();
         getBaseResourcesRequestActionFn = jest.fn();
@@ -47,7 +50,7 @@ describe('SignupView', () => {
         };
         const options = {
             context: { store },
-            childContextTypes: { store: React.PropTypes.object.isRequired },
+            childContextTypes: { store: PropTypes.object.isRequired },
         };
         mount(<SignupView
             signupLink={signupLink}

@@ -1,15 +1,17 @@
 import {Todo} from '../Todo';
 import React, {Component} from 'react';
-import {mount, shallow} from 'enzyme';
+import {mount, shallow, configure} from 'enzyme';
 import DraggableListGroupItem from '../DraggableListGroupItem';
 import TestBackend from 'react-dnd-test-backend';
 import { DragDropContext } from 'react-dnd';
+import Adapter from 'enzyme-adapter-react-16';
 
 describe('Todo', () => {
 	let tree, index, deleteLink, updateLink, completeLink, mockDisplaceHandler, mockDeleteTodoActionFn, mockUpdateTodoActionFn, mockCompleteTodoActionFn, mockMoveTodoHandler;
 
 	beforeEach(() => {
-		deleteLink = {href: 'http://some.api/deleteTodo'};
+        configure({ adapter: new Adapter() });
+        deleteLink = {href: 'http://some.api/deleteTodo'};
 		updateLink = {href: 'http://some.api/updateTodo'};
 		completeLink = {href: 'http://some.api/completeTodo'};
 		index = 17;
@@ -38,12 +40,12 @@ describe('Todo', () => {
     });
 
 	describe('when readOnly is false', () => {
-		let unwrappedTree, moveLinkOneToTwo;
+		let wrappedTree, unwrappedTree, moveLinkOneToTwo;
 
 		beforeEach(() => {
 			const TodoWithDndContext = wrapInTestContext(Todo);
             moveLinkOneToTwo = {href: 'http://some.api/moveOneToTwo'};
-            let wrappedTree = mount(<TodoWithDndContext readOnly={false}
+            wrappedTree = mount(<TodoWithDndContext readOnly={false}
                                  task='some task'
                                  index={index}
                                  links={{
@@ -145,13 +147,13 @@ describe('Todo', () => {
 		                let input;
 
 		                beforeEach(() => {
-							button.simulate('click');
-					        input = unwrappedTree.node.taskInput;
+                            button.simulate('click');
+					        input = unwrappedTree.instance().taskInput;
 		                });
 
 			            it('captures task and toggles editMode on and when clicked', () => {
-							expect(unwrappedTree.node.state.editMode).toBe(true);
-							expect(unwrappedTree.node.state.task).toEqual('some task');
+							expect(unwrappedTree.instance().state.editMode).toBe(true);
+							expect(unwrappedTree.instance().state.task).toEqual('some task');
 			            });
 
 			            it('focuses the input', () => {
@@ -164,8 +166,10 @@ describe('Todo', () => {
 
 		describe('when in editMode', () => {
 			beforeEach(() => {
-				unwrappedTree.node.handleEditClick();
-			});
+                unwrappedTree.instance().handleEditClick();
+                wrappedTree.update();
+                unwrappedTree = wrappedTree.find(Todo);
+            });
 
 			describe('form group', () => {
 				let formGroup;
@@ -196,7 +200,7 @@ describe('Todo', () => {
 
 				it('updates task state on change', () => {
 					formControl.simulate('change', {target: {value: 'some other task'}});
-					expect(unwrappedTree.node.state.task).toEqual('some other task');
+					expect(unwrappedTree.instance().state.task).toEqual('some other task');
 				});
 			});
 
@@ -216,14 +220,16 @@ describe('Todo', () => {
 				});
 
 				it('is enabled when task state is different from task props', () => {
-					unwrappedTree.node.setState({task: 'some other task'});
-					button = unwrappedTree.find('Button').at(0);
+                    unwrappedTree.instance().setState({task: 'some other task'});
+                    wrappedTree.update();
+                    unwrappedTree = wrappedTree.find(Todo);
+                    button = unwrappedTree.find('Button').at(0);
 					expect(button.prop('disabled')).toBe(false);
 				});
 
 				describe('when clicked', () => {
 					beforeEach(() => {
-						unwrappedTree.node.setState({task: 'some other task'});
+						unwrappedTree.instance().setState({task: 'some other task'});
 						button = unwrappedTree.find('Button').at(0);
 						button.simulate('click');
 					});
@@ -233,7 +239,7 @@ describe('Todo', () => {
 					});
 
 					it('turns off editMode', () => {
-						expect(unwrappedTree.node.state.editMode).toBe(false);
+						expect(unwrappedTree.instance().state.editMode).toBe(false);
 					});
 				});
 			});
@@ -242,7 +248,7 @@ describe('Todo', () => {
 				let button;
 
 				beforeEach(() => {
-					unwrappedTree.node.setState({task: 'some other task'});
+					unwrappedTree.instance().setState({task: 'some other task'});
 					button = unwrappedTree.find('Button').at(1);
 				});
 
@@ -256,11 +262,11 @@ describe('Todo', () => {
 					});
 
 					it('turns off editMode', () => {
-						expect(unwrappedTree.node.state.editMode).toBe(false);
+						expect(unwrappedTree.instance().state.editMode).toBe(false);
 					});
 
 					it('resets task state to props', () => {
-						expect(unwrappedTree.node.state.task).toBe('some task');
+						expect(unwrappedTree.instance().state.task).toBe('some task');
 					});
 				});
 			});

@@ -1,4 +1,5 @@
-import {shallow, ShallowWrapper} from 'enzyme';
+import {configure, shallow, ShallowWrapper} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import {browserHistory} from 'react-router';
 import Header from '../../Header';
@@ -11,6 +12,7 @@ describe('HistoryView', () => {
     let mockLoadHistoryViewActionFn: jest.Mock;
 
     beforeEach(() => {
+        configure({ adapter: new Adapter() });
         browserHistory.push = jest.fn();
         mockLoadHistoryViewActionFn = jest.fn();
         tree = shallow(<HistoryView list={{}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />);
@@ -18,15 +20,18 @@ describe('HistoryView', () => {
 
     it('redirects to the login page if a sessionToken is not present', () => {
         tree = shallow(<HistoryView
-            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
+            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />);
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadHistoryViewActionFn).not.toBeCalled();
     });
 
     it('fires load history view action when mounted', () => {
         localStorage.setItem('sessionToken', 'cooltoken');
+        mockLoadHistoryViewActionFn.mockClear();
+        // @ts-ignore
+        browserHistory.push.mockClear();
         tree = shallow(<HistoryView
-            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />, {lifecycleExperimental: true});
+            list={{todos: []}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />);
         expect(mockLoadHistoryViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });

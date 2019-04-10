@@ -5,12 +5,13 @@ import {App, mapStateToProps} from '../App';
 import Todo from '../Todo';
 import TaskForm from '../TaskForm';
 import React from 'react';
-import {shallow} from 'enzyme';
+import {shallow, configure} from 'enzyme';
 import {
     Tabs,
     Tab,
     Modal
 } from 'react-bootstrap';
+import Adapter from 'enzyme-adapter-react-16';
 
 describe('App', () => {
     let tree,
@@ -33,6 +34,7 @@ describe('App', () => {
     eventListenerCallbacks;
 
     beforeEach(() => {
+        configure({ adapter: new Adapter() });
         mockDisplaceTodoActionFn = jest.fn();
         mockMoveTodoActionFn = jest.fn();
         mockPullTodosActionFn = jest.fn();

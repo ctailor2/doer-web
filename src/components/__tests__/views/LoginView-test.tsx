@@ -1,4 +1,5 @@
-import {mount, shallow, ShallowWrapper} from 'enzyme';
+import {configure, mount, shallow, ShallowWrapper} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {browserHistory} from 'react-router';
@@ -13,6 +14,7 @@ describe('LoginView', () => {
     let getBaseResourcesRequestActionFn: jest.Mock;
 
     beforeEach(() => {
+        configure({ adapter: new Adapter() });
         loginLink = {href: 'http://some.api/login'};
         loginRequestActionFn = jest.fn();
         getBaseResourcesRequestActionFn = jest.fn();
