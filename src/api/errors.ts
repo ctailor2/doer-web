@@ -3,7 +3,7 @@ interface FieldError {
     message: string;
 }
 
-interface GlobalError {
+export interface GlobalError {
     message: string;
 }
 

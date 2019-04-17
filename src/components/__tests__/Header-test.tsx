@@ -1,21 +1,25 @@
-import React from 'react';
-import {shallow, configure} from 'enzyme';
-import {Header, mapStateToProps} from '../Header';
-import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
-import {browserHistory} from 'react-router';
+import { configure, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import React, { Component } from 'react';
+import { Nav, Navbar, NavDropdown, NavDropdownProps } from 'react-bootstrap';
+import { browserHistory } from 'react-router';
+import { GlobalError } from '../../api/errors';
+import { Header, mapStateToProps } from '../Header';
 
 describe('Header', () => {
-    let tree, globalErrors, dismissGlobalAlertActionFn, logoutRequestActionFn;
+    let tree: ShallowWrapper;
+    let globalErrors: GlobalError[];
+    let dismissGlobalAlertActionFn: jest.Mock;
+    let logoutRequestActionFn: jest.Mock;
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
         logoutRequestActionFn = jest.fn();
         dismissGlobalAlertActionFn = jest.fn();
-        globalErrors = []
+        globalErrors = [];
         tree = shallow(<Header globalErrors={globalErrors}
-                               dismissGlobalAlertAction={dismissGlobalAlertActionFn}
-                               logoutRequestAction={logoutRequestActionFn}/>);
+            dismissGlobalAlertAction={dismissGlobalAlertActionFn}
+            logoutRequestAction={logoutRequestActionFn} />);
     });
 
     it('renders', () => {
@@ -23,7 +27,7 @@ describe('Header', () => {
     });
 
     describe('Navbar', () => {
-        let navbar;
+        let navbar: ShallowWrapper;
 
         beforeEach(() => {
             navbar = tree.find(Navbar);
@@ -34,7 +38,7 @@ describe('Header', () => {
         });
 
         describe('brand', () => {
-            let brand;
+            let brand: ShallowWrapper;
 
             beforeEach(() => {
                 brand = navbar.find(Navbar.Brand);
@@ -53,7 +57,7 @@ describe('Header', () => {
     });
 
     describe('Alert', () => {
-        let alert;
+        let alert: ShallowWrapper;
 
         beforeEach(() => {
             alert = tree.find('Alert');
@@ -64,14 +68,14 @@ describe('Header', () => {
         });
 
         describe('when there are global errors', () => {
-            let message;
+            let message: string;
 
             beforeEach(() => {
-                message = "Oh snap, something went wrong!"
+                message = "Oh snap, something went wrong!";
                 tree.setProps({
                     globalErrors: [
-                        {message: message}
-                    ]
+                        { message },
+                    ],
                 });
                 alert = tree.find('Alert');
             });
@@ -85,10 +89,10 @@ describe('Header', () => {
             });
 
             describe('onDismiss handler', () => {
-                let handler;
+                let handler: () => void;
 
                 beforeEach(() => {
-                    handler = alert.prop('onDismiss')
+                    handler = alert.prop('onDismiss');
                 });
 
                 it('fires dismiss global alert action with its index', () => {
@@ -100,7 +104,7 @@ describe('Header', () => {
     });
 
     describe('Nav', () => {
-        let nav;
+        let nav: ShallowWrapper;
 
         beforeEach(() => {
             nav = tree.find(Nav);
@@ -114,7 +118,10 @@ describe('Header', () => {
             beforeEach(() => {
                 localStorage.setItem('sessionToken', 'cooltoken');
                 // Calling update wasn't re-rendering
-                tree = shallow(<Header globalErrors={globalErrors} logoutRequestAction={logoutRequestActionFn}/>);
+                tree = shallow(<Header
+                    globalErrors={globalErrors}
+                    logoutRequestAction={logoutRequestActionFn}
+                    dismissGlobalAlertAction={dismissGlobalAlertActionFn} />);
                 nav = tree.find(Nav);
             });
 
@@ -123,7 +130,7 @@ describe('Header', () => {
             });
 
             describe('dropdown', () => {
-                let dropdown;
+                let dropdown: ShallowWrapper<NavDropdownProps, any, Component<{}, {}, any>>;
 
                 beforeEach(() => {
                     dropdown = nav.find(NavDropdown);
@@ -138,7 +145,7 @@ describe('Header', () => {
                 });
 
                 describe('history option', () => {
-                    let historyOption;
+                    let historyOption: ShallowWrapper;
 
                     beforeEach(() => {
                         historyOption = dropdown.childAt(0);
@@ -160,7 +167,7 @@ describe('Header', () => {
                 });
 
                 describe('logout option', () => {
-                    let logoutOption;
+                    let logoutOption: ShallowWrapper;
 
                     beforeEach(() => {
                         logoutOption = dropdown.childAt(1);
@@ -184,15 +191,22 @@ describe('Header', () => {
     });
 
     it('maps state to props', () => {
-        let state = {
-            errors: {
-                fieldErrors: [1],
-                globalErrors: [2]
-            }
+        const globalError = {
+            message: 'someGlobalError',
+        };
+        const errors = {
+            fieldErrors: [],
+            globalErrors: [globalError],
+        };
+        const state = {
+            completedList: {},
+            links: {},
+            list: {},
+            errors,
         };
 
         expect(mapStateToProps(state)).toEqual({
-            globalErrors: [2]
+            globalErrors: [globalError],
         });
     });
 });
