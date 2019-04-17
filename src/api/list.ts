@@ -8,6 +8,11 @@ export interface List {
     deferredTodos: Todo[];
     unlockDuration: number;
     _links: {
-        [name: string]: Link;
+        createDeferred: Link;
+        create?: Link;
+        unlock?: Link;
+        displace?: Link;
+        escalate?: Link;
+        pull?: Link;
     };
 }

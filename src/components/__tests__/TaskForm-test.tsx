@@ -1,18 +1,20 @@
-import {TaskForm} from '../TaskForm';
-import React from 'react';
-import {mount, configure} from 'enzyme';
-import _ from 'lodash';
+import {configure, mount, ReactWrapper} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import _ from 'lodash';
+import React, { ReactInstance } from 'react';
+import { Link } from '../../api/api';
+import { List } from '../../api/list';
+import {Props, TaskForm} from '../TaskForm';
 
 describe('TaskForm', () => {
-    let tree,
-    input,
-    createLink,
-    createdDeferredLink,
-    links,
-    mockCreateTodoActionFn,
-    mockTaskChangeHandlerFn,
-    mockSubmittingChangeHandlerFn;
+    let tree: ReactWrapper<Props, {}, TaskForm>;
+    let input: HTMLInputElement | null;
+    let createLink: Link;
+    let createdDeferredLink: Link;
+    let links: List['_links'];
+    let mockCreateTodoActionFn: jest.Mock;
+    let mockTaskChangeHandlerFn: jest.Mock;
+    let mockSubmittingChangeHandlerFn: jest.Mock;
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
@@ -23,7 +25,7 @@ describe('TaskForm', () => {
         createdDeferredLink = {href: 'http://some.api/createDeferred'};
         links = {
             create: createLink,
-            createDeferred: createdDeferredLink
+            createDeferred: createdDeferredLink,
         };
         tree = mount(<TaskForm task=''
                                primaryButtonName='primary'
@@ -42,20 +44,20 @@ describe('TaskForm', () => {
 
     describe('upon receiving props', () => {
         it('sets input value to received task when task is empty', () => {
-            input.value = 'some value'
+            input.value = 'some value';
             tree.setProps({task: ''});
             expect(input.value).toEqual('');
         });
 
         it('does not set input value to received task when task is not empty', () => {
-            input.value = 'some task'
+            input.value = 'some task';
             tree.setProps({task: 'some other task'});
             expect(input.value).toEqual('some task');
         });
     });
 
     describe('text input', () => {
-        let formControl;
+        let formControl: ReactWrapper;
 
         beforeEach(() => {
             formControl = tree.find('FormControl');
@@ -80,7 +82,8 @@ describe('TaskForm', () => {
             });
 
             it('calls submitting change handler with true on pressing the "submit" hotkey', () => {
-                tree.find('HotKeys').at(1).props().handlers.submit();
+                const secondHotKey: ReactWrapper<any> = tree.find('HotKeys').at(1);
+                secondHotKey.props().handlers.submit();
                 expect(mockSubmittingChangeHandlerFn).toBeCalledWith(true);
             });
 
@@ -91,12 +94,14 @@ describe('TaskForm', () => {
                 });
 
                 it('does not toggle the submitting state to false on pressing the "submit" hotkey', () => {
-                    tree.find('HotKeys').at(1).props().handlers.submit();
+                    const secondHotKey: ReactWrapper<any> = tree.find('HotKeys').at(1);
+                    secondHotKey.props().handlers.submit();
                     expect(mockSubmittingChangeHandlerFn).not.toBeCalled();
                 });
 
                 it('calls submitting change handler with false on pressing the "cancel" hotkey', () => {
-                    tree.find('HotKeys').at(0).props().handlers.cancel();
+                    const firstHotKey: ReactWrapper<any> = tree.find('HotKeys').at(0);
+                    firstHotKey.props().handlers.cancel();
                     expect(mockSubmittingChangeHandlerFn).toBeCalledWith(false);
                 });
             });
@@ -104,7 +109,7 @@ describe('TaskForm', () => {
     });
 
     describe('buttons', () => {
-        let buttons;
+        let buttons: ReactWrapper;
 
         beforeEach(() => {
             buttons = tree.find('Button');
@@ -114,28 +119,27 @@ describe('TaskForm', () => {
             expect(buttons.length).toBe(1);
         });
 
-
         describe('default button', () => {
             it('is disabled by default', () => {
-                let button = buttons.at(0);
+                const button = buttons.at(0);
                 expect(button.prop('disabled')).toBe(true);
             });
 
             it('is disabled when the todo has a task consisting entirely of whitespace', () => {
                 tree.setProps({task: '  '});
-                let button = tree.find('Button').at(0);
+                const button = tree.find('Button').at(0);
                 expect(button.prop('disabled')).toBe(true);
             });
 
             it('is enabled when the todo has a task', () => {
                 tree.setProps({task: 'hey'});
-                let button = tree.find('Button').at(0);
+                const button = tree.find('Button').at(0);
                 expect(button.prop('disabled')).toBe(false);
             });
 
             it('calls submitting change handler with true on click', () => {
                 tree.setProps({task: 'hey'});
-                let button = tree.find('Button').at(0);
+                const button = tree.find('Button').at(0);
                 button.simulate('click');
                 expect(mockSubmittingChangeHandlerFn).toBeCalledWith(true);
             });
@@ -153,15 +157,15 @@ describe('TaskForm', () => {
             });
 
             it('renders 2 buttons when create link is missing', () => {
-                let linksWithoutCreateLink = _.clone(links);
-                delete linksWithoutCreateLink.create
-                tree.setProps({links: linksWithoutCreateLink})
+                const linksWithoutCreateLink = _.clone(links);
+                delete linksWithoutCreateLink.create;
+                tree.setProps({links: linksWithoutCreateLink});
                 buttons = tree.find('Button');
                 expect(buttons.length).toBe(2);
             });
 
             describe('first button', () => {
-                let button;
+                let button: ReactWrapper;
 
                 beforeEach(() => {
                     button = buttons.at(0);
@@ -200,7 +204,7 @@ describe('TaskForm', () => {
             });
 
             describe('second button', () => {
-                let button;
+                let button: ReactWrapper;
 
                 beforeEach(() => {
                     button = buttons.at(1);
