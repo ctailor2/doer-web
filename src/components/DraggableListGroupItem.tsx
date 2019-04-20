@@ -12,16 +12,21 @@ import {
 } from 'react-dnd';
 import { findDOMNode } from 'react-dom';
 
-interface Props {
+interface DragProps {
     isDragging: boolean;
     connectDragSource: ConnectDragSource;
     connectDropTarget: ConnectDropTarget;
     isOver: boolean;
+}
+
+interface OwnProps {
     index: number;
     moveItem: (index: number) => void;
 }
 
-export class DraggableListGroupItem extends Component<Props> {
+type AllProps = DragProps & OwnProps;
+
+export class DraggableListGroupItem extends Component<AllProps> {
     public render() {
         const { isDragging, connectDragSource, connectDropTarget, isOver } = this.props;
         return (<ListGroupItem ref={(instance) => {
@@ -39,10 +44,10 @@ export class DraggableListGroupItem extends Component<Props> {
 }
 
 const dragSpec = {
-    beginDrag(props: Props) {
+    beginDrag(props: OwnProps) {
         return { index: props.index };
     },
-    endDrag(props: Props, monitor: DragSourceMonitor) {
+    endDrag(props: OwnProps, monitor: DragSourceMonitor) {
         const dropResult = monitor.getDropResult();
         if (dropResult != null) {
             const toIndex = dropResult.index;
@@ -59,7 +64,7 @@ function dragCollect(connect: DragSourceConnector, monitor: DragSourceMonitor) {
 }
 
 const dropSpec = {
-    drop(props: Props) {
+    drop(props: OwnProps) {
         return { index: props.index };
     },
 };
@@ -71,5 +76,7 @@ function dropCollect(connect: DropTargetConnector, monitor: DropTargetMonitor) {
     };
 }
 
-export default DragSource('todo', dragSpec, dragCollect)
-    (DropTarget('todo', dropSpec, dropCollect)(DraggableListGroupItem));
+const dragSource = DragSource('todo', dragSpec, dragCollect);
+const dropTarget = DropTarget('todo', dropSpec, dropCollect);
+export default dragSource
+    (dropTarget(DraggableListGroupItem));

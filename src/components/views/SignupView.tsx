@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component, FormEvent } from 'react';
+import React, { Component, FormEvent, ChangeEvent } from 'react';
 import { Button, Col, ControlLabel, FormControl, FormGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
@@ -91,11 +91,10 @@ export class SignupView extends Component<Props, State> {
         browserHistory.push('/login');
     }
 
-    public handleChange(field: keyof State, event: FormEvent<FormControl>) {
-        const target = event.target as HTMLInputElement;
+    public handleChange(field: keyof State, event: ChangeEvent<FormControl & HTMLInputElement>) {
         this.setState({
             ...this.state,
-            [field]: target.value,
+            [field]: event.target.value,
         });
     }
 

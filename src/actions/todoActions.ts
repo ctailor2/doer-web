@@ -1,14 +1,14 @@
 import { Link } from '../api/api';
-import { Todo } from '../api/todo';
+import { Todo, TodoForm } from '../api/todo';
 import { ActionTypes } from '../constants/actionTypes';
 
 export interface CreateTodoRequestAction {
     type: ActionTypes.CREATE_TODO_REQUEST_ACTION;
     link: Link;
-    todo: Todo;
+    todo: TodoForm;
 }
 
-export const createTodoRequestAction = (link: Link, todo: Todo): CreateTodoRequestAction => ({
+export const createTodoRequestAction = (link: Link, todo: TodoForm): CreateTodoRequestAction => ({
     type: ActionTypes.CREATE_TODO_REQUEST_ACTION,
     link,
     todo,
@@ -37,10 +37,10 @@ export const moveTodoRequestAction = (link: Link): MoveTodoRequestAction => ({
 export interface DisplaceTodoRequestAction {
     type: ActionTypes.DISPLACE_TODO_REQUEST_ACTION;
     link: Link;
-    todo: Todo;
+    todo: TodoForm;
 }
 
-export const displaceTodoRequestAction = (link: Link, todo: Todo): DisplaceTodoRequestAction => ({
+export const displaceTodoRequestAction = (link: Link, todo: TodoForm): DisplaceTodoRequestAction => ({
     type: ActionTypes.DISPLACE_TODO_REQUEST_ACTION,
     link,
     todo,
@@ -49,10 +49,10 @@ export const displaceTodoRequestAction = (link: Link, todo: Todo): DisplaceTodoR
 export interface UpdateTodoRequestAction {
     type: ActionTypes.UPDATE_TODO_REQUEST_ACTION;
     link: Link;
-    todo: Todo;
+    todo: TodoForm;
 }
 
-export const updateTodoRequestAction = (link: Link, todo: Todo): UpdateTodoRequestAction => ({
+export const updateTodoRequestAction = (link: Link, todo: TodoForm): UpdateTodoRequestAction => ({
     type: ActionTypes.UPDATE_TODO_REQUEST_ACTION,
     link,
     todo,
