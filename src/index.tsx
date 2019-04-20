@@ -1,25 +1,25 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import { Router, Route, browserHistory } from 'react-router';
-import SignupView from './components/views/SignupView';
-import LoginView from './components/views/LoginView';
-import TodosView from './components/views/TodosView';
-import HistoryView from './components/views/HistoryView';
-import './styles/index.css';
-import './styles/bootstrap-overrides.css';
 import { HotKeys } from 'react-hotkeys';
-import { reducer } from './store';
-import sessionMiddleware from './middleware/sessionMiddleware';
-import resourcesMiddleware from './middleware/resourcesMiddleware';
-import loadViewMiddleware from './middleware/loadViewMiddleware';
+import { Provider } from 'react-redux';
+import { browserHistory, Route, Router } from 'react-router';
+import { applyMiddleware, createStore } from 'redux';
+import HistoryView from './components/views/HistoryView';
+import LoginView from './components/views/LoginView';
+import SignupView from './components/views/SignupView';
+import TodosView from './components/views/TodosView';
 import listMiddleware from './middleware/listMiddleware';
+import loadViewMiddleware from './middleware/loadViewMiddleware';
+import resourcesMiddleware from './middleware/resourcesMiddleware';
+import sessionMiddleware from './middleware/sessionMiddleware';
 import todoMiddleware from './middleware/todoMiddleware';
+import { reducer } from './store';
+import './styles/bootstrap-overrides.css';
+import './styles/index.css';
 
 const keyMap = {
     submit: 'enter',
-    cancel: 'esc'
+    cancel: 'esc',
 };
 
 const store = createStore(
@@ -30,7 +30,7 @@ const store = createStore(
         loadViewMiddleware,
         listMiddleware,
         todoMiddleware,
-    )
+    ),
 );
 
 render(
@@ -44,5 +44,5 @@ render(
             </Router>
         </Provider>
     </HotKeys>,
-    document.getElementById('root')
+    document.getElementById('root'),
 );
