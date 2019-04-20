@@ -1,37 +1,37 @@
 jest.useFakeTimers();
 
-import _ from 'lodash';
-import {App, mapStateToProps} from '../App';
-import Todo from '../Todo';
-import TaskForm from '../TaskForm';
-import React from 'react';
-import {shallow, configure} from 'enzyme';
-import {
-    Tabs,
-    Tab,
-    Modal
-} from 'react-bootstrap';
+import { configure, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import _ from 'lodash';
+import React, { ChangeEvent } from 'react';
+import {
+    Modal,
+    Tab,
+    Tabs,
+} from 'react-bootstrap';
+import { Link } from '../../api/api';
+import { List } from '../../api/list';
+import { Todo as DomainTodo } from '../../api/todo';
+import { App, mapStateToProps, Props, State } from '../App';
+import TaskForm from '../TaskForm';
+import Todo from '../Todo';
 
 describe('App', () => {
-    let tree,
-    list,
-    nowTodos,
-    laterTodos,
-    links,
-    todoNowLink,
-    todoLaterLink,
-    pullLink,
-    escalateLink,
-    displaceLink,
-    listLink,
-    mockDisplaceTodoActionFn,
-    mockPullTodosActionFn,
-    mockEscalateTodosActionFn,
-    mockMoveTodoActionFn,
-    mockUnlockListActionFn,
-    mockGetListActionFn,
-    eventListenerCallbacks;
+    let tree: ShallowWrapper<Props, State, any>;
+    let list: List;
+    let todoNowLink: Link;
+    let todoLaterLink: Link;
+    let pullLink: Link;
+    let escalateLink: Link;
+    let displaceLink: Link;
+    let listLink: Link;
+    let mockDisplaceTodoActionFn: jest.Mock;
+    let mockPullTodosActionFn: jest.Mock;
+    let mockEscalateTodosActionFn: jest.Mock;
+    let mockMoveTodoActionFn: jest.Mock;
+    let mockUnlockListActionFn: jest.Mock;
+    let mockGetListActionFn: jest.Mock;
+    let eventListenerCallbacks: { [eventKey: string]: (event: any) => void };
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
@@ -48,14 +48,12 @@ describe('App', () => {
         document.removeEventListener = jest.fn((event) => {
             delete eventListenerCallbacks[event];
         });
-        nowTodos = [];
-        laterTodos = [];
-        todoNowLink = {href: 'http://some.api/todoNow'};
-        todoLaterLink = {href: 'http://some.api/todoLater'};
-        pullLink = {href: 'http://some.api/pullTodos'};
-        escalateLink = {href: 'http://some.api/escalateTodos'};
-        displaceLink = {href: 'http://some.api/displaceTodo'};
-        listLink = {href: 'http://some.api/list'};
+        todoNowLink = { href: 'http://some.api/todoNow' };
+        todoLaterLink = { href: 'http://some.api/todoLater' };
+        pullLink = { href: 'http://some.api/pullTodos' };
+        escalateLink = { href: 'http://some.api/escalateTodos' };
+        displaceLink = { href: 'http://some.api/displaceTodo' };
+        listLink = { href: 'http://some.api/list' };
         list = {
             name: 'name',
             deferredName: 'deferredname',
@@ -64,19 +62,17 @@ describe('App', () => {
             deferredTodos: [],
             _links: {
                 create: todoNowLink,
-                createDeferred: todoLaterLink
-            }
+                createDeferred: todoLaterLink,
+            },
         };
         tree = shallow(<App list={list}
-                          nowTodos={nowTodos}
-                          laterTodos={laterTodos}
-                          listLink={listLink}
-                          displaceTodoRequestAction={mockDisplaceTodoActionFn}
-                          moveTodoRequestAction={mockMoveTodoActionFn}
-                          pullTodosRequestAction={mockPullTodosActionFn}
-                          escalateTodosRequestAction={mockEscalateTodosActionFn}
-                          unlockListRequestAction={mockUnlockListActionFn}
-                          getListRequestAction={mockGetListActionFn}/>);
+            listLink={listLink}
+            displaceTodoRequestAction={mockDisplaceTodoActionFn}
+            moveTodoRequestAction={mockMoveTodoActionFn}
+            pullTodosRequestAction={mockPullTodosActionFn}
+            escalateTodosRequestAction={mockEscalateTodosActionFn}
+            unlockListRequestAction={mockUnlockListActionFn}
+            getListRequestAction={mockGetListActionFn} />);
     });
 
     it('renders', () => {
@@ -84,7 +80,7 @@ describe('App', () => {
     });
 
     it('has default state', () => {
-        expect(tree.state().todo).toEqual({task: ''});
+        expect(tree.state().todo).toEqual({ task: '' });
         expect(tree.state().submitting).toEqual(false);
         expect(tree.state().showUnlockConfirmation).toEqual(false);
         expect(tree.state().activeTab).toEqual('name');
@@ -98,24 +94,24 @@ describe('App', () => {
 
         it('should register an event listener with the document to capture changes in visibility', () => {
             expect(document.addEventListener).toBeCalled();
-            expect(eventListenerCallbacks['visibilitychange']).toBeDefined();
+            expect(eventListenerCallbacks.visibilitychange).toBeDefined();
         });
 
         describe('visibility change callback', () => {
-            let visibilityChangeCallback;
+            let visibilityChangeCallback: (event: any) => void;
 
             beforeEach(() => {
                 visibilityChangeCallback = eventListenerCallbacks.visibilitychange;
             });
 
             it('when document is hidden', () => {
-                visibilityChangeCallback({target: {hidden: true}});
+                visibilityChangeCallback({ target: { hidden: true } });
                 jest.runAllTimers();
                 expect(tree.state().unlockDuration).toEqual(1700900);
             });
 
             it('when document is visible', () => {
-                visibilityChangeCallback({target: {hidden: false}});
+                visibilityChangeCallback({ target: { hidden: false } });
                 expect(mockGetListActionFn).toBeCalledWith(listLink);
             });
         });
@@ -129,7 +125,7 @@ describe('App', () => {
 
         it('should remove the event listener from the document that is capturing changes in visibility', () => {
             expect(document.removeEventListener).toBeCalled();
-            expect(eventListenerCallbacks['visibilitychange']).toBeUndefined();
+            expect(eventListenerCallbacks.visibilitychange).toBeUndefined();
         });
     });
 
@@ -141,7 +137,7 @@ describe('App', () => {
                 beforeEach(() => {
                     listWithProps = _.clone(list);
                     listWithProps.unlockDuration = 1800000;
-                    tree.setProps({list: listWithProps});
+                    tree.setProps({ list: listWithProps });
                 });
 
                 it('does not set unlockDuration state', () => {
@@ -160,7 +156,7 @@ describe('App', () => {
                 beforeEach(() => {
                     listWithProps = _.clone(list);
                     listWithProps.unlockDuration = 15250;
-                    tree.setProps({list: listWithProps});
+                    tree.setProps({ list: listWithProps });
                 });
 
                 it('sets unlockDuration state', () => {
@@ -181,7 +177,7 @@ describe('App', () => {
                 jest.runAllTimers();
                 listWithProps = _.clone(list);
                 listWithProps.unlockDuration = 15250;
-                tree.setProps({list: listWithProps});
+                tree.setProps({ list: listWithProps });
             });
 
             it('sets unlockDuration state', () => {
@@ -214,7 +210,7 @@ describe('App', () => {
 
     describe('when unlockDuration reaches 0', () => {
         beforeEach(() => {
-            tree.setState({activeTab: list.deferredName});
+            tree.setState({ activeTab: list.deferredName });
             jest.runAllTimers();
         });
 
@@ -228,7 +224,7 @@ describe('App', () => {
     });
 
     describe('TaskForm', () => {
-        let taskForm;
+        let taskForm: ShallowWrapper<any>;
 
         beforeEach(() => {
             taskForm = tree.find(TaskForm);
@@ -259,19 +255,19 @@ describe('App', () => {
         });
 
         describe('task change handler', () => {
-            let task = 'someTask';
+            const task = 'someTask';
 
             beforeEach(() => {
                 taskForm.prop('handleTaskChange')(task);
             });
 
             it('sets task state', () => {
-                expect(tree.state().todo).toEqual({task: task});
+                expect(tree.state().todo).toEqual({ task });
             });
         });
 
         describe('submit change handler', () => {
-            let isSubmitting = true;
+            const isSubmitting = true;
 
             beforeEach(() => {
                 taskForm.prop('handleSubmitChange')(isSubmitting);
@@ -284,12 +280,12 @@ describe('App', () => {
     });
 
     describe('tabs', () => {
-        let tabs;
+        let tabs: ShallowWrapper;
 
         beforeEach(() => {
-            let listWithProps = _.clone(list);
+            const listWithProps = _.clone(list);
             listWithProps.unlockDuration = 0;
-            tree.setProps({list: listWithProps});
+            tree.setProps({ list: listWithProps });
             tabs = tree.find(Tabs);
         });
 
@@ -303,7 +299,7 @@ describe('App', () => {
 
         describe('for activeTab state', () => {
             beforeEach(() => {
-                tree.setState({activeTab: 'somethingElse'});
+                tree.setState({ activeTab: 'somethingElse' });
                 tabs = tree.find(Tabs);
             });
 
@@ -313,10 +309,10 @@ describe('App', () => {
         });
 
         describe('onSelect handler', () => {
-            let handler;
+            let handler: (tabName: string) => void;
 
             beforeEach(() => {
-                handler = tabs.prop('onSelect')
+                handler = tabs.prop('onSelect');
             });
 
             describe('when tabKey matches list name', () => {
@@ -350,9 +346,9 @@ describe('App', () => {
 
                 describe('when the unlock duration is greater than zero', () => {
                     beforeEach(() => {
-                        let listWithProps = _.clone(list);
+                        const listWithProps = _.clone(list);
                         listWithProps.unlockDuration = 1700000;
-                        tree.setProps({list: listWithProps});
+                        tree.setProps({ list: listWithProps });
                     });
 
                     it('updates activeTab state to tabKey', () => {
@@ -364,7 +360,7 @@ describe('App', () => {
         });
 
         describe('first tab', () => {
-            let tab;
+            let tab: ShallowWrapper;
 
             beforeEach(() => {
                 tab = tabs.find(Tab).at(0);
@@ -390,10 +386,10 @@ describe('App', () => {
                 });
 
                 it('renders when the displace link is present and submitting state is true', () => {
-                    let listWithDisplaceLink = _.clone(list);
+                    const listWithDisplaceLink = _.clone(list);
                     listWithDisplaceLink._links.displace = displaceLink;
-                    tree.setState({submitting: true});
-                    tree.setProps({list: listWithDisplaceLink});
+                    tree.setState({ submitting: true });
+                    tree.setProps({ list: listWithDisplaceLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(0);
                     button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
@@ -401,10 +397,10 @@ describe('App', () => {
                 });
 
                 it('does not render when the displace link is present and submitting state is false', () => {
-                    let listWithDisplaceLink = _.clone(list);
+                    const listWithDisplaceLink = _.clone(list);
                     listWithDisplaceLink._links.displace = displaceLink;
-                    tree.setState({submitting: false});
-                    tree.setProps({list: listWithDisplaceLink});
+                    tree.setState({ submitting: false });
+                    tree.setProps({ list: listWithDisplaceLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(0);
                     button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
@@ -412,13 +408,13 @@ describe('App', () => {
                 });
 
                 describe('when rendered, on click', () => {
-                    let todoToSubmit = {task: 'some task'};
+                    const todoToSubmit = { task: 'some task' };
 
                     beforeEach(() => {
-                        let listWithDisplaceLink = _.clone(list);
+                        const listWithDisplaceLink = _.clone(list);
                         listWithDisplaceLink._links.displace = displaceLink;
-                        tree.setState({todo: todoToSubmit, submitting: true});
-                        tree.setProps({list: listWithDisplaceLink});
+                        tree.setState({ todo: todoToSubmit, submitting: true });
+                        tree.setProps({ list: listWithDisplaceLink });
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(0);
                         button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
@@ -434,13 +430,13 @@ describe('App', () => {
                     });
 
                     it('clears the todo task state', () => {
-                        expect(tree.state().todo).toEqual({task: ''});
+                        expect(tree.state().todo).toEqual({ task: '' });
                     });
                 });
             });
 
             describe('replenish button', () => {
-                let button;
+                let button: ShallowWrapper;
 
                 beforeEach(() => {
                     button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
@@ -451,9 +447,9 @@ describe('App', () => {
                 });
 
                 it('renders when the pull link is present', () => {
-                    let listWithPullLink = _.clone(list);
+                    const listWithPullLink = _.clone(list);
                     listWithPullLink._links.pull = pullLink;
-                    tree.setProps({list: listWithPullLink});
+                    tree.setProps({ list: listWithPullLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(0);
                     button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
@@ -462,24 +458,24 @@ describe('App', () => {
 
                 describe('when rendered', () => {
                     beforeEach(() => {
-                        let listWithPullLink = _.clone(list);
+                        const listWithPullLink = _.clone(list);
                         listWithPullLink._links.pull = pullLink;
-                        tree.setProps({list: listWithPullLink});
-	                    tabs = tree.find(Tabs);
-	                    tab = tabs.find(Tab).at(0);
-	                    button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
+                        tree.setProps({ list: listWithPullLink });
+                        tabs = tree.find(Tabs);
+                        tab = tabs.find(Tab).at(0);
+                        button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
                     });
 
                     it('fires pull todos action with pullLink', () => {
                         button.simulate('click');
-		                expect(mockPullTodosActionFn).toBeCalledWith(pullLink);
+                        expect(mockPullTodosActionFn).toBeCalledWith(pullLink);
                     });
                 });
             });
         });
 
         describe('second tab', () => {
-            let tab;
+            let tab: ShallowWrapper;
 
             beforeEach(() => {
                 tab = tabs.find(Tab).at(1);
@@ -499,9 +495,9 @@ describe('App', () => {
 
             describe('when the unlock link is present', () => {
                 beforeEach(() => {
-                    let listWithUnlockLink = _.clone(list);
-                    listWithUnlockLink._links.unlock = {href: 'http://some.api/unlock'}
-                    tree.setProps({list: listWithUnlockLink});
+                    const listWithUnlockLink = _.clone(list);
+                    listWithUnlockLink._links.unlock = { href: 'http://some.api/unlock' };
+                    tree.setProps({ list: listWithUnlockLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(1);
                 });
@@ -512,12 +508,12 @@ describe('App', () => {
             });
 
             describe('when the unlock duration is greater than zero', () => {
-                let listWithProps;
+                let listWithProps: List;
 
                 beforeEach(() => {
                     listWithProps = _.clone(list);
                     listWithProps.unlockDuration = 1700000;
-                    tree.setProps({list: listWithProps, name: 'deferredname'});
+                    tree.setProps({ list: listWithProps });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(1);
                 });
@@ -527,7 +523,7 @@ describe('App', () => {
                 });
 
                 describe('escalate button', () => {
-                    let button;
+                    let button: ShallowWrapper;
 
                     beforeEach(() => {
                         button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
@@ -538,9 +534,9 @@ describe('App', () => {
                     });
 
                     it('renders when the escalate link is present', () => {
-                        let listWithEscalateLink = _.clone(listWithProps);
+                        const listWithEscalateLink = _.clone(listWithProps);
                         listWithEscalateLink._links.escalate = escalateLink;
-                        tree.setProps({list: listWithEscalateLink});
+                        tree.setProps({ list: listWithEscalateLink });
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(1);
                         button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
@@ -549,9 +545,9 @@ describe('App', () => {
 
                     describe('when rendered', () => {
                         beforeEach(() => {
-                            let listWithEscalateLink = _.clone(listWithProps);
+                            const listWithEscalateLink = _.clone(listWithProps);
                             listWithEscalateLink._links.escalate = escalateLink;
-                            tree.setProps({list: listWithEscalateLink});
+                            tree.setProps({ list: listWithEscalateLink });
                             tabs = tree.find(Tabs);
                             tab = tabs.find(Tab).at(1);
                             button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
@@ -566,7 +562,7 @@ describe('App', () => {
             });
 
             describe('title', () => {
-                let titleNode;
+                let titleNode: ShallowWrapper;
 
                 beforeEach(() => {
                     titleNode = shallow(tab.prop('title'));
@@ -582,9 +578,9 @@ describe('App', () => {
 
                 describe('when the unlock duration is greater than zero', () => {
                     beforeEach(() => {
-                        let listWithProps = _.clone(list);
+                        const listWithProps = _.clone(list);
                         listWithProps.unlockDuration = 1700000;
-                        tree.setProps({list: listWithProps});
+                        tree.setProps({ list: listWithProps });
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(1);
                         titleNode = shallow(tab.prop('title'));
@@ -603,7 +599,7 @@ describe('App', () => {
     });
 
     describe('modal', () => {
-        let modal;
+        let modal: ShallowWrapper<any>;
 
         beforeEach(() => {
             modal = tree.find(Modal).at(0);
@@ -614,25 +610,25 @@ describe('App', () => {
         });
 
         it('has show state matching showUnlockConfirmation', () => {
-            tree.setState({showUnlockConfirmation: true});
+            tree.setState({ showUnlockConfirmation: true });
             modal = tree.find(Modal).at(0);
             expect(modal.prop('show')).toEqual(true);
         });
 
         describe('when rendered', () => {
-            let unlockLink;
+            let unlockLink: Link;
 
             beforeEach(() => {
-                tree.setState({showUnlockConfirmation: true});
-                let listWithUnlockLink = _.clone(list);
-                unlockLink = {href: 'http://some.api/unlock'};
+                tree.setState({ showUnlockConfirmation: true });
+                const listWithUnlockLink = _.clone(list);
+                unlockLink = { href: 'http://some.api/unlock' };
                 listWithUnlockLink._links.unlock = unlockLink;
-                tree.setProps({list: listWithUnlockLink});
+                tree.setProps({ list: listWithUnlockLink });
                 modal = tree.find(Modal).at(0);
             });
 
             describe('footer', () => {
-                let footer;
+                let footer: ShallowWrapper;
 
                 beforeEach(() => {
                     footer = modal.find(Modal.Footer);
@@ -647,7 +643,7 @@ describe('App', () => {
                 });
 
                 describe('first button', () => {
-                    let button;
+                    let button: ShallowWrapper;
 
                     beforeEach(() => {
                         button = footer.find('Button').at(0);
@@ -655,12 +651,12 @@ describe('App', () => {
 
                     it('updates showUnlockConfirmation state to false on click', () => {
                         button.simulate('click');
-                        expect(tree.state().showUnlockConfirmation).toBe(false)
+                        expect(tree.state().showUnlockConfirmation).toBe(false);
                     });
                 });
 
                 describe('second button', () => {
-                    let button;
+                    let button: ShallowWrapper;
 
                     beforeEach(() => {
                         button = footer.find('Button').at(1);
@@ -673,7 +669,7 @@ describe('App', () => {
 
                     it('updates showUnlockConfirmation state to false on click', () => {
                         button.simulate('click');
-                        expect(tree.state().showUnlockConfirmation).toBe(false)
+                        expect(tree.state().showUnlockConfirmation).toBe(false);
                     });
                 });
             });
@@ -681,7 +677,7 @@ describe('App', () => {
     });
 
     describe('list', () => {
-        let listGroup;
+        let listGroup: ShallowWrapper;
 
         beforeEach(() => {
             listGroup = tree.find('ListGroup');
@@ -698,82 +694,113 @@ describe('App', () => {
         });
 
         describe('with todos', () => {
-            let todo1, todo2, laterTodo1, laterTodo2, deleteLinkOne, listWithProps;
+            let todo1: DomainTodo;
+            let todo2: DomainTodo;
+            let laterTodo1: DomainTodo;
+            let laterTodo2: DomainTodo;
+            let deleteLinkOne: Link;
+            let listWithProps: List;
 
             beforeEach(() => {
-                deleteLinkOne = {href: 'http://some.api/deleteTodoOne'};
-                todo1 = {task: 'thing one', _links: {delete: deleteLinkOne}};
-                todo2 = {task: 'thing two', _links: {delete: {href: 'http://some.api/deleteTodoTwo'}}};
-                laterTodo1 = {task: 'later thing one'};
-                laterTodo2 = {task: 'later thing two'};
-                let todos = [todo1, todo2];
-                let laterTodos = [laterTodo1, laterTodo2];
+                deleteLinkOne = { href: 'http://some.api/deleteTodoOne' };
+                todo1 = {
+                    task: 'thing one', _links: {
+                        delete: deleteLinkOne,
+                        complete: { href: '' },
+                        update: { href: '' },
+                        move: [],
+                    }
+                };
+                todo2 = {
+                    task: 'thing two', _links: {
+                        delete: { href: 'http://some.api/deleteTodoTwo' },
+                        complete: { href: '' },
+                        update: { href: '' },
+                        move: [],
+                    }
+                };
+                laterTodo1 = {
+                    task: 'later thing one', _links: {
+                        delete: { href: '' },
+                        complete: { href: '' },
+                        update: { href: '' },
+                        move: [],
+                    }
+                };
+                laterTodo2 = {
+                    task: 'later thing two', _links: {
+                        delete: { href: '' },
+                        complete: { href: '' },
+                        update: { href: '' },
+                        move: [],
+                    }
+                };
+                const todos = [todo1, todo2];
+                const laterTodos = [laterTodo1, laterTodo2];
                 listWithProps = _.clone(list);
                 listWithProps.todos = todos;
                 listWithProps.deferredTodos = laterTodos;
-                tree.setProps({list: listWithProps});
+                tree.setProps({ list: listWithProps });
                 listGroup = tree.find('ListGroup');
             });
 
-	        it('contains a Todo for each todo', () => {
-	            expect(listGroup.find(Todo).length).toBe(4);
-	        });
+            it('contains a Todo for each todo', () => {
+                expect(listGroup.find(Todo).length).toBe(4);
+            });
 
-	        describe('each todo', () => {
-	            let todo;
+            describe('each todo', () => {
+                let todo: ShallowWrapper;
 
-	            beforeEach(() => {
-	                todo = listGroup.find(Todo).at(0);
-	            });
+                beforeEach(() => {
+                    todo = listGroup.find(Todo).at(0);
+                });
 
-	            it('has an index', () => {
-	                expect(todo.prop('index')).toEqual(0);
-	            });
+                it('has an index', () => {
+                    expect(todo.prop('index')).toEqual(0);
+                });
 
-	            describe('move handler', () => {
-	                let moveHandler;
+                describe('move handler', () => {
+                    let moveHandler: (link: Link) => void;
 
-	                beforeEach(() => {
-						moveHandler = todo.prop('handleMove');
-	                });
+                    beforeEach(() => {
+                        moveHandler = todo.prop('handleMove');
+                    });
 
-	                it('fires move todo action with link for the matching target', () => {
-	                    let moveLink = {href: 'http://some.api/moveTodo'};
-	                    moveHandler(moveLink);
-	                    expect(mockMoveTodoActionFn).toBeCalledWith(moveLink);
-	                });
-	            });
+                    it('fires move todo action with link for the matching target', () => {
+                        const moveLink = { href: 'http://some.api/moveTodo' };
+                        moveHandler(moveLink);
+                        expect(mockMoveTodoActionFn).toBeCalledWith(moveLink);
+                    });
+                });
 
-	            it('is not readonly by default', () => {
-	                expect(todo.prop('readOnly')).toBe(false);
-	            });
-
-	            it('is readonly when submitting', () => {
-	                tree.setState({submitting: true});
-                    listGroup = tree.find('ListGroup');
-	                todo = listGroup.find(Todo).at(0);
-	                expect(todo.prop('readOnly')).toBe(true);
-	            });
-
-	            it('has task and links', () => {
-	                expect(todo.prop('task')).toEqual('thing one');
-	                expect(todo.prop('links')).toEqual({delete: deleteLinkOne});
-	            });
-	        });
+                it('has task and links', () => {
+                    expect(todo.prop('task')).toEqual('thing one');
+                    expect(todo.prop('links')).toEqual(expect.objectContaining({ delete: deleteLinkOne }));
+                });
+            });
         });
     });
 
     it('maps state to props', () => {
-        let state = {
-            list: {name: 'cool list'},
+        // tslint:disable-next-line: no-shadowed-variable
+        const listLink = { href: 'http://some.api/list' };
+        const list = { name: 'cool list' };
+        // tslint:disable-next-line: no-shadowed-variable
+        const state = {
             links: {
-                list: {href: 'http://some.api/list'}
-            }
+                list: listLink,
+            },
+            list,
+            completedList: {},
+            errors: {
+                fieldErrors: [],
+                globalErrors: [],
+            },
         };
 
         expect(mapStateToProps(state)).toEqual({
-            list: {name: 'cool list'},
-            listLink: {href: 'http://some.api/list'}
+            list,
+            listLink,
         });
     });
 });
