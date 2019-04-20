@@ -1,6 +1,6 @@
 import * as io from 'io-ts';
 import { LoginInfo, SignupInfo } from './session';
-import { Todo } from './todo';
+import { TodoForm } from './todo';
 
 export interface Link {
     href: string;
@@ -129,9 +129,9 @@ export interface Requests {
     completedList: undefined;
     unlock: undefined;
     deleteTodo: undefined;
-    createTodo: Todo;
-    displaceTodo: Todo;
-    updateTodo: Todo;
+    createTodo: TodoForm;
+    displaceTodo: TodoForm;
+    updateTodo: TodoForm;
     completeTodo: undefined;
     moveTodo: undefined;
     pullTodo: undefined;
