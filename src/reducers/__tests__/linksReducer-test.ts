@@ -1,3 +1,4 @@
+import { StoreLinksAction } from '../../actions/linkActions';
 import { ActionTypes } from '../../constants/actionTypes'
 import { links } from '../linksReducer';
 
@@ -8,7 +9,7 @@ describe('links', () => {
 
     it('stores the links from a STORE_LINKS_ACTION when received', () => {
         const newLinks = { a: { href: 'aHref' }, b: { href: 'bHref' } };
-        const action = {
+        const action: StoreLinksAction = {
             type: ActionTypes.STORE_LINKS_ACTION,
             links: newLinks,
         };

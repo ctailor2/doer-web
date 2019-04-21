@@ -44,15 +44,15 @@ describe('TaskForm', () => {
 
     describe('upon receiving props', () => {
         it('sets input value to received task when task is empty', () => {
-            input.value = 'some value';
+            input!.value = 'some value';
             tree.setProps({task: ''});
-            expect(input.value).toEqual('');
+            expect(input!.value).toEqual('');
         });
 
         it('does not set input value to received task when task is not empty', () => {
-            input.value = 'some task';
+            input!.value = 'some task';
             tree.setProps({task: 'some other task'});
-            expect(input.value).toEqual('some task');
+            expect(input!.value).toEqual('some task');
         });
     });
 
@@ -68,7 +68,7 @@ describe('TaskForm', () => {
         });
 
         it('has no value by default', () => {
-            expect(input.value).toEqual('');
+            expect(input!.value).toEqual('');
         });
 
         it('calls task change handler on change', () => {
@@ -148,7 +148,7 @@ describe('TaskForm', () => {
         describe('when submitting', () => {
             beforeEach(() => {
                 tree.setProps({task: 'something', submitting: true});
-                input.value = 'something';
+                input!.value = 'something';
                 buttons = tree.find('Button');
             });
 
@@ -193,7 +193,7 @@ describe('TaskForm', () => {
                     });
 
                     it('clears the todo input value', () => {
-                        expect(input.value).toEqual('');
+                        expect(input!.value).toEqual('');
                     });
 
                     it('puts focus on the input', () => {
@@ -232,7 +232,7 @@ describe('TaskForm', () => {
                     });
 
                     it('clears the todo input value', () => {
-                        expect(input.value).toEqual('');
+                        expect(input!.value).toEqual('');
                     });
 
                     it('puts focus on the input', () => {

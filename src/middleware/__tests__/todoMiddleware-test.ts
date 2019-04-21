@@ -3,11 +3,11 @@ import { applyMiddleware, createStore } from "redux";
 import { ApplicationAction } from "../../actions/actions";
 import { UpdateTodoRequestAction } from "../../actions/todoActions";
 import { Link } from "../../api/api";
-import { Todo } from "../../api/todo";
+import { Todo, TodoForm } from "../../api/todo";
 import { ActionTypes } from "../../constants/actionTypes";
-import { client } from "../apiClient";
 import { ApplicationStore, reducer } from "../../store";
 import actionCapturingMiddleware from "../../utils/actionCapturingMiddleware";
+import { client } from "../apiClient";
 import todoMiddleware from "../todoMiddleware";
 
 export default undefined;
@@ -49,7 +49,7 @@ describe('todo middleware', () => {
         });
     });
 
-    type TodoApplicationAction = ApplicationAction & { link: Link, todo: Todo };
+    type TodoApplicationAction = ApplicationAction & { link: Link, todo: TodoForm };
     const todoActionScenarios: Array<{ description: string, action: TodoApplicationAction }> = [
         {
             description: 'todo creation',

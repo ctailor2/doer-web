@@ -1,5 +1,6 @@
 export default undefined;
 import { ApplicationAction } from '../../actions/actions';
+import { CompletedList } from '../../api/completedList';
 import { ActionTypes } from '../../constants/actionTypes';
 import { completedList, defaultState } from '../completedListReducer';
 
@@ -18,7 +19,7 @@ describe('completedList', () => {
                 }],
             },
         } as ApplicationAction;
-        const state = completedList(defaultState, action);
+        const state = completedList(defaultState, action) as CompletedList;
         expect(state.todos).toContainEqual({
             task: 'someTask',
             completedAt: 'someTime',

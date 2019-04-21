@@ -1,4 +1,5 @@
 import { ApplicationAction } from '../../actions/actions';
+import { List } from '../../api/list';
 import { ActionTypes } from '../../constants/actionTypes';
 import { defaultState, list } from '../listReducer';
 
@@ -16,10 +17,12 @@ describe('list', () => {
                 todos: [],
                 deferredTodos: [],
                 unlockDuration: 0,
-                _links: {},
+                _links: {
+                    createDeferred: {href: ''},
+                },
             },
         } as ApplicationAction;
-        const todosState = list(defaultState, action);
+        const todosState = list(defaultState, action) as List;
         expect(todosState.name).toEqual('someName');
         expect(todosState.deferredName).toEqual('someDeferredName');
     });
