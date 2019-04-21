@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
@@ -10,13 +9,13 @@ import History from '../History';
 import Loader from './Loader';
 
 interface Props {
-    list: CompletedList | {};
+    list: CompletedList | null;
     loadHistoryViewAction(): LoadHistoryViewAction;
 }
 
 export class HistoryView extends Component<Props> {
     public componentDidMount() {
-        if (_.isNull(localStorage.getItem('sessionToken'))) {
+        if (localStorage.getItem('sessionToken') === null) {
             browserHistory.push('/login');
         } else {
             this.props.loadHistoryViewAction();
@@ -31,7 +30,7 @@ export class HistoryView extends Component<Props> {
     }
 
     public renderView() {
-        if (!_.isEmpty(this.props.list)) {
+        if (this.props.list !== null) {
             return (<History />);
         }
         return (<Loader />);

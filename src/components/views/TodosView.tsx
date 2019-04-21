@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -13,13 +12,13 @@ import Loader from './Loader';
 
 export interface Props {
     loadTodosViewAction: () => LoadTodosViewAction;
-    list: List | {};
+    list: List | null;
 }
 
 export class TodosView extends Component<Props> {
     public componentDidMount() {
         // TODO: May be able to optimize here by only firing this if the view is not loaded
-        if (_.isNull(localStorage.getItem('sessionToken'))) {
+        if (localStorage.getItem('sessionToken') === null) {
             browserHistory.push('/login');
         } else {
             this.props.loadTodosViewAction();
@@ -34,7 +33,7 @@ export class TodosView extends Component<Props> {
     }
 
     public renderView() {
-        if (!_.isEmpty(this.props.list)) {
+        if (this.props.list !== null) {
             return (<App />);
         }
         return (<Loader />);

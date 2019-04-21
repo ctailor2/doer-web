@@ -15,7 +15,7 @@ describe('HistoryView', () => {
         configure({ adapter: new Adapter() });
         browserHistory.push = jest.fn();
         mockLoadHistoryViewActionFn = jest.fn();
-        tree = shallow(<HistoryView list={{}} loadHistoryViewAction={mockLoadHistoryViewActionFn} />);
+        tree = shallow(<HistoryView list={null} loadHistoryViewAction={mockLoadHistoryViewActionFn} />);
     });
 
     it('redirects to the login page if a sessionToken is not present', () => {
@@ -58,7 +58,7 @@ describe('HistoryView', () => {
         const state = {
             completedList,
             links: {},
-            list: {},
+            list: null,
             errors: {
                 fieldErrors: [],
                 globalErrors: [],

@@ -238,19 +238,19 @@ describe('LoginView', () => {
     });
 
     it('maps state to props', () => {
-        const loginLink = {href: 'http://some.api/login'};
-        const links = {login: loginLink, signup: {href: 'http://some.api/signup'}};
+        const myLoginLink = {href: 'http://some.api/login'};
+        const links = {login: myLoginLink, signup: {href: 'http://some.api/signup'}};
         const state = {
             links,
-            list: {},
-            completedList: {},
+            list: null,
+            completedList: null,
             errors: {
                 fieldErrors: [],
                 globalErrors: [],
             },
         };
         expect(mapStateToProps(state)).toEqual({
-            loginLink,
+            loginLink: myLoginLink,
         });
     });
 });

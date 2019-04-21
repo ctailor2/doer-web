@@ -315,8 +315,8 @@ describe('SignupView', () => {
         const links = { signup: signupLink, login: { href: 'http://some.api/login' } };
         const state = {
             links,
-            list: {},
-            completedList: {},
+            list: null,
+            completedList: null,
             errors: {
                 fieldErrors: [],
                 globalErrors: [],

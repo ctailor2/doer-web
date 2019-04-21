@@ -15,11 +15,11 @@ describe('TodosView', () => {
         configure({ adapter: new Adapter() });
         mockLoadTodosViewActionFn = jest.fn();
         browserHistory.push = jest.fn();
-        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={{}} />);
+        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} />);
     });
 
     it('redirects to the login page if a sessionToken is not present', () => {
-        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={{}} />);
+        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} />);
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadTodosViewActionFn).not.toBeCalled();
     });
@@ -29,7 +29,7 @@ describe('TodosView', () => {
         mockLoadTodosViewActionFn.mockClear();
         // @ts-ignore
         browserHistory.push.mockClear();
-        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={{}} />);
+        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} />);
         expect(mockLoadTodosViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });
@@ -52,9 +52,18 @@ describe('TodosView', () => {
     });
 
     it('maps state to props', () => {
-        const list = { name: 'cool list', deferredName: 'neato', todos: [], deferredTodos: [], unlockDuration: 0 };
+        const list = {
+            name: 'cool list',
+            deferredName: 'neato',
+            todos: [],
+            deferredTodos: [],
+            unlockDuration: 0,
+            _links: {
+                createDeferred: { href: '' },
+            },
+        };
         const state = {
-            completedList: {},
+            completedList: null,
             links: {},
             list,
             errors: {

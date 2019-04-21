@@ -199,9 +199,9 @@ describe('Header', () => {
             globalErrors: [globalError],
         };
         const state = {
-            completedList: {},
+            completedList: null,
             links: {},
-            list: {},
+            list: null,
             errors,
         };
 

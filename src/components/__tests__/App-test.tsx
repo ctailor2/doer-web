@@ -709,7 +709,7 @@ describe('App', () => {
                         complete: { href: '' },
                         update: { href: '' },
                         move: [],
-                    }
+                    },
                 };
                 todo2 = {
                     task: 'thing two', _links: {
@@ -717,7 +717,7 @@ describe('App', () => {
                         complete: { href: '' },
                         update: { href: '' },
                         move: [],
-                    }
+                    },
                 };
                 laterTodo1 = {
                     task: 'later thing one', _links: {
@@ -725,7 +725,7 @@ describe('App', () => {
                         complete: { href: '' },
                         update: { href: '' },
                         move: [],
-                    }
+                    },
                 };
                 laterTodo2 = {
                     task: 'later thing two', _links: {
@@ -733,7 +733,7 @@ describe('App', () => {
                         complete: { href: '' },
                         update: { href: '' },
                         move: [],
-                    }
+                    },
                 };
                 const todos = [todo1, todo2];
                 const laterTodos = [laterTodo1, laterTodo2];
@@ -782,16 +782,23 @@ describe('App', () => {
     });
 
     it('maps state to props', () => {
-        // tslint:disable-next-line: no-shadowed-variable
-        const listLink = { href: 'http://some.api/list' };
-        const list = { name: 'cool list' };
-        // tslint:disable-next-line: no-shadowed-variable
+        const myListLink = { href: 'http://some.api/list' };
+        const myList = {
+            name: 'cool list',
+            deferredName: 'neato',
+            todos: [],
+            deferredTodos: [],
+            unlockDuration: 0,
+            _links: {
+                createDeferred: { href: '' },
+            },
+        };
         const state = {
             links: {
-                list: listLink,
+                list: myListLink,
             },
-            list,
-            completedList: {},
+            list: myList,
+            completedList: null,
             errors: {
                 fieldErrors: [],
                 globalErrors: [],
@@ -799,8 +806,8 @@ describe('App', () => {
         };
 
         expect(mapStateToProps(state)).toEqual({
-            list,
-            listLink,
+            list: myList,
+            listLink: myListLink,
         });
     });
 });
