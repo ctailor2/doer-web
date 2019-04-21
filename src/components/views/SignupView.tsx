@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component, FormEvent, ChangeEvent } from 'react';
+import React, { ChangeEvent, Component } from 'react';
 import { Button, Col, ControlLabel, FormControl, FormGroup, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';

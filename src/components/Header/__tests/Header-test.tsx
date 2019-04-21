@@ -3,8 +3,9 @@ import Adapter from 'enzyme-adapter-react-16';
 import React, { Component } from 'react';
 import { Nav, Navbar, NavDropdown, NavDropdownProps } from 'react-bootstrap';
 import { browserHistory } from 'react-router';
-import { GlobalError } from '../../api/errors';
-import { Header, mapStateToProps } from '../Header';
+import { GlobalError } from '../../../api/errors';
+import { mapStateToProps } from "../connector";
+import Header from '../Header';
 
 describe('Header', () => {
     let tree: ShallowWrapper;
