@@ -299,8 +299,3 @@ export class App extends Component<Props, State> {
             links={todo._links} />);
     }
 }
-
-export const mapStateToProps = (state: ApplicationState) => ({
-    list: state.list,
-    listLink: state.links.list,
-});

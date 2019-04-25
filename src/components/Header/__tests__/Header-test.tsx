@@ -190,24 +190,4 @@ describe('Header', () => {
             });
         });
     });
-
-    it('maps state to props', () => {
-        const globalError = {
-            message: 'someGlobalError',
-        };
-        const errors = {
-            fieldErrors: [],
-            globalErrors: [globalError],
-        };
-        const state = {
-            completedList: null,
-            links: {},
-            list: null,
-            errors,
-        };
-
-        expect(mapStateToProps(state)).toEqual({
-            globalErrors: [globalError],
-        });
-    });
 });

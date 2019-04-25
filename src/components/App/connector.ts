@@ -6,7 +6,13 @@ import {
     moveTodoRequestAction,
     pullTodosRequestAction,
 } from '../../actions/todoActions';
-import { App, mapStateToProps } from './App';
+import { ApplicationState } from '../../store';
+import { App } from './App';
+
+export const mapStateToProps = (state: ApplicationState) => ({
+    list: state.list,
+    listLink: state.links.list,
+});
 
 export default connect(mapStateToProps, {
     displaceTodoRequestAction,

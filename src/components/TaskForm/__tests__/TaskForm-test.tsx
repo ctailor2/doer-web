@@ -1,7 +1,7 @@
 import {configure, mount, ReactWrapper} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import _ from 'lodash';
-import React, { ReactInstance } from 'react';
+import React from 'react';
 import { Link } from '../../../api/api';
 import { List } from '../../../api/list';
 import {Props, TaskForm} from '../TaskForm';

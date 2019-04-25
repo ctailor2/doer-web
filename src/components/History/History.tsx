@@ -45,17 +45,3 @@ export class History extends Component<Props> {
         </ListGroup>);
     }
 }
-
-export const mapStateToProps = (state: ApplicationState) => {
-    const completedList = state.completedList;
-    const isCompletedList = (maybeCompletedList: CompletedList | null):
-        maybeCompletedList is CompletedList => maybeCompletedList !== null;
-    if (isCompletedList(completedList)) {
-        return {
-            todos: completedList.todos,
-        };
-    }
-    return {
-        todos: [],
-    };
-};
