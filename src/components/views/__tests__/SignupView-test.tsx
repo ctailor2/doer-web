@@ -1,27 +1,27 @@
-import {configure, mount, shallow, ShallowWrapper} from 'enzyme';
+import { configure, mount, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {browserHistory} from 'react-router';
+import { browserHistory } from 'react-router';
 import { Link } from '../../../api/api';
 import Header from '../../Header';
-import {LoginView, mapStateToProps, Props, State} from '../../views/LoginView';
+import { mapStateToProps, Props, SignupView, State } from '../SignupView';
 
-describe('LoginView', () => {
-    let tree: ShallowWrapper<Props, State, LoginView>;
-    let loginLink: Link;
-    let loginRequestActionFn: jest.Mock;
+describe('SignupView', () => {
+    let tree: ShallowWrapper<Props, State, SignupView>;
+    let signupLink: Link;
+    let signupRequestActionFn: jest.Mock;
     let getBaseResourcesRequestActionFn: jest.Mock;
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
-        loginLink = {href: 'http://some.api/login'};
-        loginRequestActionFn = jest.fn();
+        signupLink = { href: 'http://some.api/signup' };
+        signupRequestActionFn = jest.fn();
         getBaseResourcesRequestActionFn = jest.fn();
-        tree = shallow(<LoginView
-            loginLink={loginLink}
-            loginRequestAction={loginRequestActionFn}
-            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+        tree = shallow(<SignupView
+            signupLink={signupLink}
+            signupRequestAction={signupRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />);
     });
 
     it('renders', () => {
@@ -36,35 +36,36 @@ describe('LoginView', () => {
         expect(tree.state()).toEqual({
             email: '',
             password: '',
+            passwordConfirmation: '',
         });
     });
 
     it('fires get base resources action when mounted', () => {
         const store = {
-            subscribe: () => {},
-            dispatch: () => {},
+            subscribe: () => { },
+            dispatch: () => { },
             getState: () => {
-                return {errors: {globalErrors: []}};
+                return { errors: { globalErrors: [] } };
             },
         };
         const options = {
             context: { store },
             childContextTypes: { store: PropTypes.object.isRequired },
         };
-        mount(<LoginView
-            loginLink={loginLink}
-            loginRequestAction={loginRequestActionFn}
-            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>, options);
+        mount(<SignupView
+            signupLink={signupLink}
+            signupRequestAction={signupRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 
     it('redirects to the root if a sessionToken is present', () => {
         localStorage.setItem('sessionToken', 'cooltoken');
         browserHistory.push = jest.fn();
-        tree = shallow(<LoginView
-            loginLink={loginLink}
-            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}
-            loginRequestAction={loginRequestActionFn}/>);
+        tree = shallow(<SignupView
+            signupLink={signupLink}
+            signupRequestAction={signupRequestActionFn}
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />);
         expect(browserHistory.push).toBeCalledWith('/');
     });
 
@@ -80,7 +81,7 @@ describe('LoginView', () => {
         });
 
         it('leads with a question', () => {
-            expect(leadingLink.text()).toContain('Not registered yet?');
+            expect(leadingLink.text()).toContain('Already registered?');
         });
 
         describe('link', () => {
@@ -95,13 +96,13 @@ describe('LoginView', () => {
                 expect(link.length).toBe(1);
             });
 
-            it('links to sign up', () => {
-                expect(link.text()).toBe('Sign up');
+            it('links to login', () => {
+                expect(link.text()).toBe('Login');
             });
 
             it('redirects to the login page on click', () => {
                 link.simulate('click');
-                expect(browserHistory.push).toBeCalledWith('/signup');
+                expect(browserHistory.push).toBeCalledWith('/login');
             });
         });
     });
@@ -155,7 +156,7 @@ describe('LoginView', () => {
                 });
 
                 it('updates state on change', () => {
-                    input.simulate('change', {target: {value: 'test@email.com'}});
+                    input.simulate('change', { target: { value: 'test@email.com' } });
                     expect(tree.state().email).toBe('test@email.com');
                 });
             });
@@ -195,8 +196,71 @@ describe('LoginView', () => {
                 });
 
                 it('updates state on change', () => {
-                    input.simulate('change', {target: {value: 'password'}});
+                    input.simulate('change', { target: { value: 'password' } });
                     expect(tree.state().password).toBe('password');
+                });
+            });
+        });
+
+        describe('password confirmation form group', () => {
+            let formGroup: ShallowWrapper;
+
+            beforeEach(() => {
+                formGroup = form.find('FormGroup').at(2);
+            });
+
+            it('renders', () => {
+                expect(formGroup.length).toBe(1);
+            });
+
+            it('has id', () => {
+                expect(formGroup.prop('controlId')).toBe('passwordConfirmation');
+            });
+
+            it('has a Password Confirmation label', () => {
+                const label = formGroup.find('ControlLabel');
+                expect(label.length).toBe(1);
+                expect(label.childAt(0).text()).toBe('Password Confirmation');
+            });
+
+            describe('password input', () => {
+                let input: ShallowWrapper;
+
+                beforeEach(() => {
+                    input = formGroup.find('FormControl');
+                });
+
+                it('renders', () => {
+                    expect(input.length).toBe(1);
+                    expect(input.prop('type')).toBe('password');
+                });
+
+                it('updates state on change', () => {
+                    input.simulate('change', { target: { value: 'password' } });
+                    expect(tree.state().passwordConfirmation).toBe('password');
+                });
+            });
+
+            it('shows feedback', () => {
+                const feedback = formGroup.find('FormControlFeedback');
+                expect(feedback.length).toBe(1);
+            });
+
+            it('has no validation state by default', () => {
+                expect(formGroup.prop('validationState')).toBeUndefined();
+            });
+
+            describe('when data is entered', () => {
+                it('has success validation state when entry matches password', () => {
+                    tree.setState({ password: 'bananas', passwordConfirmation: 'bananas' });
+                    formGroup = tree.find('FormGroup').at(2);
+                    expect(formGroup.prop('validationState')).toBe('success');
+                });
+
+                it('has error validation state when entry does not match password', () => {
+                    tree.setState({ passwordConfirmation: 'bananas' });
+                    formGroup = tree.find('FormGroup').at(2);
+                    expect(formGroup.prop('validationState')).toBe('error');
                 });
             });
         });
@@ -219,27 +283,36 @@ describe('LoginView', () => {
                 expect(button.prop('disabled')).toBe(true);
             });
 
-            it('enables when all fields are entered', () => {
-                tree.setState({email: 'email', password: 'password'});
-                button = tree.find('Button');
-                expect(button.prop('disabled')).toBe(false);
+            describe('when all fields are entered', () => {
+                it('stays disabled if password confirmation does not match password ', () => {
+                    tree.setState({ email: 'email', password: 'password', passwordConfirmation: 'passwordConfirmation' });
+                    button = tree.find('Button');
+                    expect(button.prop('disabled')).toBe(true);
+                });
+
+                it('enables if password confirmation matches password ', () => {
+                    tree.setState({ email: 'email', password: 'password', passwordConfirmation: 'password' });
+                    button = tree.find('Button');
+                    expect(button.prop('disabled')).toBe(false);
+                });
             });
 
-            it('fires login request action with form login link on click', () => {
+            it('fires signup request action with form data and signup link on click', () => {
                 const formData = {
                     email: 'test@email.com',
                     password: 'password',
+                    passwordConfirmation: 'password',
                 };
                 tree.setState(formData);
                 button.simulate('click');
-                expect(loginRequestActionFn).toBeCalledWith(loginLink, formData);
+                expect(signupRequestActionFn).toBeCalledWith(signupLink, formData);
             });
         });
     });
 
     it('maps state to props', () => {
-        const myLoginLink = {href: 'http://some.api/login'};
-        const links = {login: myLoginLink, signup: {href: 'http://some.api/signup'}};
+        const signupLink = { href: 'http://some.api/signup' };
+        const links = { signup: signupLink, login: { href: 'http://some.api/login' } };
         const state = {
             links,
             list: null,
@@ -250,7 +323,7 @@ describe('LoginView', () => {
             },
         };
         expect(mapStateToProps(state)).toEqual({
-            loginLink: myLoginLink,
+            signupLink,
         });
     });
 });

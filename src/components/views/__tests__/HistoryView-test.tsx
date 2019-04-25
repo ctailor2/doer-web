@@ -4,8 +4,8 @@ import React from 'react';
 import {browserHistory} from 'react-router';
 import Header from '../../Header';
 import History from '../../History';
-import {HistoryView, mapStateToProps} from '../../views/HistoryView';
-import Loader from '../../views/Loader';
+import {HistoryView, mapStateToProps} from '../HistoryView';
+import Loader from '../Loader';
 
 describe('HistoryView', () => {
     let tree: ShallowWrapper;

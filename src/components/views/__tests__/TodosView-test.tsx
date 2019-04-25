@@ -4,8 +4,8 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import App from '../../App';
 import Header from '../../Header';
-import Loader from '../../views/Loader';
-import { mapStateToProps, TodosView } from '../../views/TodosView';
+import Loader from '../Loader';
+import { mapStateToProps, TodosView } from '../TodosView';
 
 describe('TodosView', () => {
     let tree: ShallowWrapper;
