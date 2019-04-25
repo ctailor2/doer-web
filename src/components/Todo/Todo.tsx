@@ -9,15 +9,14 @@ import {
     ListGroupItem,
     Row,
 } from 'react-bootstrap';
-import { connect } from 'react-redux';
 import {
     completeTodoRequestAction,
     deleteTodoRequestAction,
     updateTodoRequestAction,
-} from '../actions/todoActions';
-import { Link } from '../api/api';
-import { TodoLinks } from '../api/todo';
-import DraggableListGroupItem from './DraggableListGroupItem';
+} from '../../actions/todoActions';
+import { Link } from '../../api/api';
+import { TodoLinks } from '../../api/todo';
+import DraggableListGroupItem from '../DraggableListGroupItem';
 
 export interface Props {
     task: string;
@@ -138,8 +137,4 @@ export class Todo extends Component<Props, State> {
     }
 }
 
-export default connect(null, {
-    updateTodoRequestAction,
-    deleteTodoRequestAction,
-    completeTodoRequestAction,
-})(Todo);
+
