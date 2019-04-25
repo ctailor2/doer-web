@@ -8,10 +8,9 @@ import {
     InputGroup,
 } from 'react-bootstrap';
 import { HotKeys } from 'react-hotkeys';
-import { connect } from 'react-redux';
-import { createTodoRequestAction } from '../actions/todoActions';
-import { Link } from '../api/api';
-import { List } from '../api/list';
+import { createTodoRequestAction } from '../../actions/todoActions';
+import { Link } from '../../api/api';
+import { List } from '../../api/list';
 
 export interface Props {
     primaryButtonName: string;
@@ -140,6 +139,4 @@ export class TaskForm extends Component<Props> {
     }
 }
 
-export default connect(null, {
-    createTodoRequestAction,
-})(TaskForm);
+

@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import React, {  } from 'react';
 import { wrapInTestContext } from 'react-dnd-test-utils';
 import { Link } from '../../../api/api';
-import DraggableListGroupItem from '../../DraggableListGroupItem';
+import DraggableListGroupItem from '../../DraggableListGroupItem/DraggableListGroupItem';
 import { Props, State, Todo } from '../Todo';
 
 describe('Todo', () => {

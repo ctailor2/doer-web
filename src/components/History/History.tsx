@@ -7,9 +7,8 @@ import {
     Panel,
     Row,
 } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { CompletedList, CompletedTodo } from '../api/completedList';
-import { ApplicationState } from '../store';
+import { CompletedList, CompletedTodo } from '../../api/completedList';
+import { ApplicationState } from '../../store';
 
 interface Props {
     todos: CompletedTodo[];
@@ -61,4 +60,4 @@ export const mapStateToProps = (state: ApplicationState) => {
     };
 };
 
-export default connect(mapStateToProps, {})(History);
+

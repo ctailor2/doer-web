@@ -16,7 +16,7 @@ import {
 } from '../../actions/todoActions';
 import { Link } from '../../api/api';
 import { TodoLinks } from '../../api/todo';
-import DraggableListGroupItem from '../DraggableListGroupItem';
+import DraggableListGroupItem from '../DraggableListGroupItem/DraggableListGroupItem';
 
 export interface Props {
     task: string;
