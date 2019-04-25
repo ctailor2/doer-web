@@ -11,23 +11,22 @@ import {
     Tab,
     Tabs,
 } from 'react-bootstrap';
-import { connect } from 'react-redux';
 import {
     getListRequestAction,
     unlockListRequestAction,
-} from '../actions/listActions';
+} from '../../actions/listActions';
 import {
     displaceTodoRequestAction,
     escalateTodosRequestAction,
     moveTodoRequestAction,
     pullTodosRequestAction,
-} from '../actions/todoActions';
-import { Link } from '../api/api';
-import { List } from '../api/list';
-import { Todo as DomainTodo, TodoForm } from '../api/todo';
-import { ApplicationState } from '../store';
-import TaskForm from './TaskForm';
-import Todo from './Todo';
+} from '../../actions/todoActions';
+import { Link } from '../../api/api';
+import { List } from '../../api/list';
+import { Todo as DomainTodo, TodoForm } from '../../api/todo';
+import { ApplicationState } from '../../store';
+import TaskForm from '../TaskForm';
+import Todo from '../Todo';
 
 export interface Props {
     list: List;
@@ -306,11 +305,4 @@ export const mapStateToProps = (state: ApplicationState) => ({
     listLink: state.links.list,
 });
 
-export default connect(mapStateToProps, {
-    displaceTodoRequestAction,
-    moveTodoRequestAction,
-    pullTodosRequestAction,
-    escalateTodosRequestAction,
-    unlockListRequestAction,
-    getListRequestAction,
-})(App);
+

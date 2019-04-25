@@ -9,12 +9,12 @@ import {
     Tab,
     Tabs,
 } from 'react-bootstrap';
-import { Link } from '../../api/api';
-import { List } from '../../api/list';
-import { Todo as DomainTodo } from '../../api/todo';
+import { Link } from '../../../api/api';
+import { List } from '../../../api/list';
+import { Todo as DomainTodo } from '../../../api/todo';
+import TaskForm from '../../TaskForm';
+import Todo from '../../Todo';
 import { App, mapStateToProps, Props, State } from '../App';
-import TaskForm from '../TaskForm';
-import Todo from '../Todo';
 
 describe('App', () => {
     let tree: ShallowWrapper<Props, State, any>;
