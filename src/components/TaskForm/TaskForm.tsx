@@ -138,5 +138,3 @@ export class TaskForm extends Component<Props> {
         return this.props.task.match(/\w+/);
     }
 }
-
-

@@ -136,5 +136,3 @@ export class Todo extends Component<Props, State> {
         this.props.deleteTodoRequestAction(this.props.links.delete);
     }
 }
-
-

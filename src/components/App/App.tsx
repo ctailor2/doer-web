@@ -304,5 +304,3 @@ export const mapStateToProps = (state: ApplicationState) => ({
     list: state.list,
     listLink: state.links.list,
 });
-
-

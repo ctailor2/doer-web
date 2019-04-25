@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import { ActionTypes } from "../constants/actionTypes";
-import { ClearErrorsAction, StoreErrorsAction, DismissGlobalAlertAction } from "./errorActions";
+import { ClearErrorsAction, DismissGlobalAlertAction, StoreErrorsAction } from "./errorActions";
 import { PersistLinkAction, StoreLinksAction } from "./linkActions";
 import {
     GetCompletedListRequestAction,

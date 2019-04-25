@@ -59,5 +59,3 @@ export const mapStateToProps = (state: ApplicationState) => {
         todos: [],
     };
 };
-
-

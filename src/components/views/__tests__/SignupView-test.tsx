@@ -42,8 +42,8 @@ describe('SignupView', () => {
 
     it('fires get base resources action when mounted', () => {
         const store = {
-            subscribe: () => { },
-            dispatch: () => { },
+            subscribe: () => null,
+            dispatch: () => null,
             getState: () => {
                 return { errors: { globalErrors: [] } };
             },
@@ -285,7 +285,11 @@ describe('SignupView', () => {
 
             describe('when all fields are entered', () => {
                 it('stays disabled if password confirmation does not match password ', () => {
-                    tree.setState({ email: 'email', password: 'password', passwordConfirmation: 'passwordConfirmation' });
+                    tree.setState({
+                        email: 'email',
+                        password: 'password',
+                        passwordConfirmation: 'passwordConfirmation',
+                     });
                     button = tree.find('Button');
                     expect(button.prop('disabled')).toBe(true);
                 });
@@ -311,8 +315,8 @@ describe('SignupView', () => {
     });
 
     it('maps state to props', () => {
-        const signupLink = { href: 'http://some.api/signup' };
-        const links = { signup: signupLink, login: { href: 'http://some.api/login' } };
+        const mySignupLink = { href: 'http://some.api/signup' };
+        const links = { signup: mySignupLink, login: { href: 'http://some.api/login' } };
         const state = {
             links,
             list: null,
@@ -323,7 +327,7 @@ describe('SignupView', () => {
             },
         };
         expect(mapStateToProps(state)).toEqual({
-            signupLink,
+            signupLink: mySignupLink,
         });
     });
 });

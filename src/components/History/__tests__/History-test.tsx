@@ -43,7 +43,7 @@ describe('History', () => {
                     { task: 'celebrate', completedAt: '2017-01-01T10:50:44+0000' },
                     { task: 'feel so good', completedAt: '2017-01-01T11:50:44+0000' },
                     { task: 'another day', completedAt: '2017-01-10T02:50:44+0000' },
-                ]
+                ],
             });
         });
 

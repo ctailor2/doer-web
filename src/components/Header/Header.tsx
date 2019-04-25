@@ -11,6 +11,7 @@ interface Props {
     logoutRequestAction: typeof logoutRequestAction;
 }
 
+// tslint:disable-next-line: no-shadowed-variable
 export default ({ globalErrors, dismissGlobalAlertAction, logoutRequestAction }: Props) => (
     <div>
         <Navbar>

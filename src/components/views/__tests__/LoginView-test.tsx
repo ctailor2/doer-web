@@ -41,8 +41,8 @@ describe('LoginView', () => {
 
     it('fires get base resources action when mounted', () => {
         const store = {
-            subscribe: () => {},
-            dispatch: () => {},
+            subscribe: () => null,
+            dispatch: () => null,
             getState: () => {
                 return {errors: {globalErrors: []}};
             },

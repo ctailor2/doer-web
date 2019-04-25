@@ -1,5 +1,5 @@
 import { StoreLinksAction } from '../../actions/linkActions';
-import { ActionTypes } from '../../constants/actionTypes'
+import { ActionTypes } from '../../constants/actionTypes';
 import { links } from '../linksReducer';
 
 describe('links', () => {
