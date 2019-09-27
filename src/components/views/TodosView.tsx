@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { isMobile } from 'react-device-detect';
+import { DndProvider } from 'react-dnd';
+import Html5Backend from 'react-dnd-html5-backend';
+import TouchBackend from 'react-dnd-touch-backend';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { loadTodosViewAction, LoadTodosViewAction } from '../../actions/loadViewActions';
@@ -45,7 +47,17 @@ export const mapStateToProps = (state: ApplicationState) => {
         list: state.list,
     };
 };
+const decorateWithDragAndDrop = (DecoratedComponent: any) => {
+    return (props: any) => {
+        const backend = isMobile ? TouchBackend : Html5Backend;
+        return (
+            <DndProvider backend={backend}>
+                <DecoratedComponent {...props} />
+            </DndProvider>
+        );
+    };
+};
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps, {
+export default decorateWithDragAndDrop(connect(mapStateToProps, {
     loadTodosViewAction,
 })(TodosView));
