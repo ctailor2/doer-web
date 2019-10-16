@@ -47,7 +47,7 @@ describe('resources middleware', () => {
 
     it('stores links from root resources', (done) => {
         const links = {
-            todoResources: { href: 'todoResourcesHref' },
+            listResources: { href: 'listResourcesHref' },
             historyResources: { href: 'historyResourcesHref' },
         };
         const link = { href: 'rootHref' };
@@ -70,18 +70,18 @@ describe('resources middleware', () => {
         });
     });
 
-    it('stores links from todoResources resources', (done) => {
+    it('stores links from listResources resources', (done) => {
         const links = {
             list: { href: 'listHref' },
         };
-        const link = { href: 'todoResourcesHref' };
+        const link = { href: 'listResourcesHref' };
         mockAdapter.onGet(link.href)
             .reply(200, {
                 _links: links,
             });
 
         store.dispatch({
-            type: ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION,
+            type: ActionTypes.GET_LIST_RESOURCES_REQUEST_ACTION,
             link,
         });
 

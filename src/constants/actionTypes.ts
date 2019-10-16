@@ -9,7 +9,7 @@ export enum ActionTypes {
 
     GET_BASE_RESOURCES_REQUEST_ACTION = 'baseResources',
     GET_ROOT_RESOURCES_REQUEST_ACTION = 'rootResources',
-    GET_TODO_RESOURCES_REQUEST_ACTION = 'todoResources',
+    GET_LIST_RESOURCES_REQUEST_ACTION = 'listResources',
     GET_HISTORY_RESOURCES_REQUEST_ACTION = 'historyResources',
 
     LOAD_TODOS_VIEW_ACTION = 'LOAD_TODOS_VIEW_ACTION',

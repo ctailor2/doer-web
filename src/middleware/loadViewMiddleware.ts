@@ -13,16 +13,16 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
             const headers = { 'Session-Token': localStorage.getItem('sessionToken') };
             perform('get', ActionTypes.GET_ROOT_RESOURCES_REQUEST_ACTION, { href: rootResourcesLink },
                 (rootResources) => {
-                    perform('get', ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION,
-                    rootResources._links.todoResources,
-                    (todoResources) => {
+                    perform('get', ActionTypes.GET_LIST_RESOURCES_REQUEST_ACTION,
+                    rootResources._links.listResources,
+                    (listResources) => {
                         store.dispatch({
                             type: ActionTypes.STORE_LINKS_ACTION,
-                            links: todoResources._links,
+                            links: listResources._links,
                         });
                         store.dispatch({
                             type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                            link: todoResources._links.list,
+                            link: listResources._links.list,
                         });
                     },
                     () => null,

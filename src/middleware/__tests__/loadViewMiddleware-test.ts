@@ -34,15 +34,15 @@ describe('load view middleware', () => {
             mockAdapter.onGet('rootHref')
                 .reply(200, {
                     _links: {
-                        todoResources: {
-                            href: 'todoResourcesHref',
+                        listResources: {
+                            href: 'listResourcesHref',
                         },
                         historyResources: {
                             href: 'historyResourcesHref',
                         },
                     },
                 });
-            mockAdapter.onGet('todoResourcesHref')
+            mockAdapter.onGet('listResourcesHref')
                 .reply(200, {
                     _links: links,
                 });
@@ -83,8 +83,8 @@ describe('load view middleware', () => {
             mockAdapter.onGet('rootHref')
                 .reply(200, {
                     _links: {
-                        todoResources: {
-                            href: 'todoResourcesHref',
+                        listResources: {
+                            href: 'listResourcesHref',
                         },
                         historyResources: {
                             href: 'historyResourcesHref',

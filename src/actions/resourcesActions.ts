@@ -20,12 +20,12 @@ export const getBaseResourcesRequestAction = (): GetBaseResourcesRequestAction =
 });
 
 export interface GetTodoResourcesRequestAction {
-    type: ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION;
+    type: ActionTypes.GET_LIST_RESOURCES_REQUEST_ACTION;
     link: Link;
 }
 
 export const getTodoResourcesRequestAction = (link: Link): GetTodoResourcesRequestAction => ({
-    type: ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION,
+    type: ActionTypes.GET_LIST_RESOURCES_REQUEST_ACTION,
     link,
 });
 

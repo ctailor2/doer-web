@@ -11,7 +11,7 @@ export type Commands =
     | 'login'
     | 'baseResources'
     | 'rootResources'
-    | 'todoResources'
+    | 'listResources'
     | 'historyResources'
     | 'list'
     | 'completedList'
@@ -60,11 +60,11 @@ export const successResponseValidators = {
     }),
     rootResources: io.interface({
         _links: io.interface({
-            todoResources: linkValidator,
+            listResources: linkValidator,
             historyResources: linkValidator,
         }),
     }),
-    todoResources: io.interface({
+    listResources: io.interface({
         _links: io.interface({
             list: linkValidator,
         }),
@@ -123,7 +123,7 @@ export interface Requests {
     login: LoginInfo;
     baseResources: undefined;
     rootResources: undefined;
-    todoResources: undefined;
+    listResources: undefined;
     historyResources: undefined;
     list: undefined;
     completedList: undefined;

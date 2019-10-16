@@ -17,7 +17,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
             break;
         }
         case ActionTypes.GET_ROOT_RESOURCES_REQUEST_ACTION:
-        case ActionTypes.GET_TODO_RESOURCES_REQUEST_ACTION:
+        case ActionTypes.GET_LIST_RESOURCES_REQUEST_ACTION:
         case ActionTypes.GET_HISTORY_RESOURCES_REQUEST_ACTION: {
             perform('get', action.type, action.link,
                 (resources) => {
