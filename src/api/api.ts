@@ -76,6 +76,7 @@ export const successResponseValidators = {
     }),
     list: io.interface({
         list: io.interface({
+            profileName: io.string,
             name: io.string,
             deferredName: io.string,
             todos: io.array(io.interface({

@@ -26,6 +26,7 @@ describe('list middleware', () => {
     it('gets list and stores it', (done) => {
         const link = { href: 'listHref' };
         const list = {
+            profileName: 'someListName',
             name: 'someName',
             deferredName: 'someDeferredName',
             todos: [],

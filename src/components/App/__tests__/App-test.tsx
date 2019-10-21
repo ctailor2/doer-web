@@ -3,18 +3,20 @@ jest.useFakeTimers();
 import { configure, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import _ from 'lodash';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import {
+    Dropdown,
     Modal,
     Tab,
     Tabs,
+    DropdownButton,
 } from 'react-bootstrap';
 import { Link } from '../../../api/api';
 import { List } from '../../../api/list';
 import { Todo as DomainTodo } from '../../../api/todo';
 import TaskForm from '../../TaskForm';
 import Todo from '../../Todo';
-import { App, mapStateToProps, Props, State } from '../App';
+import { App, Props, State } from '../App';
 
 describe('App', () => {
     let tree: ShallowWrapper<Props, State, any>;
@@ -55,6 +57,7 @@ describe('App', () => {
         displaceLink = { href: 'http://some.api/displaceTodo' };
         listLink = { href: 'http://some.api/list' };
         list = {
+            profileName: 'someListName',
             name: 'name',
             deferredName: 'deferredname',
             unlockDuration: 1700900,
@@ -220,6 +223,27 @@ describe('App', () => {
 
         it('updates activeTab state', () => {
             expect(tree.state().activeTab).toEqual(list.name);
+        });
+    });
+
+    describe('DropdownButton', () => {
+        let dropdownButton: ShallowWrapper<any>;
+
+        beforeEach(() => {
+            dropdownButton = tree.find(DropdownButton);
+        });
+
+        it('renders', () => {
+            expect(dropdownButton.exists()).toBe(true);
+        });
+
+        it('has the list profile name as the title', () => {
+            expect(dropdownButton.prop('title')).toEqual('someListName');
+        });
+
+        it('has default properties', () => {
+            expect(dropdownButton.prop('disabled')).toBe(true);
+            expect(dropdownButton.prop('noCaret')).toBe(true);
         });
     });
 

@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import {
     Button,
     Col,
+    DropdownButton,
+    FormGroup,
     Glyphicon,
     ListGroup,
     ListGroupItem,
@@ -24,7 +26,6 @@ import {
 import { Link } from '../../api/api';
 import { List } from '../../api/list';
 import { Todo as DomainTodo, TodoForm } from '../../api/todo';
-import { ApplicationState } from '../../store';
 import TaskForm from '../TaskForm';
 import Todo from '../Todo';
 
@@ -119,6 +120,17 @@ export class App extends Component<Props, State> {
 
     public render() {
         return (<div>
+            <Row>
+                <Col lg={6} lgOffset={3}>
+                    <FormGroup bsSize="large">
+                        <DropdownButton
+                            id="list-dropdown-button"
+                            title={this.props.list.profileName}
+                            disabled={true}
+                            noCaret={true}/>
+                    </FormGroup>
+                </Col>
+            </Row>
             <Row>
                 <Col lg={6} lgOffset={3}>
                     <TaskForm task={this.state.todo.task}

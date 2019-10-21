@@ -2,6 +2,7 @@ import { Link } from "./api";
 import { Todo } from "./todo";
 
 export interface List {
+    profileName: string;
     name: string;
     deferredName: string;
     todos: Todo[];
