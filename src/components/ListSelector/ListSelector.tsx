@@ -29,7 +29,7 @@ export default ({ selectedList, createListLink, ...props }: Props, state: State)
     const buttonIsDisabled = newListName === undefined || newListName.match(/\w+/) === null;
     return (<>
         <FormGroup bsSize="large">
-            <DropdownButton id="list-dropdown-button" title={selectedList.profileName}>
+            <DropdownButton id="list-dropdown-button" title={selectedList.profileName} disabled={true} noCaret={true}>
                 <MenuItem onClick={() => setCreateListModalOpen(!createListModalOpen)}>
                     <Glyphicon glyph="plus-sign" />
                     &nbsp;New List
