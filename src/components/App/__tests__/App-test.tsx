@@ -645,6 +645,38 @@ describe('App', () => {
                 modal = tree.find(Modal).at(0);
             });
 
+            describe('title', () => {
+                let title: ShallowWrapper;
+
+                beforeEach(() => {
+                    title = modal.find(Modal.Title);
+                });
+
+                it('renders', () => {
+                    expect(title.exists()).toBe(true);
+                });
+
+                it('has a prompt', () => {
+                    expect(title.childAt(0).text()).toEqual('Unlock deferredname list?');
+                });
+            });
+
+            describe('body', () => {
+                let body: ShallowWrapper;
+
+                beforeEach(() => {
+                    body = modal.find(Modal.Body);
+                });
+
+                it('renders', () => {
+                    expect(body.exists()).toBe(true);
+                });
+
+                it('has a prompt', () => {
+                    expect(body.childAt(0).text()).toEqual('The deferredname list can only be unlocked once a day.');
+                });
+            });
+
             describe('footer', () => {
                 let footer: ShallowWrapper;
 

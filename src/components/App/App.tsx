@@ -151,9 +151,9 @@ export class App extends Component<Props, State> {
     public renderModal() {
         return (<Modal show={this.state.showUnlockConfirmation} onHide={this.closeModal.bind(this)}>
             <Modal.Header closeButton>
-                <Modal.Title>Unlock Later list?</Modal.Title>
+                <Modal.Title>{`Unlock ${this.props.list.deferredName} list?`}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>The Later list can only be unlocked once a day.</Modal.Body>
+            <Modal.Body>{`The ${this.props.list.deferredName} list can only be unlocked once a day.`}</Modal.Body>
             <Modal.Footer>
                 <Button onClick={this.closeModal.bind(this)}>Cancel</Button>
                 <Button onClick={this.handleUnlockClick.bind(this)}>Unlock</Button>
