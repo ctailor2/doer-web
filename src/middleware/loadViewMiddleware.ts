@@ -1,5 +1,6 @@
 import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
+import { storeLinksAction } from "../actions/linkActions";
 import { ActionTypes } from "../constants/actionTypes";
 import { perform } from "./apiClient";
 
@@ -16,10 +17,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                     perform('get', ActionTypes.GET_LIST_RESOURCES_REQUEST_ACTION,
                     rootResources._links.listResources,
                     (listResources) => {
-                        store.dispatch({
-                            type: ActionTypes.STORE_LINKS_ACTION,
-                            links: listResources._links,
-                        });
+                        store.dispatch(storeLinksAction(listResources._links));
                         store.dispatch({
                             type: ActionTypes.GET_LIST_REQUEST_ACTION,
                             link: listResources._links.list,
@@ -43,10 +41,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                     perform('get', ActionTypes.GET_HISTORY_RESOURCES_REQUEST_ACTION,
                     rootResources._links.historyResources,
                     (historyResources) => {
-                        store.dispatch({
-                            type: ActionTypes.STORE_LINKS_ACTION,
-                            links: historyResources._links,
-                        });
+                        store.dispatch(storeLinksAction(historyResources._links));
                         store.dispatch({
                             type: ActionTypes.GET_COMPLETED_LIST_REQUEST_ACTION,
                             link: historyResources._links.completedList,

@@ -5,15 +5,14 @@ import Adapter from 'enzyme-adapter-react-16';
 import _ from 'lodash';
 import React from 'react';
 import {
-    Dropdown,
     Modal,
     Tab,
     Tabs,
-    DropdownButton,
 } from 'react-bootstrap';
 import { Link } from '../../../api/api';
 import { List } from '../../../api/list';
 import { Todo as DomainTodo } from '../../../api/todo';
+import ListSelector from '../../ListSelector';
 import TaskForm from '../../TaskForm';
 import Todo from '../../Todo';
 import { App, Props, State } from '../App';
@@ -226,24 +225,19 @@ describe('App', () => {
         });
     });
 
-    describe('DropdownButton', () => {
-        let dropdownButton: ShallowWrapper<any>;
+    describe('ListSelector', () => {
+        let listSelector: ShallowWrapper<any>;
 
         beforeEach(() => {
-            dropdownButton = tree.find(DropdownButton);
+            listSelector = tree.find(ListSelector);
         });
 
         it('renders', () => {
-            expect(dropdownButton.exists()).toBe(true);
+            expect(listSelector.exists()).toBe(true);
         });
 
-        it('has the list profile name as the title', () => {
-            expect(dropdownButton.prop('title')).toEqual('someListName');
-        });
-
-        it('has default properties', () => {
-            expect(dropdownButton.prop('disabled')).toBe(true);
-            expect(dropdownButton.prop('noCaret')).toBe(true);
+        it('has the list as the selectedList', () => {
+            expect(listSelector.prop('selectedList')).toEqual(list);
         });
     });
 

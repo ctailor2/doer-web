@@ -1,9 +1,8 @@
 import MockAdapter from "axios-mock-adapter";
 import { applyMiddleware, createStore } from "redux";
 import { ApplicationAction } from "../../actions/actions";
-import { UpdateTodoRequestAction } from "../../actions/todoActions";
 import { Link } from "../../api/api";
-import { Todo, TodoForm } from "../../api/todo";
+import { TodoForm } from "../../api/todo";
 import { ActionTypes } from "../../constants/actionTypes";
 import { ApplicationStore, reducer } from "../../store";
 import actionCapturingMiddleware from "../../utils/actionCapturingMiddleware";

@@ -17,3 +17,7 @@ export interface List {
         pull?: Link;
     };
 }
+
+export interface ListForm {
+    name: string;
+}
