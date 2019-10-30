@@ -24,9 +24,9 @@ import {
 import { Link } from '../../api/api';
 import { List } from '../../api/list';
 import { Todo as DomainTodo, TodoForm } from '../../api/todo';
+import ListSelector from '../ListSelector';
 import TaskForm from '../TaskForm';
 import Todo from '../Todo';
-import ListSelector from '../ListSelector';
 
 export interface Props {
     list: List;

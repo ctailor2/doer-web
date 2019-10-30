@@ -28,6 +28,9 @@ describe('load view middleware', () => {
             list: {
                 href: 'listHref',
             },
+            lists: {
+                href: 'listsHref',
+            },
         };
 
         beforeEach(() => {
@@ -56,6 +59,16 @@ describe('load view middleware', () => {
                 expect(capturedActions).toContainEqual({
                     type: ActionTypes.STORE_LINKS_ACTION,
                     links,
+                });
+                done();
+            });
+        });
+
+        it('gets the list options', (done) => {
+            setTimeout(() => {
+                expect(capturedActions).toContainEqual({
+                    type: ActionTypes.GET_LIST_OPTIONS_REQUEST_ACTION,
+                    link: links.lists,
                 });
                 done();
             });

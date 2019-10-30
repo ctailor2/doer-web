@@ -18,6 +18,10 @@ export interface List {
     };
 }
 
+export interface ListOption {
+    name: string;
+}
+
 export interface ListForm {
     name: string;
 }

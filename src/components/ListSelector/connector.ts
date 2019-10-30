@@ -10,6 +10,7 @@ export const mapStateToProps = (state: ApplicationState, ownProps: { selectedLis
     ({
         createListLink: state.links.createList,
         selectedList: ownProps.selectedList,
+        listOptions: state.listOptions,
     });
 
 export const mapDispatchToProps = (dispatch: Dispatch<ApplicationAction>) => ({

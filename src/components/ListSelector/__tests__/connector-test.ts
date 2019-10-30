@@ -1,7 +1,7 @@
 import { createStore } from "redux";
 import { ActionTypes } from "../../../constants/actionTypes";
 import { ApplicationStore, reducer } from "../../../store";
-import { mapStateToProps, mapDispatchToProps } from "../connector";
+import { mapDispatchToProps, mapStateToProps } from "../connector";
 
 export default undefined;
 
@@ -18,6 +18,11 @@ describe('ListSelector connector', () => {
             type: ActionTypes.STORE_LINKS_ACTION,
             links: { createList: createListLink },
         });
+        const lists = [{ name: 'someName' }];
+        store.dispatch({
+            type: ActionTypes.STORE_LIST_OPTIONS_ACTION,
+            lists,
+        });
         const list = {
             profileName: 'someListName',
             name: 'someName',
@@ -33,6 +38,7 @@ describe('ListSelector connector', () => {
         const props = mapStateToProps(store.getState(), { selectedList: list });
         expect(props.createListLink).toEqual(createListLink);
         expect(props.selectedList).toEqual(list);
+        expect(props.listOptions).toEqual(lists);
     });
 
     it('mapsDispatchToProps', () => {

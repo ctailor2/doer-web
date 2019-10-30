@@ -1,6 +1,6 @@
 import { Link } from '../api/api';
 import { CompletedList } from '../api/completedList';
-import { List, ListForm } from '../api/list';
+import { List, ListForm, ListOption } from '../api/list';
 import { ActionTypes } from '../constants/actionTypes';
 
 export interface CreateListAction {
@@ -25,6 +25,16 @@ export const getListRequestAction = (link: Link): GetListRequestAction => ({
     link,
 });
 
+export interface GetListOptionsRequestAction {
+    type: ActionTypes.GET_LIST_OPTIONS_REQUEST_ACTION;
+    link: Link;
+}
+
+export const getListOptionsRequestAction = (link: Link): GetListOptionsRequestAction => ({
+    type: ActionTypes.GET_LIST_OPTIONS_REQUEST_ACTION,
+    link,
+});
+
 export interface GetCompletedListRequestAction {
     type: ActionTypes.GET_COMPLETED_LIST_REQUEST_ACTION;
     link: Link;
@@ -43,6 +53,16 @@ export interface StoreListAction {
 export const storeListAction = (list: List): StoreListAction => ({
     type: ActionTypes.STORE_LIST_ACTION,
     list,
+});
+
+export interface StoreListOptionsAction {
+    type: ActionTypes.STORE_LIST_OPTIONS_ACTION;
+    lists: ListOption[];
+}
+
+export const storeListOptionsAction = (lists: ListOption[]): StoreListOptionsAction => ({
+    type: ActionTypes.STORE_LIST_OPTIONS_ACTION,
+    lists,
 });
 
 export interface StoreCompletedListAction {

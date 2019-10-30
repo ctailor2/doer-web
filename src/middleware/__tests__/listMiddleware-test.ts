@@ -109,4 +109,26 @@ describe('list middleware', () => {
             done();
         });
     });
+
+    it('gets list options and stores them', (done) => {
+        const link = { href: 'listsHref' };
+        const listOptions = [{ name: 'someName' }];
+        mockAdapter.onGet(link.href)
+            .reply(200, {
+                lists: listOptions,
+            });
+
+        store.dispatch({
+            type: ActionTypes.GET_LIST_OPTIONS_REQUEST_ACTION,
+            link,
+        });
+
+        setTimeout(() => {
+            expect(capturedActions).toContainEqual({
+                type: ActionTypes.STORE_LIST_OPTIONS_ACTION,
+                lists: listOptions,
+            });
+            done();
+        });
+    });
 });

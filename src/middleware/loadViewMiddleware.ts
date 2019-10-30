@@ -1,6 +1,7 @@
 import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
 import { storeLinksAction } from "../actions/linkActions";
+import { getListOptionsRequestAction, getListRequestAction } from "../actions/listActions";
 import { ActionTypes } from "../constants/actionTypes";
 import { perform } from "./apiClient";
 
@@ -18,10 +19,8 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                     rootResources._links.listResources,
                     (listResources) => {
                         store.dispatch(storeLinksAction(listResources._links));
-                        store.dispatch({
-                            type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                            link: listResources._links.list,
-                        });
+                        store.dispatch(getListRequestAction(listResources._links.list));
+                        store.dispatch(getListOptionsRequestAction(listResources._links.lists));
                     },
                     () => null,
                     headers);

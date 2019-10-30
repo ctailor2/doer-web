@@ -14,6 +14,7 @@ export type Commands =
     | 'listResources'
     | 'historyResources'
     | 'list'
+    | 'lists'
     | 'completedList'
     | 'unlock'
     | 'deleteTodo'
@@ -67,6 +68,7 @@ export const successResponseValidators = {
     listResources: io.interface({
         _links: io.interface({
             list: linkValidator,
+            lists: linkValidator,
         }),
     }),
     historyResources: io.interface({
@@ -100,6 +102,11 @@ export const successResponseValidators = {
             ]),
         }),
     }),
+    lists: io.interface({
+        lists: io.array(io.interface({
+            name: io.string,
+        })),
+    }),
     completedList: io.interface({
         list: io.interface({
             todos: io.array(io.interface({
@@ -127,6 +134,7 @@ export interface Requests {
     listResources: undefined;
     historyResources: undefined;
     list: undefined;
+    lists: undefined;
     completedList: undefined;
     unlock: undefined;
     deleteTodo: undefined;

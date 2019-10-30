@@ -10,9 +10,10 @@ import {
 } from "react-bootstrap";
 import { createListAction } from '../../actions/listActions';
 import { Link } from '../../api/api';
-import { List } from "../../api/list";
+import { List, ListOption } from "../../api/list";
 
 interface Props {
+    listOptions: ListOption[];
     selectedList: List;
     createListLink: Link;
     createListAction: typeof createListAction;
@@ -23,13 +24,14 @@ interface State {
     newListName?: string;
 }
 
-export default ({ selectedList, createListLink, ...props }: Props, state: State) => {
+export default ({ listOptions, selectedList, createListLink, ...props }: Props, state: State) => {
     const [createListModalOpen, setCreateListModalOpen] = useState(false);
     const [newListName, setNewListName] = useState<string | undefined>(undefined);
     const buttonIsDisabled = newListName === undefined || newListName.match(/\w+/) === null;
     return (<>
         <FormGroup bsSize="large">
             <DropdownButton id="list-dropdown-button" title={selectedList.profileName} disabled={true} noCaret={true}>
+                {renderListOptions(listOptions)}
                 <MenuItem onClick={() => setCreateListModalOpen(!createListModalOpen)}>
                     <Glyphicon glyph="plus-sign" />
                     &nbsp;New List
@@ -63,3 +65,7 @@ export default ({ selectedList, createListLink, ...props }: Props, state: State)
         </Modal>
     </>);
 };
+
+function renderListOptions(listOptions: ListOption[]): React.ReactNode {
+    return listOptions.map((listOption) => (<MenuItem key={listOption.name}>{listOption.name}</MenuItem>));
+}

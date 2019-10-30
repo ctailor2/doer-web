@@ -73,6 +73,7 @@ describe('resources middleware', () => {
     it('stores links from listResources resources', (done) => {
         const links = {
             list: { href: 'listHref' },
+            lists: { href: 'listsHref' },
         };
         const link = { href: 'listResourcesHref' };
         mockAdapter.onGet(link.href)

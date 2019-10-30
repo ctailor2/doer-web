@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import { Button, DropdownButton, FormControl, MenuItem, Modal } from 'react-bootstrap';
 import { Link } from '../../../api/api';
-import { List } from '../../../api/list';
+import { List, ListOption } from '../../../api/list';
 import ListSelector from '../ListSelector';
 
 describe('ListSelector', () => {
@@ -11,6 +11,7 @@ describe('ListSelector', () => {
     let tree: ShallowWrapper<any>;
     let mockCreateListActionFn: jest.Mock;
     let createListLink: Link;
+    let listOption: ListOption;
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
@@ -27,7 +28,9 @@ describe('ListSelector', () => {
         };
         mockCreateListActionFn = jest.fn();
         createListLink = { href: 'createListLink' };
+        listOption = { name: 'someName' };
         tree = shallow(<ListSelector
+            listOptions={[listOption]}
             selectedList={list}
             createListLink={createListLink}
             createListAction={mockCreateListActionFn} />);
@@ -159,6 +162,23 @@ describe('ListSelector', () => {
                         });
                     });
                 });
+            });
+        });
+
+        it('includes an additional menu item for each list option', () => {
+            const allMenuItems = dropdownButton.find(MenuItem);
+            expect(allMenuItems.length).toBe(2);
+        });
+
+        describe('menu item for each list item', () => {
+            let menuItem: ShallowWrapper<any>;
+
+            beforeEach(() => {
+                menuItem = dropdownButton.find(MenuItem).at(0);
+            });
+
+            it('matches the list option name', () => {
+                expect(menuItem.childAt(0).text()).toEqual(listOption.name);
             });
         });
     });

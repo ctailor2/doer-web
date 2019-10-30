@@ -19,6 +19,19 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                 headers);
             break;
         }
+        case ActionTypes.GET_LIST_OPTIONS_REQUEST_ACTION: {
+            const headers = { 'Session-Token': localStorage.getItem('sessionToken') };
+            perform('get', action.type, action.link,
+                (listResponse) => {
+                    store.dispatch({
+                        type: ActionTypes.STORE_LIST_OPTIONS_ACTION,
+                        lists: listResponse.lists,
+                    });
+                },
+                () => null,
+                headers);
+            break;
+        }
         case ActionTypes.GET_COMPLETED_LIST_REQUEST_ACTION: {
             const headers = { 'Session-Token': localStorage.getItem('sessionToken') };
             perform('get', action.type, action.link,
