@@ -31,7 +31,7 @@ export default ({ listOptions, selectedList, createListLink, ...props }: Props, 
     return (<>
         <FormGroup bsSize="large">
             <DropdownButton id="list-dropdown-button" title={selectedList.profileName} disabled={true} noCaret={true}>
-                {renderListOptions(listOptions)}
+                {renderListOptions(listOptions, selectedList.profileName)}
                 <MenuItem onClick={() => setCreateListModalOpen(!createListModalOpen)}>
                     <Glyphicon glyph="plus-sign" />
                     &nbsp;New List
@@ -66,6 +66,9 @@ export default ({ listOptions, selectedList, createListLink, ...props }: Props, 
     </>);
 };
 
-function renderListOptions(listOptions: ListOption[]): React.ReactNode {
-    return listOptions.map((listOption) => (<MenuItem key={listOption.name}>{listOption.name}</MenuItem>));
+function renderListOptions(listOptions: ListOption[], selectedListName: string): React.ReactNode {
+    return listOptions.map((listOption) =>
+        (<MenuItem key={listOption.name} active={listOption.name === selectedListName}>
+            {listOption.name}
+        </MenuItem>));
 }

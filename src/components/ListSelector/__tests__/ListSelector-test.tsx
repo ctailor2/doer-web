@@ -12,6 +12,7 @@ describe('ListSelector', () => {
     let mockCreateListActionFn: jest.Mock;
     let createListLink: Link;
     let listOption: ListOption;
+    let otherListOption: ListOption;
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
@@ -28,9 +29,10 @@ describe('ListSelector', () => {
         };
         mockCreateListActionFn = jest.fn();
         createListLink = { href: 'createListLink' };
-        listOption = { name: 'someName' };
+        listOption = { name: 'someListName' };
+        otherListOption = { name: 'someOtherListName' };
         tree = shallow(<ListSelector
-            listOptions={[listOption]}
+            listOptions={[listOption, otherListOption]}
             selectedList={list}
             createListLink={createListLink}
             createListAction={mockCreateListActionFn} />);
@@ -167,7 +169,7 @@ describe('ListSelector', () => {
 
         it('includes an additional menu item for each list option', () => {
             const allMenuItems = dropdownButton.find(MenuItem);
-            expect(allMenuItems.length).toBe(2);
+            expect(allMenuItems.length).toBe(3);
         });
 
         describe('menu item for each list item', () => {
@@ -180,6 +182,12 @@ describe('ListSelector', () => {
             it('matches the list option name', () => {
                 expect(menuItem.childAt(0).text()).toEqual(listOption.name);
             });
+
+        });
+
+        it('is marks the menuItem matching the selected list as active', () => {
+            expect(dropdownButton.find(MenuItem).at(0).prop('active')).toBe(true);
+            expect(dropdownButton.find(MenuItem).at(1).prop('active')).toBe(false);
         });
     });
 });
