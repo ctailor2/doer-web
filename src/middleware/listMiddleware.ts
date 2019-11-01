@@ -1,6 +1,5 @@
 import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
-import { GetListRequestAction } from "../actions/listActions";
 import { ActionTypes } from "../constants/actionTypes";
 import { perform } from "./apiClient";
 
@@ -56,6 +55,20 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                 },
                 () => null,
                 headers);
+            break;
+        }
+        case ActionTypes.CREATE_LIST_ACTION: {
+            const headers = { 'Session-Token': localStorage.getItem('sessionToken') };
+            perform('post', action.type, action.link,
+                (createListResponse) => {
+                    store.dispatch({
+                        type: ActionTypes.GET_LIST_OPTIONS_REQUEST_ACTION,
+                        link: createListResponse._links.lists,
+                    });
+                },
+                () => null,
+                headers,
+                action.list);
             break;
         }
     }

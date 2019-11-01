@@ -8,7 +8,7 @@ import {
     MenuItem,
     Modal,
 } from "react-bootstrap";
-import { createListAction } from '../../actions/listActions';
+import { createListAction, getListRequestAction } from '../../actions/listActions';
 import { Link } from '../../api/api';
 import { List, ListOption } from "../../api/list";
 
@@ -17,6 +17,7 @@ interface Props {
     selectedList: List;
     createListLink: Link;
     createListAction: typeof createListAction;
+    getListAction: typeof getListRequestAction;
 }
 
 interface State {
@@ -30,8 +31,8 @@ export default ({ listOptions, selectedList, createListLink, ...props }: Props, 
     const buttonIsDisabled = newListName === undefined || newListName.match(/\w+/) === null;
     return (<>
         <FormGroup bsSize="large">
-            <DropdownButton id="list-dropdown-button" title={selectedList.profileName} disabled={true} noCaret={true}>
-                {renderListOptions(listOptions, selectedList.profileName)}
+            <DropdownButton id="list-dropdown-button" title={selectedList.profileName}>
+                {renderListOptions(listOptions, selectedList.profileName, props.getListAction)}
                 <MenuItem onClick={() => setCreateListModalOpen(!createListModalOpen)}>
                     <Glyphicon glyph="plus-sign" />
                     &nbsp;New List
@@ -66,9 +67,15 @@ export default ({ listOptions, selectedList, createListLink, ...props }: Props, 
     </>);
 };
 
-function renderListOptions(listOptions: ListOption[], selectedListName: string): React.ReactNode {
+function renderListOptions(
+    listOptions: ListOption[],
+    selectedListName: string,
+    action: typeof getListRequestAction): React.ReactNode {
     return listOptions.map((listOption) =>
-        (<MenuItem key={listOption.name} active={listOption.name === selectedListName}>
+        (<MenuItem
+            key={listOption.name}
+            onClick={() => action(listOption._links.list)}
+            active={listOption.name === selectedListName}>
             {listOption.name}
         </MenuItem>));
 }

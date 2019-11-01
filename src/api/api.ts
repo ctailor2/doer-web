@@ -1,6 +1,7 @@
 import * as io from 'io-ts';
 import { LoginInfo, SignupInfo } from './session';
 import { TodoForm } from './todo';
+import { ListForm } from './list';
 
 export interface Link {
     href: string;
@@ -24,7 +25,8 @@ export type Commands =
     | 'moveTodo'
     | 'pullTodo'
     | 'escalateTodo'
-    | 'updateTodo';
+    | 'updateTodo'
+    | 'createList';
 
 const linkValidator = io.interface({
     href: io.string,
@@ -124,6 +126,11 @@ export const successResponseValidators = {
     moveTodo: todoActionResponseValidator,
     pullTodo: todoActionResponseValidator,
     escalateTodo: todoActionResponseValidator,
+    createList: io.interface({
+        _links: io.interface({
+            lists: linkValidator,
+        }),
+    }),
 };
 
 export interface Requests {
@@ -145,6 +152,7 @@ export interface Requests {
     moveTodo: undefined;
     pullTodo: undefined;
     escalateTodo: undefined;
+    createList: ListForm;
 }
 
 export type SuccessResponses = {

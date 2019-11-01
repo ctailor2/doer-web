@@ -20,6 +20,9 @@ export interface List {
 
 export interface ListOption {
     name: string;
+    _links: {
+        list: Link;
+    };
 }
 
 export interface ListForm {

@@ -1,6 +1,6 @@
 import { connect, Dispatch } from "react-redux";
 import { ApplicationAction } from "../../actions/actions";
-import { createListAction } from "../../actions/listActions";
+import { createListAction, getListRequestAction } from "../../actions/listActions";
 import { Link } from "../../api/api";
 import { List, ListForm } from "../../api/list";
 import { ApplicationState } from "../../store";
@@ -15,6 +15,7 @@ export const mapStateToProps = (state: ApplicationState, ownProps: { selectedLis
 
 export const mapDispatchToProps = (dispatch: Dispatch<ApplicationAction>) => ({
     createListAction: (link: Link, list: ListForm) => dispatch(createListAction(link, list)),
+    getListAction: (link: Link) => dispatch(getListRequestAction(link)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListSelector);

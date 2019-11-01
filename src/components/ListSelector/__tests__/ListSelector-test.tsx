@@ -10,8 +10,10 @@ describe('ListSelector', () => {
     let list: List;
     let tree: ShallowWrapper<any>;
     let mockCreateListActionFn: jest.Mock;
+    let mockSelectListActionFn: jest.Mock;
     let createListLink: Link;
     let listOption: ListOption;
+    let listOptionLink: Link;
     let otherListOption: ListOption;
 
     beforeEach(() => {
@@ -28,14 +30,17 @@ describe('ListSelector', () => {
             },
         };
         mockCreateListActionFn = jest.fn();
+        mockSelectListActionFn = jest.fn();
         createListLink = { href: 'createListLink' };
-        listOption = { name: 'someListName' };
-        otherListOption = { name: 'someOtherListName' };
+        listOptionLink = { href: 'listOptionHref' };
+        listOption = { name: 'someListName', _links: { list: listOptionLink } };
+        otherListOption = { name: 'someOtherListName', _links: { list: { href: 'otherListOptionHref'}} };
         tree = shallow(<ListSelector
             listOptions={[listOption, otherListOption]}
             selectedList={list}
             createListLink={createListLink}
-            createListAction={mockCreateListActionFn} />);
+            createListAction={mockCreateListActionFn}
+            getListAction={mockSelectListActionFn} />);
     });
 
     describe('DropdownButton', () => {
@@ -183,6 +188,11 @@ describe('ListSelector', () => {
                 expect(menuItem.childAt(0).text()).toEqual(listOption.name);
             });
 
+            it('fires a select list action with the selected list on click', () => {
+                menuItem.simulate('click');
+
+                expect(mockSelectListActionFn).toHaveBeenCalledWith(listOptionLink);
+            });
         });
 
         it('is marks the menuItem matching the selected list as active', () => {

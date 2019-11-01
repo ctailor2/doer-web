@@ -112,7 +112,7 @@ describe('list middleware', () => {
 
     it('gets list options and stores them', (done) => {
         const link = { href: 'listsHref' };
-        const listOptions = [{ name: 'someName' }];
+        const listOptions = [{ name: 'someListName' }];
         mockAdapter.onGet(link.href)
             .reply(200, {
                 lists: listOptions,
@@ -127,6 +127,28 @@ describe('list middleware', () => {
             expect(capturedActions).toContainEqual({
                 type: ActionTypes.STORE_LIST_OPTIONS_ACTION,
                 lists: listOptions,
+            });
+            done();
+        });
+    });
+
+    it('creates the list then gets the new list options', (done) => {
+        const createListLink = { href: 'createListHref' };
+        const listForm = { name: 'someName' };
+        const listsLink = { href: 'listsHref' };
+        mockAdapter.onPost(createListLink.href).reply(201, {
+            _links: {lists: listsLink},
+        });
+        store.dispatch({
+            type: ActionTypes.CREATE_LIST_ACTION,
+            link: createListLink,
+            list: listForm,
+        });
+
+        setTimeout(() => {
+            expect(capturedActions).toContainEqual({
+                type: ActionTypes.GET_LIST_OPTIONS_REQUEST_ACTION,
+                link: listsLink,
             });
             done();
         });

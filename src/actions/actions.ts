@@ -10,6 +10,7 @@ import {
     UnlockListRequestAction,
     StoreListOptionsAction,
     GetListOptionsRequestAction,
+    CreateListAction,
 } from "./listActions";
 import { LoadHistoryViewAction, LoadTodosViewAction } from "./loadViewActions";
 import {
@@ -44,6 +45,7 @@ export type ApplicationAction = Action<ActionTypes> & (
     | GetListOptionsRequestAction
     | GetCompletedListRequestAction
     | StoreListAction
+    | CreateListAction
     | StoreListOptionsAction
     | StoreCompletedListAction
     | UnlockListRequestAction
