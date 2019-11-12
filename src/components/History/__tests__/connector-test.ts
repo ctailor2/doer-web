@@ -14,6 +14,7 @@ describe('History connector', () => {
                 fieldErrors: [],
                 globalErrors: [],
             },
+            listOptions: [],
         };
         expect(mapStateToProps(state)).toEqual({
             todos: [todo],

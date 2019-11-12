@@ -63,6 +63,7 @@ describe('HistoryView', () => {
                 fieldErrors: [],
                 globalErrors: [],
             },
+            listOptions: [],
         };
         expect(mapStateToProps(state)).toEqual({
             list: completedList,

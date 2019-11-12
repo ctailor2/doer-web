@@ -18,7 +18,7 @@ describe('ListSelector connector', () => {
             type: ActionTypes.STORE_LINKS_ACTION,
             links: { createList: createListLink },
         });
-        const lists = [{ name: 'someName' }];
+        const lists = [{ name: 'someName', _links: { list: { href: 'someHref' } } }];
         store.dispatch({
             type: ActionTypes.STORE_LIST_OPTIONS_ACTION,
             lists,

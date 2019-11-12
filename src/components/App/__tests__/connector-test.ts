@@ -6,6 +6,7 @@ describe('App connector', () => {
     it('maps state to props', () => {
         const myListLink = { href: 'http://some.api/list' };
         const myList = {
+            profileName: 'someProfileName',
             name: 'cool list',
             deferredName: 'neato',
             todos: [],
@@ -25,6 +26,7 @@ describe('App connector', () => {
                 fieldErrors: [],
                 globalErrors: [],
             },
+            listOptions: [],
         };
 
         expect(mapStateToProps(state)).toEqual({

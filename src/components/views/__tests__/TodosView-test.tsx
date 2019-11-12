@@ -53,6 +53,7 @@ describe('TodosView', () => {
 
     it('maps state to props', () => {
         const list = {
+            profileName: 'someProfileName',
             name: 'cool list',
             deferredName: 'neato',
             todos: [],
@@ -70,6 +71,7 @@ describe('TodosView', () => {
                 fieldErrors: [],
                 globalErrors: [],
             },
+            listOptions: [],
         };
         expect(mapStateToProps(state)).toEqual({
             list,

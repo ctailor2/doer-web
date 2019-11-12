@@ -325,6 +325,7 @@ describe('SignupView', () => {
                 fieldErrors: [],
                 globalErrors: [],
             },
+            listOptions: [],
         };
         expect(mapStateToProps(state)).toEqual({
             signupLink: mySignupLink,

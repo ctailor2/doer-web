@@ -248,6 +248,7 @@ describe('LoginView', () => {
                 fieldErrors: [],
                 globalErrors: [],
             },
+            listOptions: [],
         };
         expect(mapStateToProps(state)).toEqual({
             loginLink: myLoginLink,

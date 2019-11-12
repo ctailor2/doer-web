@@ -12,6 +12,7 @@ describe('list', () => {
         const action = {
             type: ActionTypes.STORE_LIST_ACTION,
             list: {
+                profileName: 'someProfileName',
                 name: 'someName',
                 deferredName: 'someDeferredName',
                 todos: [],

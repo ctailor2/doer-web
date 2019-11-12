@@ -16,6 +16,7 @@ describe('Header connector', () => {
             links: {},
             list: null,
             errors,
+            listOptions: [],
         };
 
         expect(mapStateToProps(state)).toEqual({
