@@ -53,15 +53,18 @@ describe('TodosView', () => {
 
     it('maps state to props', () => {
         const list = {
-            profileName: 'someProfileName',
-            name: 'cool list',
-            deferredName: 'neato',
-            todos: [],
-            deferredTodos: [],
-            unlockDuration: 0,
-            _links: {
-                createDeferred: { href: '' },
+            list: {
+                profileName: 'someProfileName',
+                name: 'cool list',
+                deferredName: 'neato',
+                todos: [],
+                deferredTodos: [],
+                unlockDuration: 0,
+                _links: {
+                    createDeferred: { href: '' },
+                },
             },
+            listLink: { href: 'someLink' },
         };
         const state = {
             completedList: null,

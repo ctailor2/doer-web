@@ -10,7 +10,7 @@ import {
     Tabs,
 } from 'react-bootstrap';
 import { Link } from '../../../api/api';
-import { List } from '../../../api/list';
+import { List, ListAndLink } from '../../../api/list';
 import { Todo as DomainTodo } from '../../../api/todo';
 import ListSelector from '../../ListSelector';
 import TaskForm from '../../TaskForm';
@@ -19,7 +19,7 @@ import { App, Props, State } from '../App';
 
 describe('App', () => {
     let tree: ShallowWrapper<Props, State, any>;
-    let list: List;
+    let listAndLink: ListAndLink;
     let todoNowLink: Link;
     let todoLaterLink: Link;
     let pullLink: Link;
@@ -55,20 +55,22 @@ describe('App', () => {
         escalateLink = { href: 'http://some.api/escalateTodos' };
         displaceLink = { href: 'http://some.api/displaceTodo' };
         listLink = { href: 'http://some.api/list' };
-        list = {
-            profileName: 'someListName',
-            name: 'name',
-            deferredName: 'deferredname',
-            unlockDuration: 1700900,
-            todos: [],
-            deferredTodos: [],
-            _links: {
-                create: todoNowLink,
-                createDeferred: todoLaterLink,
+        listAndLink = {
+            list: {
+                profileName: 'someListName',
+                name: 'name',
+                deferredName: 'deferredname',
+                unlockDuration: 1700900,
+                todos: [],
+                deferredTodos: [],
+                _links: {
+                    create: todoNowLink,
+                    createDeferred: todoLaterLink,
+                },
             },
+            listLink,
         };
-        tree = shallow(<App list={list}
-            listLink={listLink}
+        tree = shallow(<App listAndLink={listAndLink}
             displaceTodoRequestAction={mockDisplaceTodoActionFn}
             moveTodoRequestAction={mockMoveTodoActionFn}
             pullTodosRequestAction={mockPullTodosActionFn}
@@ -137,9 +139,9 @@ describe('App', () => {
                 let listWithProps;
 
                 beforeEach(() => {
-                    listWithProps = _.clone(list);
-                    listWithProps.unlockDuration = 1800000;
-                    tree.setProps({ list: listWithProps });
+                    listWithProps = _.clone(listAndLink);
+                    listWithProps.list.unlockDuration = 1800000;
+                    tree.setProps({ listAndLink: listWithProps });
                 });
 
                 it('does not set unlockDuration state', () => {
@@ -156,9 +158,9 @@ describe('App', () => {
                 let listWithProps;
 
                 beforeEach(() => {
-                    listWithProps = _.clone(list);
-                    listWithProps.unlockDuration = 15250;
-                    tree.setProps({ list: listWithProps });
+                    listWithProps = _.clone(listAndLink);
+                    listWithProps.list.unlockDuration = 15250;
+                    tree.setProps({ listAndLink: listWithProps });
                 });
 
                 it('sets unlockDuration state', () => {
@@ -177,9 +179,9 @@ describe('App', () => {
 
             beforeEach(() => {
                 jest.runAllTimers();
-                listWithProps = _.clone(list);
-                listWithProps.unlockDuration = 15250;
-                tree.setProps({ list: listWithProps });
+                listWithProps = _.clone(listAndLink);
+                listWithProps.list.unlockDuration = 15250;
+                tree.setProps({ listAndLink: listWithProps });
             });
 
             it('sets unlockDuration state', () => {
@@ -212,7 +214,7 @@ describe('App', () => {
 
     describe('when unlockDuration reaches 0', () => {
         beforeEach(() => {
-            tree.setState({ activeTab: list.deferredName });
+            tree.setState({ activeTab: listAndLink.list.deferredName });
             jest.runAllTimers();
         });
 
@@ -221,7 +223,7 @@ describe('App', () => {
         });
 
         it('updates activeTab state', () => {
-            expect(tree.state().activeTab).toEqual(list.name);
+            expect(tree.state().activeTab).toEqual(listAndLink.list.name);
         });
     });
 
@@ -237,7 +239,7 @@ describe('App', () => {
         });
 
         it('has the list as the selectedList', () => {
-            expect(listSelector.prop('selectedList')).toEqual(list);
+            expect(listSelector.prop('selectedList')).toEqual(listAndLink.list);
         });
     });
 
@@ -269,7 +271,7 @@ describe('App', () => {
         });
 
         it('has links matching list links', () => {
-            expect(taskForm.prop('links')).toEqual(list._links);
+            expect(taskForm.prop('links')).toEqual(listAndLink.list._links);
         });
 
         describe('task change handler', () => {
@@ -301,9 +303,9 @@ describe('App', () => {
         let tabs: ShallowWrapper;
 
         beforeEach(() => {
-            const listWithProps = _.clone(list);
-            listWithProps.unlockDuration = 0;
-            tree.setProps({ list: listWithProps });
+            const listWithProps = _.clone(listAndLink);
+            listWithProps.list.unlockDuration = 0;
+            tree.setProps({ listAndLink: listWithProps });
             tabs = tree.find(Tabs);
         });
 
@@ -364,9 +366,9 @@ describe('App', () => {
 
                 describe('when the unlock duration is greater than zero', () => {
                     beforeEach(() => {
-                        const listWithProps = _.clone(list);
-                        listWithProps.unlockDuration = 1700000;
-                        tree.setProps({ list: listWithProps });
+                        const listWithProps = _.clone(listAndLink);
+                        listWithProps.list.unlockDuration = 1700000;
+                        tree.setProps({ listAndLink: listWithProps });
                     });
 
                     it('updates activeTab state to tabKey', () => {
@@ -404,10 +406,10 @@ describe('App', () => {
                 });
 
                 it('renders when the displace link is present and submitting state is true', () => {
-                    const listWithDisplaceLink = _.clone(list);
-                    listWithDisplaceLink._links.displace = displaceLink;
+                    const listWithDisplaceLink = _.clone(listAndLink);
+                    listWithDisplaceLink.list._links.displace = displaceLink;
                     tree.setState({ submitting: true });
-                    tree.setProps({ list: listWithDisplaceLink });
+                    tree.setProps({ listAndLink: listWithDisplaceLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(0);
                     button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
@@ -415,10 +417,10 @@ describe('App', () => {
                 });
 
                 it('does not render when the displace link is present and submitting state is false', () => {
-                    const listWithDisplaceLink = _.clone(list);
-                    listWithDisplaceLink._links.displace = displaceLink;
+                    const listWithDisplaceLink = _.clone(listAndLink);
+                    listWithDisplaceLink.list._links.displace = displaceLink;
                     tree.setState({ submitting: false });
-                    tree.setProps({ list: listWithDisplaceLink });
+                    tree.setProps({ listAndLink: listWithDisplaceLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(0);
                     button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
@@ -429,10 +431,10 @@ describe('App', () => {
                     const todoToSubmit = { task: 'some task' };
 
                     beforeEach(() => {
-                        const listWithDisplaceLink = _.clone(list);
-                        listWithDisplaceLink._links.displace = displaceLink;
+                        const listWithDisplaceLink = _.clone(listAndLink);
+                        listWithDisplaceLink.list._links.displace = displaceLink;
                         tree.setState({ todo: todoToSubmit, submitting: true });
-                        tree.setProps({ list: listWithDisplaceLink });
+                        tree.setProps({ listAndLink: listWithDisplaceLink });
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(0);
                         button = tab.find('ListGroupItem').find('[onClick]').find('.displace');
@@ -465,9 +467,9 @@ describe('App', () => {
                 });
 
                 it('renders when the pull link is present', () => {
-                    const listWithPullLink = _.clone(list);
-                    listWithPullLink._links.pull = pullLink;
-                    tree.setProps({ list: listWithPullLink });
+                    const listWithPullLink = _.clone(listAndLink);
+                    listWithPullLink.list._links.pull = pullLink;
+                    tree.setProps({ listAndLink: listWithPullLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(0);
                     button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
@@ -476,9 +478,9 @@ describe('App', () => {
 
                 describe('when rendered', () => {
                     beforeEach(() => {
-                        const listWithPullLink = _.clone(list);
-                        listWithPullLink._links.pull = pullLink;
-                        tree.setProps({ list: listWithPullLink });
+                        const listWithPullLink = _.clone(listAndLink);
+                        listWithPullLink.list._links.pull = pullLink;
+                        tree.setProps({ listAndLink: listWithPullLink });
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(0);
                         button = tab.find('ListGroupItem').find('[onClick]').find('.refresh');
@@ -513,9 +515,9 @@ describe('App', () => {
 
             describe('when the unlock link is present', () => {
                 beforeEach(() => {
-                    const listWithUnlockLink = _.clone(list);
-                    listWithUnlockLink._links.unlock = { href: 'http://some.api/unlock' };
-                    tree.setProps({ list: listWithUnlockLink });
+                    const listWithUnlockLink = _.clone(listAndLink);
+                    listWithUnlockLink.list._links.unlock = { href: 'http://some.api/unlock' };
+                    tree.setProps({ listAndLink: listWithUnlockLink });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(1);
                 });
@@ -526,12 +528,12 @@ describe('App', () => {
             });
 
             describe('when the unlock duration is greater than zero', () => {
-                let listWithProps: List;
+                let listWithProps: ListAndLink;
 
                 beforeEach(() => {
-                    listWithProps = _.clone(list);
-                    listWithProps.unlockDuration = 1700000;
-                    tree.setProps({ list: listWithProps });
+                    listWithProps = _.clone(listAndLink);
+                    listWithProps.list.unlockDuration = 1700000;
+                    tree.setProps({ listAndLink: listWithProps });
                     tabs = tree.find(Tabs);
                     tab = tabs.find(Tab).at(1);
                 });
@@ -553,8 +555,8 @@ describe('App', () => {
 
                     it('renders when the escalate link is present', () => {
                         const listWithEscalateLink = _.clone(listWithProps);
-                        listWithEscalateLink._links.escalate = escalateLink;
-                        tree.setProps({ list: listWithEscalateLink });
+                        listWithEscalateLink.list._links.escalate = escalateLink;
+                        tree.setProps({ listAndLink: listWithEscalateLink });
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(1);
                         button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
@@ -564,8 +566,8 @@ describe('App', () => {
                     describe('when rendered', () => {
                         beforeEach(() => {
                             const listWithEscalateLink = _.clone(listWithProps);
-                            listWithEscalateLink._links.escalate = escalateLink;
-                            tree.setProps({ list: listWithEscalateLink });
+                            listWithEscalateLink.list._links.escalate = escalateLink;
+                            tree.setProps({ listAndLink: listWithEscalateLink });
                             tabs = tree.find(Tabs);
                             tab = tabs.find(Tab).at(1);
                             button = tab.find('ListGroupItem').find('[onClick]').find('.escalate');
@@ -596,9 +598,9 @@ describe('App', () => {
 
                 describe('when the unlock duration is greater than zero', () => {
                     beforeEach(() => {
-                        const listWithProps = _.clone(list);
-                        listWithProps.unlockDuration = 1700000;
-                        tree.setProps({ list: listWithProps });
+                        const listWithProps = _.clone(listAndLink);
+                        listWithProps.list.unlockDuration = 1700000;
+                        tree.setProps({ listAndLink: listWithProps });
                         tabs = tree.find(Tabs);
                         tab = tabs.find(Tab).at(1);
                         titleNode = shallow(tab.prop('title'));
@@ -638,10 +640,10 @@ describe('App', () => {
 
             beforeEach(() => {
                 tree.setState({ showUnlockConfirmation: true });
-                const listWithUnlockLink = _.clone(list);
+                const listWithUnlockLink = _.clone(listAndLink);
                 unlockLink = { href: 'http://some.api/unlock' };
-                listWithUnlockLink._links.unlock = unlockLink;
-                tree.setProps({ list: listWithUnlockLink });
+                listWithUnlockLink.list._links.unlock = unlockLink;
+                tree.setProps({ listAndLink: listWithUnlockLink });
                 modal = tree.find(Modal).at(0);
             });
 
@@ -749,7 +751,7 @@ describe('App', () => {
             let laterTodo1: DomainTodo;
             let laterTodo2: DomainTodo;
             let deleteLinkOne: Link;
-            let listWithProps: List;
+            let listWithProps: ListAndLink;
 
             beforeEach(() => {
                 deleteLinkOne = { href: 'http://some.api/deleteTodoOne' };
@@ -787,10 +789,10 @@ describe('App', () => {
                 };
                 const todos = [todo1, todo2];
                 const laterTodos = [laterTodo1, laterTodo2];
-                listWithProps = _.clone(list);
-                listWithProps.todos = todos;
-                listWithProps.deferredTodos = laterTodos;
-                tree.setProps({ list: listWithProps });
+                listWithProps = _.clone(listAndLink);
+                listWithProps.list.todos = todos;
+                listWithProps.list.deferredTodos = laterTodos;
+                tree.setProps({ listAndLink: listWithProps });
                 listGroup = tree.find('ListGroup');
             });
 

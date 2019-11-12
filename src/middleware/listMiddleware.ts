@@ -12,6 +12,7 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                     store.dispatch({
                         type: ActionTypes.STORE_LIST_ACTION,
                         list: listResponse.list,
+                        listLink: listResponse._links.self,
                     });
                 },
                 () => null,

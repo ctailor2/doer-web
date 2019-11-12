@@ -22,15 +22,14 @@ import {
     pullTodosRequestAction,
 } from '../../actions/todoActions';
 import { Link } from '../../api/api';
-import { List } from '../../api/list';
+import { ListAndLink } from '../../api/list';
 import { Todo as DomainTodo, TodoForm } from '../../api/todo';
 import ListSelector from '../ListSelector';
 import TaskForm from '../TaskForm';
 import Todo from '../Todo';
 
 export interface Props {
-    list: List;
-    listLink: Link;
+    listAndLink: ListAndLink;
     getListRequestAction: typeof getListRequestAction;
     unlockListRequestAction: typeof unlockListRequestAction;
     pullTodosRequestAction: typeof pullTodosRequestAction;
@@ -57,8 +56,8 @@ export class App extends Component<Props, State> {
             todo: { task: '' },
             submitting: false,
             showUnlockConfirmation: false,
-            activeTab: props.list.name,
-            unlockDuration: props.list.unlockDuration,
+            activeTab: props.listAndLink.list.name,
+            unlockDuration: props.listAndLink.list.unlockDuration,
             unlockTimer: this.createTimer(),
         };
     }
@@ -82,12 +81,12 @@ export class App extends Component<Props, State> {
     }
 
     public reloadList() {
-        this.props.getListRequestAction(this.props.listLink);
+        this.props.getListRequestAction(this.props.listAndLink.listLink);
     }
 
     public componentWillReceiveProps(nextProps: Props) {
         const currentUnlockDuration = this.state.unlockDuration;
-        const newUnlockDuration = nextProps.list.unlockDuration;
+        const newUnlockDuration = nextProps.listAndLink.list.unlockDuration;
         if (currentUnlockDuration === 0 || newUnlockDuration < currentUnlockDuration) {
             this.setTimer(newUnlockDuration);
         }
@@ -111,7 +110,7 @@ export class App extends Component<Props, State> {
             if (newUnlockDuration <= 0) {
                 newUnlockDuration = 0;
                 this.reloadList();
-                this.setState({ activeTab: this.props.list.name });
+                this.setState({ activeTab: this.props.listAndLink.list.name });
             }
             this.setTimer(newUnlockDuration);
         }
@@ -121,16 +120,16 @@ export class App extends Component<Props, State> {
         return (<div>
             <Row>
                 <Col lg={6} lgOffset={3}>
-                    <ListSelector selectedList={this.props.list}/>
+                    <ListSelector selectedList={this.props.listAndLink.list}/>
                 </Col>
             </Row>
             <Row>
                 <Col lg={6} lgOffset={3}>
                     <TaskForm task={this.state.todo.task}
-                        primaryButtonName={this.props.list.name}
-                        secondaryButtonName={this.props.list.deferredName}
+                        primaryButtonName={this.props.listAndLink.list.name}
+                        secondaryButtonName={this.props.listAndLink.list.deferredName}
                         submitting={this.state.submitting}
-                        links={this.props.list._links}
+                        links={this.props.listAndLink.list._links}
                         handleTaskChange={this.handleTaskChange.bind(this)}
                         handleSubmitChange={this.handleSubmitChange.bind(this)} />
                     {this.renderTabs()}
@@ -151,9 +150,9 @@ export class App extends Component<Props, State> {
     public renderModal() {
         return (<Modal show={this.state.showUnlockConfirmation} onHide={this.closeModal.bind(this)}>
             <Modal.Header closeButton>
-                <Modal.Title>{`Unlock ${this.props.list.deferredName} list?`}</Modal.Title>
+                <Modal.Title>{`Unlock ${this.props.listAndLink.list.deferredName} list?`}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>{`The ${this.props.list.deferredName} list can only be unlocked once a day.`}</Modal.Body>
+            <Modal.Body>{`The ${this.props.listAndLink.list.deferredName} list can only be unlocked once a day.`}</Modal.Body>
             <Modal.Footer>
                 <Button onClick={this.closeModal.bind(this)}>Cancel</Button>
                 <Button onClick={this.handleUnlockClick.bind(this)}>Unlock</Button>
@@ -166,7 +165,7 @@ export class App extends Component<Props, State> {
     }
 
     public handleUnlockClick() {
-        const unlockLink = this.props.list._links.unlock;
+        const unlockLink = this.props.listAndLink.list._links.unlock;
         if (unlockLink) {
             this.props.unlockListRequestAction(unlockLink);
             this.closeModal();
@@ -174,7 +173,7 @@ export class App extends Component<Props, State> {
     }
 
     public handleSelectTab(tabKey: any & string) {
-        if (tabKey === this.props.list.name) {
+        if (tabKey === this.props.listAndLink.list.name) {
             this.setState({ activeTab: tabKey });
         } else {
             if (this.canViewDeferredTodos()) {
@@ -188,22 +187,22 @@ export class App extends Component<Props, State> {
     public renderTabs() {
         return (
             <Tabs activeKey={this.state.activeTab} onSelect={this.handleSelectTab.bind(this)} id='tabs'>
-                <Tab eventKey={this.props.list.name} title={_.capitalize(this.props.list.name)}>
+                <Tab eventKey={this.props.listAndLink.list.name} title={_.capitalize(this.props.listAndLink.list.name)}>
                     <ListGroup>
                         {this.renderDisplaceButton()}
-                        {this.props.list.todos.map((todo, index) => {
+                        {this.props.listAndLink.list.todos.map((todo, index) => {
                             return this.renderListItem(todo, index);
                         })}
                         {this.renderReplenishButton()}
                     </ListGroup>
                 </Tab>
                 <Tab
-                    eventKey={this.props.list.deferredName}
+                    eventKey={this.props.listAndLink.list.deferredName}
                     title={this.renderDeferredTodosTabTitle()}
                     disabled={this.deferredTodosTabIsDisabled()}>
                     <ListGroup>
                         {this.renderEscalateButton()}
-                        {this.props.list.deferredTodos.map((todo, index) => {
+                        {this.props.listAndLink.list.deferredTodos.map((todo, index) => {
                             return this.renderListItem(todo, index);
                         })}
                     </ListGroup>
@@ -213,11 +212,11 @@ export class App extends Component<Props, State> {
     }
 
     public deferredTodosTabIsDisabled() {
-        return !this.canViewDeferredTodos() && _.isUndefined(this.props.list._links.unlock);
+        return !this.canViewDeferredTodos() && _.isUndefined(this.props.listAndLink.list._links.unlock);
     }
 
     public renderDeferredTodosTabTitle() {
-        const tabName = _.capitalize(this.props.list.deferredName);
+        const tabName = _.capitalize(this.props.listAndLink.list.deferredName);
         if (this.canViewDeferredTodos()) {
             const unlockDuration = new Date(this.state.unlockDuration).toISOString().substr(14, 5);
             return (<div>
@@ -235,7 +234,7 @@ export class App extends Component<Props, State> {
     }
 
     public renderReplenishButton() {
-        const pullLink = this.props.list._links.pull;
+        const pullLink = this.props.listAndLink.list._links.pull;
         if (!_.isUndefined(pullLink)) {
             return (<ListGroupItem
                 onClick={this.handlePullClick.bind(this, pullLink)}
@@ -251,7 +250,7 @@ export class App extends Component<Props, State> {
     }
 
     public renderEscalateButton() {
-        const escalateLink = this.props.list._links.escalate;
+        const escalateLink = this.props.listAndLink.list._links.escalate;
         if (!_.isUndefined(escalateLink)) {
             return (<ListGroupItem
                 onClick={this.handleEscalateClick.bind(this, escalateLink)}
@@ -267,7 +266,7 @@ export class App extends Component<Props, State> {
     }
 
     public renderDisplaceButton() {
-        const displaceLink = this.props.list._links.displace;
+        const displaceLink = this.props.listAndLink.list._links.displace;
         if (!_.isUndefined(displaceLink) && this.state.submitting) {
             return (<ListGroupItem
                 onClick={this.handleDisplaceClick.bind(this, displaceLink)}

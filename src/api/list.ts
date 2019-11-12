@@ -28,3 +28,8 @@ export interface ListOption {
 export interface ListForm {
     name: string;
 }
+
+export interface ListAndLink {
+    list: List;
+    listLink: Link;
+}

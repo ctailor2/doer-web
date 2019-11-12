@@ -6,7 +6,7 @@ import TouchBackend from 'react-dnd-touch-backend';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { loadTodosViewAction, LoadTodosViewAction } from '../../actions/loadViewActions';
-import { List } from '../../api/list';
+import { ListAndLink } from '../../api/list';
 import { ApplicationState } from '../../store';
 import App from '../App';
 import Header from '../Header';
@@ -14,7 +14,7 @@ import Loader from './Loader';
 
 export interface Props {
     loadTodosViewAction: () => LoadTodosViewAction;
-    list: List | null;
+    list: ListAndLink | null;
 }
 
 export class TodosView extends Component<Props> {
@@ -36,7 +36,7 @@ export class TodosView extends Component<Props> {
 
     public renderView() {
         if (this.props.list !== null) {
-            return (<App />);
+            return (<App listAndLink={this.props.list} />);
         }
         return (<Loader />);
     }

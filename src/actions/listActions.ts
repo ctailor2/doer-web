@@ -48,11 +48,13 @@ export const getCompletedListRequestAction = (link: Link): GetCompletedListReque
 export interface StoreListAction {
     type: ActionTypes.STORE_LIST_ACTION;
     list: List;
+    listLink: Link;
 }
 
-export const storeListAction = (list: List): StoreListAction => ({
+export const storeListAction = (list: List, link: Link): StoreListAction => ({
     type: ActionTypes.STORE_LIST_ACTION,
     list,
+    listLink: link,
 });
 
 export interface StoreListOptionsAction {

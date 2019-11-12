@@ -103,6 +103,9 @@ export const successResponseValidators = {
                 }),
             ]),
         }),
+        _links: io.interface({
+            self: linkValidator,
+        }),
     }),
     lists: io.interface({
         lists: io.array(io.interface({

@@ -1,5 +1,5 @@
 import { ApplicationAction } from '../../actions/actions';
-import { List } from '../../api/list';
+import { ListAndLink } from '../../api/list';
 import { ActionTypes } from '../../constants/actionTypes';
 import { defaultState, list } from '../listReducer';
 
@@ -9,22 +9,25 @@ describe('list', () => {
     });
 
     it('stores the links from a STORE_LIST_ACTION when received', () => {
+        const myList = {
+            profileName: 'someProfileName',
+            name: 'someName',
+            deferredName: 'someDeferredName',
+            todos: [],
+            deferredTodos: [],
+            unlockDuration: 0,
+            _links: {
+                createDeferred: { href: '' },
+            },
+        };
+        const listLink = { href: 'someLink' };
         const action = {
             type: ActionTypes.STORE_LIST_ACTION,
-            list: {
-                profileName: 'someProfileName',
-                name: 'someName',
-                deferredName: 'someDeferredName',
-                todos: [],
-                deferredTodos: [],
-                unlockDuration: 0,
-                _links: {
-                    createDeferred: {href: ''},
-                },
-            },
+            list: myList,
+            listLink,
         } as ApplicationAction;
-        const todosState = list(defaultState, action) as List;
-        expect(todosState.name).toEqual('someName');
-        expect(todosState.deferredName).toEqual('someDeferredName');
+        const todosState = list(defaultState, action) as ListAndLink;
+        expect(todosState.list).toEqual(myList);
+        expect(todosState.listLink).toEqual(listLink);
     });
 });

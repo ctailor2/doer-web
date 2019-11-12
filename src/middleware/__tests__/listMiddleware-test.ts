@@ -24,7 +24,8 @@ describe('list middleware', () => {
     });
 
     it('gets list and stores it', (done) => {
-        const link = { href: 'listHref' };
+        const getListLink = { href: 'getListHref' };
+        const selfListLink = { href: 'selfListHref' };
         const list = {
             profileName: 'someListName',
             name: 'someName',
@@ -38,20 +39,24 @@ describe('list middleware', () => {
                 },
             },
         };
-        mockAdapter.onGet(link.href)
+        mockAdapter.onGet(getListLink.href)
             .reply(200, {
                 list,
+                _links: {
+                    self: selfListLink,
+                },
             });
 
         store.dispatch({
             type: ActionTypes.GET_LIST_REQUEST_ACTION,
-            link,
+            link: getListLink,
         });
 
         setTimeout(() => {
             expect(capturedActions).toContainEqual({
                 type: ActionTypes.STORE_LIST_ACTION,
                 list,
+                listLink: selfListLink,
             });
             done();
         });
