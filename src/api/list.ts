@@ -10,6 +10,7 @@ export interface List {
     unlockDuration: number;
     _links: {
         createDeferred: Link;
+        completed: Link;
         create?: Link;
         unlock?: Link;
         displace?: Link;

@@ -7,8 +7,7 @@ import {
     Panel,
     Row,
 } from 'react-bootstrap';
-import { CompletedList, CompletedTodo } from '../../api/completedList';
-import { ApplicationState } from '../../store';
+import { CompletedTodo } from '../../api/completedList';
 
 interface Props {
     todos: CompletedTodo[];
