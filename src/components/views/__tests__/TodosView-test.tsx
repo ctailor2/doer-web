@@ -2,6 +2,7 @@ import { configure, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import { browserHistory } from 'react-router';
+import { ListAndLink } from '../../../api/list';
 import App from '../../App';
 import Header from '../../Header';
 import Loader from '../Loader';
@@ -24,13 +25,38 @@ describe('TodosView', () => {
         expect(mockLoadTodosViewActionFn).not.toBeCalled();
     });
 
-    it('fires load todos view action when mounted if a sessionToken is present', () => {
+    it('fires load todos view action when mounted if a sessionToken is present and list is not present', () => {
         localStorage.setItem('sessionToken', 'cooltoken');
         mockLoadTodosViewActionFn.mockClear();
         // @ts-ignore
         browserHistory.push.mockClear();
         tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} />);
         expect(mockLoadTodosViewActionFn).toBeCalled();
+        expect(browserHistory.push).not.toBeCalled();
+    });
+
+    it('does nothing when mounted if a sessionToken is present and list is present', () => {
+        localStorage.setItem('sessionToken', 'cooltoken');
+        mockLoadTodosViewActionFn.mockClear();
+        // @ts-ignore
+        browserHistory.push.mockClear();
+        const list: ListAndLink = {
+            list: {
+                profileName: 'someProfileName',
+                name: 'someName',
+                deferredName: 'someDeferredName',
+                todos: [],
+                deferredTodos: [],
+                unlockDuration: 0,
+                _links: {
+                    completed: { href: 'completedHref' },
+                    createDeferred: { href: 'createDeferredHref' },
+                },
+            },
+            listLink: { href: 'listHref' },
+        };
+        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={list} />);
+        expect(mockLoadTodosViewActionFn).not.toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });
 

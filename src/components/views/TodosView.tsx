@@ -22,7 +22,7 @@ export class TodosView extends Component<Props> {
         // TODO: May be able to optimize here by only firing this if the view is not loaded
         if (localStorage.getItem('sessionToken') === null) {
             browserHistory.push('/login');
-        } else {
+        } else if (this.props.list === null) {
             this.props.loadTodosViewAction();
         }
     }
