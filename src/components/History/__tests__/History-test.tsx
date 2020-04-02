@@ -42,7 +42,7 @@ describe('History', () => {
             });
 
             it('displays the date as a header', () => {
-                expect(panel.prop('header')).toEqual('1/1/2017');
+                expect(panel.find(Panel.Heading).children().text()).toEqual('1/1/2017');
             });
 
             it('renders each todo completed on the date', () => {

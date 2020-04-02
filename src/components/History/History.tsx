@@ -30,7 +30,8 @@ export class History extends Component<Props> {
         });
         return _.map(groupedTodos, (todos, dateString) => {
             // @ts-ignore
-            return (<Panel header={dateString} key={dateString}>
+            return (<Panel key={dateString}>
+                <Panel.Heading>{dateString}</Panel.Heading>
                 {this.renderTodoList(todos)}
             </Panel>);
         });
