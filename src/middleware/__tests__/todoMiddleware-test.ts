@@ -15,6 +15,19 @@ describe('todo middleware', () => {
     const mockAdapter = new MockAdapter(client);
     let capturedActions: ApplicationAction[];
     let store: ApplicationStore;
+    const list = {
+        profileName: 'someListName',
+        name: 'someName',
+        deferredName: 'someDeferredName',
+        todos: [],
+        deferredTodos: [],
+        unlockDuration: 0,
+        _links: {
+            createDeferred: {
+                href: 'createDeferredHref',
+            },
+        },
+    };
 
     beforeEach(() => {
         capturedActions = [];
@@ -25,7 +38,7 @@ describe('todo middleware', () => {
         mockAdapter.reset();
     });
 
-    it('gets the list when todo deleted', (done) => {
+    it('stores the list when todo deleted', (done) => {
         const deleteLink = { href: 'deleteHref' };
         const listLink = { href: 'listHref' };
         mockAdapter.onDelete(deleteLink.href)
@@ -33,6 +46,7 @@ describe('todo middleware', () => {
                 _links: {
                     list: listLink,
                 },
+                list,
             });
         store.dispatch({
             type: ActionTypes.DELETE_TODO_REQUEST_ACTION,
@@ -41,8 +55,9 @@ describe('todo middleware', () => {
 
         setTimeout(() => {
             expect(capturedActions).toContainEqual({
-                type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                link: listLink,
+                type: ActionTypes.STORE_LIST_ACTION,
+                list,
+                listLink,
             });
             done();
         });
@@ -87,16 +102,18 @@ describe('todo middleware', () => {
                             _links: {
                                 list: listLink,
                             },
+                            list,
                         });
                 });
 
-                it('gets the list', (done) => {
+                it('stores the list', (done) => {
                     store.dispatch(scenario.action);
 
                     setTimeout(() => {
                         expect(capturedActions).toContainEqual({
-                            type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                            link: listLink,
+                            type: ActionTypes.STORE_LIST_ACTION,
+                            list,
+                            listLink,
                         });
                         done();
                     });
@@ -168,7 +185,7 @@ describe('todo middleware', () => {
 
     emptyActionScenarios.map((scenario) => {
         describe(scenario.description, () => {
-            it('gets the list on success', (done) => {
+            it('stores the list on success', (done) => {
                 store.dispatch(scenario.action);
 
                 const listLink = { href: 'listHref' };
@@ -177,12 +194,14 @@ describe('todo middleware', () => {
                         _links: {
                             list: listLink,
                         },
+                        list,
                     });
 
                 setTimeout(() => {
                     expect(capturedActions).toContainEqual({
-                        type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                        link: listLink,
+                        type: ActionTypes.STORE_LIST_ACTION,
+                        list,
+                        listLink,
                     });
                     done();
                 });
@@ -214,16 +233,18 @@ describe('todo middleware', () => {
                         _links: {
                             list: listLink,
                         },
+                        list,
                     });
             });
 
-            it('gets the list', (done) => {
+            it('stores the list', (done) => {
                 store.dispatch(action);
 
                 setTimeout(() => {
                     expect(capturedActions).toContainEqual({
-                        type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                        link: listLink,
+                        type: ActionTypes.STORE_LIST_ACTION,
+                        list,
+                        listLink,
                     });
                     done();
                 });

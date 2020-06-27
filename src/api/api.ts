@@ -32,10 +32,36 @@ const linkValidator = io.interface({
     href: io.string,
 });
 
+const listValidator = io.interface({
+    profileName: io.string,
+    name: io.string,
+    deferredName: io.string,
+    todos: io.array(io.interface({
+        task: io.string,
+    })),
+    deferredTodos: io.array(io.interface({
+        task: io.string,
+    })),
+    unlockDuration: io.number,
+    _links: io.intersection([
+        io.type({
+            createDeferred: linkValidator,
+        }),
+        io.partial({
+            create: io.union([linkValidator, io.undefined]),
+            pull: io.union([linkValidator, io.undefined]),
+            displace: io.union([linkValidator, io.undefined]),
+            escalate: io.union([linkValidator, io.undefined]),
+            unlock: io.union([linkValidator, io.undefined]),
+        }),
+    ]),
+});
+
 const todoActionResponseValidator = io.interface({
     _links: io.interface({
         list: linkValidator,
     }),
+    list: listValidator,
 });
 
 export const successResponseValidators = {
@@ -79,30 +105,7 @@ export const successResponseValidators = {
         }),
     }),
     list: io.interface({
-        list: io.interface({
-            profileName: io.string,
-            name: io.string,
-            deferredName: io.string,
-            todos: io.array(io.interface({
-                task: io.string,
-            })),
-            deferredTodos: io.array(io.interface({
-                task: io.string,
-            })),
-            unlockDuration: io.number,
-            _links: io.intersection([
-                io.type({
-                    createDeferred: linkValidator,
-                }),
-                io.partial({
-                    create: io.union([linkValidator, io.undefined]),
-                    pull: io.union([linkValidator, io.undefined]),
-                    displace: io.union([linkValidator, io.undefined]),
-                    escalate: io.union([linkValidator, io.undefined]),
-                    unlock: io.union([linkValidator, io.undefined]),
-                }),
-            ]),
-        }),
+        list: listValidator,
         _links: io.interface({
             self: linkValidator,
         }),
@@ -120,7 +123,11 @@ export const successResponseValidators = {
             })),
         }),
     }),
-    unlock: todoActionResponseValidator,
+    unlock: io.interface({
+        _links: io.interface({
+            list: linkValidator,
+        }),
+    }),
     deleteTodo: todoActionResponseValidator,
     createTodo: todoActionResponseValidator,
     updateTodo: todoActionResponseValidator,

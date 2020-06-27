@@ -10,8 +10,9 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
             perform('delete', action.type, action.link,
                 (response) => {
                     store.dispatch({
-                        type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                        link: response._links.list,
+                        type: ActionTypes.STORE_LIST_ACTION,
+                        list: response.list,
+                        listLink: response._links.list,
                     });
                 },
                 () => null,
@@ -26,8 +27,9 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
             perform('post', action.type, action.link,
                 (response) => {
                     store.dispatch({
-                        type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                        link: response._links.list,
+                        type: ActionTypes.STORE_LIST_ACTION,
+                        list: response.list,
+                        listLink: response._links.list,
                     });
                 },
                 (errors) => {
@@ -48,8 +50,9 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
             perform('put', action.type, action.link,
                 (response) => {
                     store.dispatch({
-                        type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                        link: response._links.list,
+                        type: ActionTypes.STORE_LIST_ACTION,
+                        list: response.list,
+                        listLink: response._links.list,
                     });
                 },
                 (errors) => {
@@ -70,8 +73,9 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
             perform('post', action.type, action.link,
             (response) => {
                 store.dispatch({
-                    type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                    link: response._links.list,
+                    type: ActionTypes.STORE_LIST_ACTION,
+                    list: response.list,
+                    listLink: response._links.list,
                 });
             },
             () => null,
