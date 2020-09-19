@@ -38,7 +38,7 @@ export class History extends Component<Props> {
     }
 
     public renderTodoList(todos: CompletedTodo[]) {
-        return (<ListGroup fill={true}>
+        return (<ListGroup>
             {todos.map((todo, itemIndex) => {
                 return (<ListGroupItem key={itemIndex}>{todo.task}</ListGroupItem>);
             })}

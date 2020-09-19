@@ -15,6 +15,7 @@ import Loader from './Loader';
 export interface Props {
     loadTodosViewAction: () => LoadTodosViewAction;
     list: ListAndLink | null;
+    selectedList: string | null;
 }
 
 export class TodosView extends Component<Props> {
@@ -35,8 +36,8 @@ export class TodosView extends Component<Props> {
     }
 
     public renderView() {
-        if (this.props.list !== null) {
-            return (<App listAndLink={this.props.list} />);
+        if (this.props.selectedList !== null && this.props.list !== null) {
+            return (<App listAndLink={this.props.list} selectedList={this.props.selectedList} />);
         }
         return (<Loader />);
     }
@@ -44,7 +45,8 @@ export class TodosView extends Component<Props> {
 
 export const mapStateToProps = (state: ApplicationState) => {
     return {
-        list: state.list,
+        list: state.list.listAndLink,
+        selectedList: state.list.selectedList,
     };
 };
 const decorateWithDragAndDrop = (DecoratedComponent: any) => {

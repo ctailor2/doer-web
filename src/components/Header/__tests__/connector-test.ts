@@ -14,7 +14,7 @@ describe('Header connector', () => {
         const state = {
             completedList: null,
             links: {},
-            list: null,
+            list: { listAndLink: null, selectedList: null },
             errors,
             listOptions: [],
         };

@@ -26,6 +26,7 @@ describe('TaskForm', () => {
         links = {
             create: createLink,
             createDeferred: createdDeferredLink,
+            completed: { href: '' },
         };
         tree = mount(<TaskForm task=''
                                primaryButtonName='primary'

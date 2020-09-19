@@ -73,16 +73,6 @@ describe('load view middleware', () => {
                 done();
             });
         });
-
-        it('gets the list', (done) => {
-            setTimeout(() => {
-                expect(capturedActions).toContainEqual({
-                    type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                    link: links.list,
-                });
-                done();
-            });
-        });
     });
 
     describe('history view', () => {

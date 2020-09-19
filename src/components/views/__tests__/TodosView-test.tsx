@@ -16,11 +16,11 @@ describe('TodosView', () => {
         configure({ adapter: new Adapter() });
         mockLoadTodosViewActionFn = jest.fn();
         browserHistory.push = jest.fn();
-        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} />);
+        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} selectedList={null} />);
     });
 
     it('redirects to the login page if a sessionToken is not present', () => {
-        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} />);
+        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} selectedList={null} />);
         expect(browserHistory.push).toBeCalledWith('/login');
         expect(mockLoadTodosViewActionFn).not.toBeCalled();
     });
@@ -30,7 +30,7 @@ describe('TodosView', () => {
         mockLoadTodosViewActionFn.mockClear();
         // @ts-ignore
         browserHistory.push.mockClear();
-        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} />);
+        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} selectedList={null} />);
         expect(mockLoadTodosViewActionFn).toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });
@@ -42,7 +42,6 @@ describe('TodosView', () => {
         browserHistory.push.mockClear();
         const list: ListAndLink = {
             list: {
-                profileName: 'someProfileName',
                 name: 'someName',
                 deferredName: 'someDeferredName',
                 todos: [],
@@ -55,7 +54,11 @@ describe('TodosView', () => {
             },
             listLink: { href: 'listHref' },
         };
-        tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={list} />);
+        const selectedList = 'someSelectedList';
+        tree = shallow(<TodosView 
+            loadTodosViewAction={mockLoadTodosViewActionFn}
+            selectedList={selectedList}
+            list={list} />);
         expect(mockLoadTodosViewActionFn).not.toBeCalled();
         expect(browserHistory.push).not.toBeCalled();
     });
@@ -73,14 +76,13 @@ describe('TodosView', () => {
     });
 
     it('renders the app when list is not empty', () => {
-        tree.setProps({ list: { name: 'cool list' } });
+        tree.setProps({ list: { name: 'cool list' }, selectedList: 'someSelectedList' });
         expect(tree.find(App).length).toBe(1);
     });
 
     it('maps state to props', () => {
-        const list = {
+        const listAndLink = {
             list: {
-                profileName: 'someProfileName',
                 name: 'cool list',
                 deferredName: 'neato',
                 todos: [],
@@ -88,14 +90,20 @@ describe('TodosView', () => {
                 unlockDuration: 0,
                 _links: {
                     createDeferred: { href: '' },
+                    completed: { href: '' },
                 },
             },
             listLink: { href: 'someLink' },
         };
+        const selectedList = 'someSelectedList';
+        const listState = {
+            listAndLink,
+            selectedList,
+        };
         const state = {
             completedList: null,
             links: {},
-            list,
+            list: listState,
             errors: {
                 fieldErrors: [],
                 globalErrors: [],
@@ -103,7 +111,8 @@ describe('TodosView', () => {
             listOptions: [],
         };
         expect(mapStateToProps(state)).toEqual({
-            list,
+            list: listAndLink,
+            selectedList,
         });
     });
 });

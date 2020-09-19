@@ -3,41 +3,33 @@ import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import { Button, DropdownButton, FormControl, MenuItem, Modal } from 'react-bootstrap';
 import { Link } from '../../../api/api';
-import { List, ListOption } from '../../../api/list';
+import { ListName, ListOption } from '../../../api/list';
 import ListSelector from '../ListSelector';
 
 describe('ListSelector', () => {
-    let list: List;
+    let selectedList: string;
     let tree: ShallowWrapper<any>;
     let mockCreateListActionFn: jest.Mock;
     let mockSelectListActionFn: jest.Mock;
     let createListLink: Link;
     let listOption: ListOption;
     let listOptionLink: Link;
+    let listOptionName: string;
     let otherListOption: ListOption;
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
-        list = {
-            profileName: 'someListName',
-            name: 'someName',
-            deferredName: 'someDeferredName',
-            todos: [],
-            deferredTodos: [],
-            unlockDuration: 0,
-            _links: {
-                createDeferred: { href: 'createdDeferredLink' },
-            },
-        };
+        selectedList = 'someListName';
         mockCreateListActionFn = jest.fn();
         mockSelectListActionFn = jest.fn();
         createListLink = { href: 'createListLink' };
         listOptionLink = { href: 'listOptionHref' };
-        listOption = { name: 'someListName', _links: { list: listOptionLink } };
+        listOptionName = 'someListName';
+        listOption = { name: listOptionName, _links: { list: listOptionLink } };
         otherListOption = { name: 'someOtherListName', _links: { list: { href: 'otherListOptionHref'}} };
         tree = shallow(<ListSelector
             listOptions={[listOption, otherListOption]}
-            selectedList={list}
+            selectedList={selectedList}
             createListLink={createListLink}
             createListAction={mockCreateListActionFn}
             getListAction={mockSelectListActionFn} />);
@@ -191,7 +183,7 @@ describe('ListSelector', () => {
             it('fires a select list action with the selected list on click', () => {
                 menuItem.simulate('click');
 
-                expect(mockSelectListActionFn).toHaveBeenCalledWith(listOptionLink);
+                expect(mockSelectListActionFn).toHaveBeenCalledWith(listOptionName, listOptionLink);
             });
         });
 

@@ -3,16 +3,25 @@ import { ApplicationAction } from '../actions/actions';
 import { ListAndLink } from '../api/list';
 import { ActionTypes } from '../constants/actionTypes';
 
-export const defaultState = null;
+export const defaultState = { listAndLink: null, selectedList: null };
 
-export function list(state: ListAndLink | null = defaultState, action: ApplicationAction) {
-    let newState = _.clone(state);
+interface ListState {
+    listAndLink: ListAndLink | null;
+    selectedList: string | null;
+}
+
+export function list(state: ListState = defaultState, action: ApplicationAction) {
+    const newState = _.clone(state);
     switch (action.type) {
         case ActionTypes.STORE_LIST_ACTION:
-            newState = {
+            newState.listAndLink = {
                 list: action.list,
                 listLink: action.listLink,
             };
+            break;
+        case ActionTypes.GET_LIST_REQUEST_ACTION:
+            newState.listAndLink = null;
+            newState.selectedList = action.name;
             break;
         default:
             break;

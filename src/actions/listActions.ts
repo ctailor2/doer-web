@@ -1,15 +1,15 @@
 import { Link } from '../api/api';
 import { CompletedList } from '../api/completedList';
-import { List, ListForm, ListOption } from '../api/list';
+import { List, ListName, ListOption } from '../api/list';
 import { ActionTypes } from '../constants/actionTypes';
 
 export interface CreateListAction {
     type: ActionTypes.CREATE_LIST_ACTION;
     link: Link;
-    list: ListForm;
+    list: ListName;
 }
 
-export const createListAction = (link: Link, listForm: ListForm): CreateListAction => ({
+export const createListAction = (link: Link, listForm: ListName): CreateListAction => ({
     type: ActionTypes.CREATE_LIST_ACTION,
     link,
     list: listForm,
@@ -17,11 +17,13 @@ export const createListAction = (link: Link, listForm: ListForm): CreateListActi
 
 export interface GetListRequestAction {
     type: ActionTypes.GET_LIST_REQUEST_ACTION;
+    name: string;
     link: Link;
 }
 
-export const getListRequestAction = (link: Link): GetListRequestAction => ({
+export const getListRequestAction = (name: string, link: Link): GetListRequestAction => ({
     type: ActionTypes.GET_LIST_REQUEST_ACTION,
+    name,
     link,
 });
 

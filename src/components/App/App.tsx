@@ -30,6 +30,7 @@ import Todo from '../Todo';
 
 export interface Props {
     listAndLink: ListAndLink;
+    selectedList: string;
     getListRequestAction: typeof getListRequestAction;
     unlockListRequestAction: typeof unlockListRequestAction;
     pullTodosRequestAction: typeof pullTodosRequestAction;
@@ -81,7 +82,7 @@ export class App extends Component<Props, State> {
     }
 
     public reloadList() {
-        this.props.getListRequestAction(this.props.listAndLink.listLink);
+        this.props.getListRequestAction(this.props.selectedList, this.props.listAndLink.listLink);
     }
 
     public componentWillReceiveProps(nextProps: Props) {
@@ -120,7 +121,7 @@ export class App extends Component<Props, State> {
         return (<div>
             <Row>
                 <Col lg={6} lgOffset={3}>
-                    <ListSelector selectedList={this.props.listAndLink.list}/>
+                    <ListSelector selectedList={this.props.selectedList}/>
                 </Col>
             </Row>
             <Row>

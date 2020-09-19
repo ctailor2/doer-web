@@ -1,5 +1,6 @@
 import { Dispatch, MiddlewareAPI } from "redux";
 import { ApplicationAction } from "../actions/actions";
+import { getListRequestAction, storeListOptionsAction } from "../actions/listActions";
 import { ActionTypes } from "../constants/actionTypes";
 import { perform } from "./apiClient";
 
@@ -27,6 +28,8 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                         type: ActionTypes.STORE_LIST_OPTIONS_ACTION,
                         lists: listResponse.lists,
                     });
+                    const firstList = listResponse.lists[0];
+                    store.dispatch(getListRequestAction(firstList.name, firstList._links.list));
                 },
                 () => null,
                 headers);

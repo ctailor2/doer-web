@@ -20,6 +20,7 @@ import { App, Props, State } from '../App';
 describe('App', () => {
     let tree: ShallowWrapper<Props, State, any>;
     let listAndLink: ListAndLink;
+    let selectedList: string;
     let todoNowLink: Link;
     let todoLaterLink: Link;
     let pullLink: Link;
@@ -57,7 +58,6 @@ describe('App', () => {
         listLink = { href: 'http://some.api/list' };
         listAndLink = {
             list: {
-                profileName: 'someListName',
                 name: 'name',
                 deferredName: 'deferredname',
                 unlockDuration: 1700900,
@@ -66,11 +66,15 @@ describe('App', () => {
                 _links: {
                     create: todoNowLink,
                     createDeferred: todoLaterLink,
+                    completed: { href: '' },
                 },
             },
             listLink,
         };
-        tree = shallow(<App listAndLink={listAndLink}
+        selectedList = 'someSelectedList';
+        tree = shallow(<App 
+            listAndLink={listAndLink}
+            selectedList={selectedList}
             displaceTodoRequestAction={mockDisplaceTodoActionFn}
             moveTodoRequestAction={mockMoveTodoActionFn}
             pullTodosRequestAction={mockPullTodosActionFn}
@@ -116,7 +120,7 @@ describe('App', () => {
 
             it('when document is visible', () => {
                 visibilityChangeCallback({ target: { hidden: false } });
-                expect(mockGetListActionFn).toBeCalledWith(listLink);
+                expect(mockGetListActionFn).toBeCalledWith(selectedList, listLink);
             });
         });
     });
@@ -219,7 +223,7 @@ describe('App', () => {
         });
 
         it('fires get list request action with listLink when unlockDuration reaches 0', () => {
-            expect(mockGetListActionFn).toBeCalledWith(listLink);
+            expect(mockGetListActionFn).toBeCalledWith(selectedList, listLink);
         });
 
         it('updates activeTab state', () => {
@@ -238,8 +242,8 @@ describe('App', () => {
             expect(listSelector.exists()).toBe(true);
         });
 
-        it('has the list as the selectedList', () => {
-            expect(listSelector.prop('selectedList')).toEqual(listAndLink.list);
+        it('has the selectedList', () => {
+            expect(listSelector.prop('selectedList')).toEqual(selectedList);
         });
     });
 

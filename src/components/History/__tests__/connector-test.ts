@@ -9,7 +9,7 @@ describe('History connector', () => {
         const state = {
             completedList,
             links: {},
-            list: null,
+            list: { listAndLink: null, selectedList: null },
             errors: {
                 fieldErrors: [],
                 globalErrors: [],

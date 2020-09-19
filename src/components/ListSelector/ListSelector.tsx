@@ -10,11 +10,11 @@ import {
 } from "react-bootstrap";
 import { createListAction, getListRequestAction } from '../../actions/listActions';
 import { Link } from '../../api/api';
-import { List, ListOption } from "../../api/list";
+import { ListOption } from "../../api/list";
 
 interface Props {
     listOptions: ListOption[];
-    selectedList: List;
+    selectedList: string;
     createListLink: Link;
     createListAction: typeof createListAction;
     getListAction: typeof getListRequestAction;
@@ -31,8 +31,8 @@ export default ({ listOptions, selectedList, createListLink, ...props }: Props, 
     const buttonIsDisabled = newListName === undefined || newListName.match(/\w+/) === null;
     return (<>
         <FormGroup bsSize="large">
-            <DropdownButton id="list-dropdown-button" title={selectedList.profileName}>
-                {renderListOptions(listOptions, selectedList.profileName, props.getListAction)}
+            <DropdownButton id="list-dropdown-button" title={selectedList}>
+                {renderListOptions(listOptions, selectedList, props.getListAction)}
                 <MenuItem onClick={() => setCreateListModalOpen(!createListModalOpen)}>
                     <Glyphicon glyph="plus-sign" />
                     &nbsp;New List
@@ -74,7 +74,7 @@ function renderListOptions(
     return listOptions.map((listOption) =>
         (<MenuItem
             key={listOption.name}
-            onClick={() => action(listOption._links.list)}
+            onClick={() => action(listOption.name, listOption._links.list)}
             active={listOption.name === selectedListName}>
             {listOption.name}
         </MenuItem>));

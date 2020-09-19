@@ -19,7 +19,6 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
                     rootResources._links.listResources,
                     (listResources) => {
                         store.dispatch(storeLinksAction(listResources._links));
-                        store.dispatch(getListRequestAction(listResources._links.list));
                         store.dispatch(getListOptionsRequestAction(listResources._links.lists));
                     },
                     () => null,

@@ -1,7 +1,8 @@
 import * as io from 'io-ts';
+import { ListName } from './list';
 import { LoginInfo, SignupInfo } from './session';
 import { TodoForm } from './todo';
-import { ListForm } from './list';
+import { Link } from 'react-bootstrap/lib/Navbar';
 
 export interface Link {
     href: string;
@@ -33,7 +34,6 @@ const linkValidator = io.interface({
 });
 
 const listValidator = io.interface({
-    profileName: io.string,
     name: io.string,
     deferredName: io.string,
     todos: io.array(io.interface({
@@ -113,6 +113,9 @@ export const successResponseValidators = {
     lists: io.interface({
         lists: io.array(io.interface({
             name: io.string,
+            _links: io.interface({
+                list: linkValidator,
+            }),
         })),
     }),
     completedList: io.interface({
@@ -162,7 +165,7 @@ export interface Requests {
     moveTodo: undefined;
     pullTodo: undefined;
     escalateTodo: undefined;
-    createList: ListForm;
+    createList: ListName;
 }
 
 export type SuccessResponses = {

@@ -24,15 +24,7 @@ describe('ListSelector connector', () => {
             lists,
         });
         const list = {
-            profileName: 'someListName',
-            name: 'someName',
-            deferredName: 'someDeferredName',
-            todos: [],
-            deferredTodos: [],
-            unlockDuration: 0,
-            _links: {
-                createDeferred: { href: 'createdDeferredLink' },
-            },
+            name: 'someListName',
         };
 
         const props = mapStateToProps(store.getState(), { selectedList: list });

@@ -289,7 +289,7 @@ describe('SignupView', () => {
                         email: 'email',
                         password: 'password',
                         passwordConfirmation: 'passwordConfirmation',
-                     });
+                    });
                     button = tree.find('Button');
                     expect(button.prop('disabled')).toBe(true);
                 });
@@ -319,7 +319,7 @@ describe('SignupView', () => {
         const links = { signup: mySignupLink, login: { href: 'http://some.api/login' } };
         const state = {
             links,
-            list: null,
+            list: { listAndLink: null, selectedList: null },
             completedList: null,
             errors: {
                 fieldErrors: [],

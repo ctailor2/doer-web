@@ -46,7 +46,7 @@ export class HistoryView extends Component<Props> {
 export const mapStateToProps = (state: ApplicationState) => {
     return {
         list: state.completedList,
-        completedListLink: state.list !== null ? state.list.list._links.completed : null,
+        completedListLink: state.list.listAndLink !== null ? state.list.listAndLink!.list._links.completed : null,
     };
 };
 

@@ -1,11 +1,11 @@
-import {configure, mount, shallow, ShallowWrapper} from 'enzyme';
+import { configure, mount, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {browserHistory} from 'react-router';
+import { browserHistory } from 'react-router';
 import { Link } from '../../../api/api';
 import Header from '../../Header';
-import {LoginView, mapStateToProps, Props, State} from '../LoginView';
+import { LoginView, mapStateToProps, Props, State } from '../LoginView';
 
 describe('LoginView', () => {
     let tree: ShallowWrapper<Props, State, LoginView>;
@@ -15,13 +15,13 @@ describe('LoginView', () => {
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
-        loginLink = {href: 'http://some.api/login'};
+        loginLink = { href: 'http://some.api/login' };
         loginRequestActionFn = jest.fn();
         getBaseResourcesRequestActionFn = jest.fn();
         tree = shallow(<LoginView
             loginLink={loginLink}
             loginRequestAction={loginRequestActionFn}
-            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>);
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />);
     });
 
     it('renders', () => {
@@ -44,7 +44,7 @@ describe('LoginView', () => {
             subscribe: () => null,
             dispatch: () => null,
             getState: () => {
-                return {errors: {globalErrors: []}};
+                return { errors: { globalErrors: [] } };
             },
         };
         const options = {
@@ -54,7 +54,7 @@ describe('LoginView', () => {
         mount(<LoginView
             loginLink={loginLink}
             loginRequestAction={loginRequestActionFn}
-            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}/>, options);
+            getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();
     });
 
@@ -64,7 +64,7 @@ describe('LoginView', () => {
         tree = shallow(<LoginView
             loginLink={loginLink}
             getBaseResourcesRequestAction={getBaseResourcesRequestActionFn}
-            loginRequestAction={loginRequestActionFn}/>);
+            loginRequestAction={loginRequestActionFn} />);
         expect(browserHistory.push).toBeCalledWith('/');
     });
 
@@ -155,7 +155,7 @@ describe('LoginView', () => {
                 });
 
                 it('updates state on change', () => {
-                    input.simulate('change', {target: {value: 'test@email.com'}});
+                    input.simulate('change', { target: { value: 'test@email.com' } });
                     expect(tree.state().email).toBe('test@email.com');
                 });
             });
@@ -195,7 +195,7 @@ describe('LoginView', () => {
                 });
 
                 it('updates state on change', () => {
-                    input.simulate('change', {target: {value: 'password'}});
+                    input.simulate('change', { target: { value: 'password' } });
                     expect(tree.state().password).toBe('password');
                 });
             });
@@ -220,7 +220,7 @@ describe('LoginView', () => {
             });
 
             it('enables when all fields are entered', () => {
-                tree.setState({email: 'email', password: 'password'});
+                tree.setState({ email: 'email', password: 'password' });
                 button = tree.find('Button');
                 expect(button.prop('disabled')).toBe(false);
             });
@@ -238,11 +238,11 @@ describe('LoginView', () => {
     });
 
     it('maps state to props', () => {
-        const myLoginLink = {href: 'http://some.api/login'};
-        const links = {login: myLoginLink, signup: {href: 'http://some.api/signup'}};
+        const myLoginLink = { href: 'http://some.api/login' };
+        const links = { login: myLoginLink, signup: { href: 'http://some.api/signup' } };
         const state = {
             links,
-            list: null,
+            list: { listAndLink: null, selectedList: null },
             completedList: null,
             errors: {
                 fieldErrors: [],

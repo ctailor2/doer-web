@@ -97,20 +97,23 @@ describe('HistoryView', () => {
             completedList,
             links: {},
             list: {
-                list: {
-                    profileName: 'someProfileName',
-                    name: 'someName',
-                    deferredName: 'someDeferredName',
-                    todos: [],
-                    deferredTodos: [],
-                    unlockDuration: 0,
-                    _links: {
-                        createDeferred: { href: 'createDeferredHref' },
-                        completed: completedLink,
+                listAndLink: {
+
+                    list: {
+                        name: 'someName',
+                        deferredName: 'someDeferredName',
+                        todos: [],
+                        deferredTodos: [],
+                        unlockDuration: 0,
+                        _links: {
+                            createDeferred: { href: 'createDeferredHref' },
+                            completed: completedLink,
+                        },
                     },
+                    listLink: { href: 'listHref' },
                 },
-                listLink: { href: 'listHref' },
-            } as ListAndLink,
+                selectedList: null,
+            },
             errors: {
                 fieldErrors: [],
                 globalErrors: [],

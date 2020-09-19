@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
+import { PathReporter } from 'io-ts/lib/PathReporter';
 import {
     Commands,
     ErrorResponse,
@@ -31,6 +32,8 @@ export function perform<Command extends Commands>(
             const validation = successResponseValidators[command].decode(successResponse.data);
             if (validation.isRight()) {
                 onSuccess(validation.value);
+            } else {
+                console.log(PathReporter.report(validation));
             }
         })
         .catch(({ response: errorResponse }) => {
