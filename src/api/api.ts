@@ -126,11 +126,7 @@ export const successResponseValidators = {
             })),
         }),
     }),
-    unlock: io.interface({
-        _links: io.interface({
-            list: linkValidator,
-        }),
-    }),
+    unlock: todoActionResponseValidator,
     deleteTodo: todoActionResponseValidator,
     createTodo: todoActionResponseValidator,
     updateTodo: todoActionResponseValidator,

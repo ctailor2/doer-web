@@ -51,10 +51,11 @@ export default (store: MiddlewareAPI) => (next: Dispatch) => (action: Applicatio
         case ActionTypes.UNLOCK_LIST_REQUEST_ACTION: {
             const headers = { 'Session-Token': localStorage.getItem('sessionToken') };
             perform('post', action.type, action.link,
-                (unlockResponse) => {
+                (response) => {
                     store.dispatch({
-                        type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                        link: unlockResponse._links.list,
+                        type: ActionTypes.STORE_LIST_ACTION,
+                        list: response.list,
+                        listLink: response._links.list,
                     });
                 },
                 () => null,

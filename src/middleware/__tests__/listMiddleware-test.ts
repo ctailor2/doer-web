@@ -1,6 +1,7 @@
 import MockAdapter from "axios-mock-adapter";
 import { applyMiddleware, createStore } from "redux";
 import { ApplicationAction } from "../../actions/actions";
+import { List } from "../../api/list";
 import { ActionTypes } from "../../constants/actionTypes";
 import { ApplicationStore, reducer } from "../../store";
 import actionCapturingMiddleware from "../../utils/actionCapturingMiddleware";
@@ -92,14 +93,26 @@ describe('list middleware', () => {
         });
     });
 
-    it('gets list after unlocking it', (done) => {
+    it('stores list after unlocking it', (done) => {
         const unlockLink = { href: 'unlockHref' };
         const listLink = { href: 'listHref' };
+        const list: List = {
+            name: 'someName',
+            deferredName: 'someDeferredName',
+            todos: [],
+            deferredTodos: [],
+            unlockDuration: 123,
+            _links: {
+                createDeferred: { href: 'someHref' },
+                completed: { href: 'someHref' },
+            },
+        };
         mockAdapter.onPost(unlockLink.href)
             .reply(202, {
                 _links: {
                     list: listLink,
                 },
+                list,
             });
 
         store.dispatch({
@@ -109,8 +122,9 @@ describe('list middleware', () => {
 
         setTimeout(() => {
             expect(capturedActions).toContainEqual({
-                type: ActionTypes.GET_LIST_REQUEST_ACTION,
-                link: listLink,
+                type: ActionTypes.STORE_LIST_ACTION,
+                list,
+                listLink,
             });
             done();
         });
