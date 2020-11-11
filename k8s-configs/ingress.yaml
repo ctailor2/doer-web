@@ -4,7 +4,8 @@ metadata:
   name: doer-web
 spec:
   rules:
-  - http:
+  - host: doer-staging.tailoreddev.com
+    http:
       paths:
       - backend:
           service:
