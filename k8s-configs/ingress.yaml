@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: doer-web
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: doer-web
+            port:
+              number: 8082
+        pathType: Prefix
+        path: /
