@@ -3,6 +3,16 @@ env:
     secure: CP90cB1UJWWTfW11sq6ZDr8xuUyzp7A86+uuAExJPFJu7zzZtX2Ro3j0LxlVqG3RZGjh2mEBKnFumR9PTg6Co6N7bQtX5jHhsD7xAM07gvdVhcYQHIbMu6s+RslNr99EMSd7eVhK17UNris0fPUqhmYdfsQhKPUoReNUR5Xn0x57CNi3cBu/TxjF4Kptmfjur9HHi32nvOHmFQ+UFXz+20G/tjPEDONj8IhipyscGaUoYpMBij5MbxF512Mkfl7zzDeeyffDK++Y91L9MTk5d0vg7RzCm1zCrFDNuvFt8jO2vn4cB/NafI0RBfIDFlxuN/H/M4Vod2UXTBtp1PMsbKTwfNHvPH0wzlkZR1BhIZPBv2xDAcPi5cNb8Pj6VLP7n1iMWhoBkGvdSwdRJkG/14VpzQ9JvO/IRPR5CWFYs/NJDj1jKdecns2/XYEeMa3t7NKC0lH05FaHKua96uMbEaUUGfXTvcm7LIXKzzRuLL5+26x7BNpUza4T3xVrt9PLjZInI0jZGWHrzLhIcNs3TOzb7kk3HeeVu48P0yARBX3U4kHeZMK/lbSPain0vNRtC642tiH482QRWWKcZ+y8CpIzgSZHSX1ZCAdwDCIqMcXU9hGHY+K0RysNjfARUjYYtRGXnFd1nm0zippUhx2WUbhEApxYxX5V7DBpCBTRYiQ=
 jobs:
   include:
+  - stage: build
+    arch: arm64
+    services:
+      - docker
+    script:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - IMAGE_TAG=$(git describe --tags --exact-match || echo latest)
+      - echo "Building image with tag $IMAGE_TAG..."
+      - docker build -f k8s-configs/Dockerfile . -t ctailor2/doer-web:$IMAGE_TAG
+      - docker push ctailor2/doer-web
   - stage: test
     language: node_js
     node_js:
