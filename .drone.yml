@@ -1,0 +1,148 @@
+---
+kind: pipeline
+type: kubernetes
+name: "build and deploy staging"
+
+platform:
+  os: linux
+  arch: arm64
+
+clone:
+  disable: true
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
+    - custom
+
+steps:
+  - name: clone
+    image: alpine/git
+    commands:
+      - git clone https://$${ACCESS_TOKEN}@github.com/ctailor2/doer-web.git .
+      - git checkout $DRONE_COMMIT
+    environment:
+      ACCESS_TOKEN:
+        from_secret: access_token
+  - name: test
+    image: node:10.15.0
+    commands:
+      - npm test
+  - name: "bump version for build and deploy"
+    image: alpine/git
+    commands:
+      - git fetch --tags
+      - git describe --tags --abbrev=0 --match *-rc > last-version.txt
+      - major=$(cut -d . -f 1 last-version.txt)
+      - minor=$(cut -d . -f 2 last-version.txt)
+      - patch=$(cut -d . -f 3 last-version.txt | cut -d - -f 1)
+      - next_patch=$((patch + 1))
+      - next_version="$major.$minor.$next_patch-rc"
+      - echo "$next_version" > .tags
+      - 'printf "web:\n  image:\n    tag: %s\n\n" "$next_version" > doer-staging-values.yaml'
+      - echo "$next_version" | xargs git tag
+      - git push --tags
+  - name: "build and publish image"
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: ctailor2/doer-web
+  - name: "deploy staging"
+    image: ctailor2/drone-helm3
+    pull: always
+    settings:
+      debug: true
+      add_repos:
+        - "chartmuseum=http://chartmuseum-chartmuseum.drone"
+        - "bitnami=https://charts.bitnami.com/bitnami"
+      mode: upgrade
+      chart: "chartmuseum/doer"
+      release: doer
+      namespace: doer-staging
+      values_files:
+        - doer-staging-values.yaml
+        - helm-staging-values.yaml
+      wait_for_upgrade: true
+      kube_api_server: https://kubernetes.default
+      kube_service_account: drone-helm
+      kube_token:
+        from_secret: kubernetes_token
+      skip_tls_verify: true
+
+---
+kind: pipeline
+type: kubernetes
+name: "promote to production"
+service_account_name: drone-helm
+
+platform:
+  os: linux
+  arch: arm64
+
+clone:
+  disable: true
+
+trigger:
+  event:
+    - promote
+  target:
+    - production
+
+steps:
+  - name: clone
+    image: alpine/git
+    commands:
+      - git clone https://$${ACCESS_TOKEN}@github.com/ctailor2/doer-web.git .
+      - git checkout $DRONE_COMMIT
+    environment:
+      ACCESS_TOKEN:
+        from_secret: access_token
+  - name: "retrieve staging version"
+    image: ctailor2/alpine-helm:3.2.4
+    commands:
+      - apk add jq
+      - helm get values doer -n doer-staging -o json | jq -r .web.image.tag > staging-version.txt
+      - cat staging-version.txt
+  - name: "retag release candidate as release"
+    image: alpine
+    commands:
+      - apk add curl
+      - apk add jq
+      - encoded_credentials=$(echo -n "$${DOCKER_USERNAME}:$${DOCKER_PASSWORD}" | base64)
+      - "token=$(curl -H \"Authorization: Basic $encoded_credentials\" \"https://auth.docker.io/token?service=registry.docker.io&scope=repository:ctailor2/doer-web:pull,push\" | jq -r .token)"
+      - rc_version=$(cat staging-version.txt)
+      - "curl -H \"Authorization: Bearer $token\" -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' \"https://index.docker.io/v2/ctailor2/doer-web/manifests/$rc_version\" > manifest.json"
+      - version=$(cut -d - -f 1 staging-version.txt)
+      - "curl -H \"Authorization: Bearer $token\" -H 'Content-Type: application/vnd.docker.distribution.manifest.v2+json' -X PUT \"https://index.docker.io/v2/ctailor2/doer-web/manifests/$version\" -d '@manifest.json'"
+      - 'printf "web:\n  image:\n    tag: %s\n\n" "$version" > doer-prod-values.yaml'
+    environment:
+      DOCKER_USERNAME:
+        from_secret: docker_username
+      DOCKER_PASSWORD:
+        from_secret: docker_password
+  - name: "deploy prod"
+    image: ctailor2/drone-helm3
+    pull: always
+    settings:
+      debug: true
+      add_repos:
+        - "chartmuseum=http://chartmuseum-chartmuseum.drone"
+        - "bitnami=https://charts.bitnami.com/bitnami"
+      mode: upgrade
+      chart: "chartmuseum/doer"
+      release: doer
+      namespace: doer-prod
+      values_files:
+        - doer-prod-values.yaml
+        - helm-prod-values.yaml
+      wait_for_upgrade: true
+      kube_api_server: https://kubernetes.default
+      kube_service_account: drone-helm
+      kube_token:
+        from_secret: kubernetes_token
+      skip_tls_verify: true
