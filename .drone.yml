@@ -29,6 +29,7 @@ steps:
   - name: test
     image: node:10.15.0
     commands:
+      - npm ci --silent
       - npm test
   - name: "bump version for build and deploy"
     image: alpine/git
