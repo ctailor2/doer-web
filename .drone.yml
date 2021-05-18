@@ -56,6 +56,9 @@ steps:
   - name: "deploy staging"
     image: ctailor2/drone-helm3
     pull: always
+    environment:
+      POSTGRESQL_PASSWORD:
+        from_secret: staging_postgresql_password
     settings:
       debug: true
       add_repos:
@@ -65,6 +68,8 @@ steps:
       chart: "chartmuseum/doer"
       release: doer
       namespace: doer-staging
+      values:
+        - "db.postgresqlPassword=$POSTGRESQL_PASSWORD"
       values_files:
         - doer-staging-values.yaml
         - helm-staging-values.yaml
@@ -129,6 +134,9 @@ steps:
   - name: "deploy prod"
     image: ctailor2/drone-helm3
     pull: always
+    environment:
+      POSTGRESQL_PASSWORD:
+        from_secret: prod_postgresql_password
     settings:
       debug: true
       add_repos:
@@ -138,6 +146,8 @@ steps:
       chart: "chartmuseum/doer"
       release: doer
       namespace: doer-prod
+        values:
+          - "db.postgresqlPassword=$POSTGRESQL_PASSWORD"
       values_files:
         - doer-prod-values.yaml
         - helm-prod-values.yaml
