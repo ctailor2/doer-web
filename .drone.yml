@@ -146,8 +146,8 @@ steps:
       chart: "chartmuseum/doer"
       release: doer
       namespace: doer-prod
-        values:
-          - "db.postgresqlPassword=$POSTGRESQL_PASSWORD"
+      values:
+        - "db.postgresqlPassword=$POSTGRESQL_PASSWORD"
       values_files:
         - doer-prod-values.yaml
         - helm-prod-values.yaml
