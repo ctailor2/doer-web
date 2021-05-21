@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import { getCompletedListRequestAction } from '../../actions/listActions';
@@ -17,30 +17,28 @@ interface Props {
     getCompletedListRequestAction: typeof getCompletedListRequestAction;
 }
 
-export class HistoryView extends Component<Props> {
-    public componentDidMount() {
+export const HistoryView = ({list, completedListLink, loadHistoryViewAction, getCompletedListRequestAction}: Props) => {
+    React.useEffect(() => {
         if (localStorage.getItem('sessionToken') === null) {
             browserHistory.push('/login');
-        } else if (this.props.completedListLink !== null) {
-            this.props.getCompletedListRequestAction(this.props.completedListLink);
+        } else if (completedListLink !== null) {
+            getCompletedListRequestAction(completedListLink);
         } else {
-            this.props.loadHistoryViewAction();
+            loadHistoryViewAction();
         }
-    }
-
-    public render() {
-        return (<div>
-            <Header />
-            {this.renderView()}
-        </div>);
-    }
-
-    public renderView() {
-        if (this.props.list !== null) {
+    });
+    
+    const renderView = () => {
+        if (list !== null) {
             return (<History />);
         }
         return (<Loader />);
     }
+
+    return (<div>
+        <Header />
+        {renderView()}
+    </div>);
 }
 
 export const mapStateToProps = (state: ApplicationState) => {

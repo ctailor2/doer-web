@@ -1,6 +1,6 @@
 import { configure, mount, ReactWrapper, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import React, {  } from 'react';
+import React from 'react';
 import { wrapInTestContext } from 'react-dnd-test-utils';
 import { Link } from '../../../api/api';
 import DraggableListGroupItem from '../../DraggableListGroupItem/DraggableListGroupItem';

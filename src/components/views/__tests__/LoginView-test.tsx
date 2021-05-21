@@ -5,13 +5,15 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import { Link } from '../../../api/api';
 import Header from '../../Header';
-import { LoginView, mapStateToProps, Props, State } from '../LoginView';
+import { LoginView, mapStateToProps } from '../LoginView';
 
 describe('LoginView', () => {
-    let tree: ShallowWrapper<Props, State, LoginView>;
+    let tree: ShallowWrapper<typeof LoginView>;
     let loginLink: Link;
     let loginRequestActionFn: jest.Mock;
     let getBaseResourcesRequestActionFn: jest.Mock;
+    let useStateSpy: jest.SpyInstance;
+    let setLoginInfo: jest.Mock;
 
     beforeEach(() => {
         configure({ adapter: new Adapter() });
@@ -30,13 +32,6 @@ describe('LoginView', () => {
 
     it('has a Header', () => {
         expect(tree.find(Header).length).toBe(1);
-    });
-
-    it('has default state', () => {
-        expect(tree.state()).toEqual({
-            email: '',
-            password: '',
-        });
     });
 
     it('fires get base resources action when mounted', () => {
@@ -153,11 +148,6 @@ describe('LoginView', () => {
                 it('has no value by default', () => {
                     expect(input.prop('value')).toBeUndefined();
                 });
-
-                it('updates state on change', () => {
-                    input.simulate('change', { target: { value: 'test@email.com' } });
-                    expect(tree.state().email).toBe('test@email.com');
-                });
             });
         });
 
@@ -193,11 +183,6 @@ describe('LoginView', () => {
                     expect(input.length).toBe(1);
                     expect(input.prop('type')).toBe('password');
                 });
-
-                it('updates state on change', () => {
-                    input.simulate('change', { target: { value: 'password' } });
-                    expect(tree.state().password).toBe('password');
-                });
             });
         });
 
@@ -220,19 +205,22 @@ describe('LoginView', () => {
             });
 
             it('enables when all fields are entered', () => {
-                tree.setState({ email: 'email', password: 'password' });
+                const emailInput = form.find('FormGroup').at(0).find('FormControl');
+                emailInput.simulate('change', { target: { value: 'email' } });
+                const passwordInput = tree.find('form').find('FormGroup').at(1).find('FormControl');
+                passwordInput.simulate('change', { target: { value: 'password' } });
                 button = tree.find('Button');
                 expect(button.prop('disabled')).toBe(false);
             });
 
             it('fires login request action with form login link on click', () => {
-                const formData = {
-                    email: 'test@email.com',
-                    password: 'password',
-                };
-                tree.setState(formData);
+                const emailInput = form.find('FormGroup').at(0).find('FormControl');
+                emailInput.simulate('change', { target: { value: 'test@email.com' } });
+                const passwordInput = tree.find('form').find('FormGroup').at(1).find('FormControl');
+                passwordInput.simulate('change', { target: { value: 'password' } });
+                button = tree.find('Button');
                 button.simulate('click');
-                expect(loginRequestActionFn).toBeCalledWith(loginLink, formData);
+                expect(loginRequestActionFn).toBeCalledWith(loginLink, {email: 'test@email.com', password: 'password'});
             });
         });
     });

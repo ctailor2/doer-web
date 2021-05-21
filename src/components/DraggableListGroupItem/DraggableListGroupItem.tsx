@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, FunctionComponent } from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 import {
     ConnectDragSource,
@@ -26,21 +26,19 @@ interface OwnProps {
 
 type AllProps = DragProps & OwnProps;
 
-export class DraggableListGroupItem extends Component<AllProps> {
-    public render() {
-        const { isDragging, connectDragSource, connectDropTarget, isOver } = this.props;
-        return (<ListGroupItem ref={(instance) => {
-            if (instance) {
-                const domNode = findDOMNode(instance) as any;
-                connectDragSource(domNode);
-                connectDropTarget(domNode);
-            }
-        }}
-            bsStyle={isOver ? 'info' : undefined}
-            style={{ opacity: isDragging ? 0.5 : 1 }}>
-            {this.props.children}
-        </ListGroupItem>);
-    }
+const DraggableListGroupItem: FunctionComponent<AllProps> = (props) => {
+    const { isDragging, connectDragSource, connectDropTarget, isOver } = props;
+    return (<ListGroupItem ref={(instance) => {
+        if (instance) {
+            const domNode = findDOMNode(instance) as any;
+            connectDragSource(domNode);
+            connectDropTarget(domNode);
+        }
+    }}
+        bsStyle={isOver ? 'info' : undefined}
+        style={{ opacity: isDragging ? 0.5 : 1 }}>
+        {props.children}
+    </ListGroupItem>);
 }
 
 const dragSpec = {

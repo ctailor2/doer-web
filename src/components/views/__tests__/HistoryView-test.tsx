@@ -3,7 +3,6 @@ import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import { browserHistory } from 'react-router';
 import { Link } from '../../../api/api';
-import { ListAndLink } from '../../../api/list';
 import Header from '../../Header';
 import History from '../../History';
 import { HistoryView, mapStateToProps } from '../HistoryView';
@@ -21,6 +20,7 @@ describe('HistoryView', () => {
         mockLoadHistoryViewActionFn = jest.fn();
         mockGetCompletedListRequestActionFn = jest.fn();
         completedListLink = { href: 'completedListHref' };
+        jest.spyOn(React, 'useEffect').mockImplementation(f => f());
         tree = shallow(<HistoryView
             list={null}
             completedListLink={completedListLink}

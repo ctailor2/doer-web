@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { CompletedList } from '../../api/completedList';
 import { ApplicationState } from '../../store';
-import { History } from './History';
+import History from './History';
 
 export const mapStateToProps = (state: ApplicationState) => {
     const completedList = state.completedList;

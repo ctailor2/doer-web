@@ -16,6 +16,7 @@ describe('TodosView', () => {
         configure({ adapter: new Adapter() });
         mockLoadTodosViewActionFn = jest.fn();
         browserHistory.push = jest.fn();
+        jest.spyOn(React, 'useEffect').mockImplementation(f => f());
         tree = shallow(<TodosView loadTodosViewAction={mockLoadTodosViewActionFn} list={null} selectedList={null} />);
     });
 

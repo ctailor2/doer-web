@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { isMobile } from 'react-device-detect';
 import { DndProvider } from 'react-dnd';
 import Html5Backend from 'react-dnd-html5-backend';
@@ -18,29 +18,26 @@ export interface Props {
     selectedList: string | null;
 }
 
-export class TodosView extends Component<Props> {
-    public componentDidMount() {
+export const TodosView = ({loadTodosViewAction, list, selectedList}: Props) => {
+    React.useEffect(() => {
         // TODO: May be able to optimize here by only firing this if the view is not loaded
         if (localStorage.getItem('sessionToken') === null) {
             browserHistory.push('/login');
-        } else if (this.props.list === null) {
-            this.props.loadTodosViewAction();
+        } else if (list === null) {
+            loadTodosViewAction();
         }
-    }
+    }, [list]);
 
-    public render() {
-        return (<div>
-            <Header />
-            {this.renderView()}
-        </div>);
-    }
-
-    public renderView() {
-        if (this.props.selectedList !== null && this.props.list !== null) {
-            return (<App listAndLink={this.props.list} selectedList={this.props.selectedList} />);
+    const renderView = () => {
+        if (selectedList !== null && list !== null) {
+            return (<App listAndLink={list} selectedList={selectedList} />);
         }
         return (<Loader />);
     }
+    return (<div>
+        <Header />
+        {renderView()}
+    </div>);
 }
 
 export const mapStateToProps = (state: ApplicationState) => {

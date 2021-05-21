@@ -5,7 +5,7 @@ import {
     ListGroupItem,
     Panel,
 } from 'react-bootstrap';
-import { History } from '../History';
+import History from '../History';
 
 describe('History', () => {
     let tree: ShallowWrapper;

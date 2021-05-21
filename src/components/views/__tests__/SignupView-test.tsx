@@ -8,7 +8,7 @@ import Header from '../../Header';
 import { mapStateToProps, Props, SignupView, State } from '../SignupView';
 
 describe('SignupView', () => {
-    let tree: ShallowWrapper<Props, State, SignupView>;
+    let tree: ShallowWrapper<typeof SignupView>;
     let signupLink: Link;
     let signupRequestActionFn: jest.Mock;
     let getBaseResourcesRequestActionFn: jest.Mock;
@@ -30,14 +30,6 @@ describe('SignupView', () => {
 
     it('has a Header', () => {
         expect(tree.find(Header).length).toBe(1);
-    });
-
-    it('has default state', () => {
-        expect(tree.state()).toEqual({
-            email: '',
-            password: '',
-            passwordConfirmation: '',
-        });
     });
 
     it('fires get base resources action when mounted', () => {
@@ -154,11 +146,6 @@ describe('SignupView', () => {
                 it('has no value by default', () => {
                     expect(input.prop('value')).toBeUndefined();
                 });
-
-                it('updates state on change', () => {
-                    input.simulate('change', { target: { value: 'test@email.com' } });
-                    expect(tree.state().email).toBe('test@email.com');
-                });
             });
         });
 
@@ -193,11 +180,6 @@ describe('SignupView', () => {
                 it('has a password input', () => {
                     expect(input.length).toBe(1);
                     expect(input.prop('type')).toBe('password');
-                });
-
-                it('updates state on change', () => {
-                    input.simulate('change', { target: { value: 'password' } });
-                    expect(tree.state().password).toBe('password');
                 });
             });
         });
@@ -234,11 +216,6 @@ describe('SignupView', () => {
                     expect(input.length).toBe(1);
                     expect(input.prop('type')).toBe('password');
                 });
-
-                it('updates state on change', () => {
-                    input.simulate('change', { target: { value: 'password' } });
-                    expect(tree.state().passwordConfirmation).toBe('password');
-                });
             });
 
             it('shows feedback', () => {
@@ -252,13 +229,17 @@ describe('SignupView', () => {
 
             describe('when data is entered', () => {
                 it('has success validation state when entry matches password', () => {
-                    tree.setState({ password: 'bananas', passwordConfirmation: 'bananas' });
+                    const passwordInput = tree.find('FormGroup').at(1).find('FormControl');
+                    passwordInput.simulate('change', { target: { value: 'bananas' } });
+                    const passwordConfirmationInput = tree.find('FormGroup').at(2).find('FormControl');
+                    passwordConfirmationInput.simulate('change', { target: { value: 'bananas' } });
                     formGroup = tree.find('FormGroup').at(2);
                     expect(formGroup.prop('validationState')).toBe('success');
                 });
 
                 it('has error validation state when entry does not match password', () => {
-                    tree.setState({ passwordConfirmation: 'bananas' });
+                    const passwordConfirmationInput = tree.find('FormGroup').at(2).find('FormControl');
+                    passwordConfirmationInput.simulate('change', { target: { value: 'bananas' } });
                     formGroup = tree.find('FormGroup').at(2);
                     expect(formGroup.prop('validationState')).toBe('error');
                 });
@@ -285,31 +266,42 @@ describe('SignupView', () => {
 
             describe('when all fields are entered', () => {
                 it('stays disabled if password confirmation does not match password ', () => {
-                    tree.setState({
-                        email: 'email',
-                        password: 'password',
-                        passwordConfirmation: 'passwordConfirmation',
-                    });
+                    const emailInput = tree.find('FormGroup').at(0).find('FormControl');
+                    emailInput.simulate('change', { target: { value: 'email' } });
+                    const passwordInput = tree.find('FormGroup').at(1).find('FormControl');
+                    passwordInput.simulate('change', { target: { value: 'password' } });
+                    const passwordConfirmationInput = tree.find('FormGroup').at(2).find('FormControl');
+                    passwordConfirmationInput.simulate('change', { target: { value: 'passwordConfirmation' } });
                     button = tree.find('Button');
                     expect(button.prop('disabled')).toBe(true);
                 });
 
                 it('enables if password confirmation matches password ', () => {
-                    tree.setState({ email: 'email', password: 'password', passwordConfirmation: 'password' });
+                    const emailInput = tree.find('FormGroup').at(0).find('FormControl');
+                    emailInput.simulate('change', { target: { value: 'email' } });
+                    const passwordInput = tree.find('FormGroup').at(1).find('FormControl');
+                    passwordInput.simulate('change', { target: { value: 'password' } });
+                    const passwordConfirmationInput = tree.find('FormGroup').at(2).find('FormControl');
+                    passwordConfirmationInput.simulate('change', { target: { value: 'password' } });
                     button = tree.find('Button');
                     expect(button.prop('disabled')).toBe(false);
                 });
             });
 
             it('fires signup request action with form data and signup link on click', () => {
-                const formData = {
+                const emailInput = tree.find('FormGroup').at(0).find('FormControl');
+                emailInput.simulate('change', { target: { value: 'test@email.com' } });
+                const passwordInput = tree.find('FormGroup').at(1).find('FormControl');
+                passwordInput.simulate('change', { target: { value: 'password' } });
+                const passwordConfirmationInput = tree.find('FormGroup').at(2).find('FormControl');
+                passwordConfirmationInput.simulate('change', { target: { value: 'password' } });
+                button = tree.find('Button');
+                button.simulate('click');
+                expect(signupRequestActionFn).toBeCalledWith(signupLink, {
                     email: 'test@email.com',
                     password: 'password',
-                    passwordConfirmation: 'password',
-                };
-                tree.setState(formData);
-                button.simulate('click');
-                expect(signupRequestActionFn).toBeCalledWith(signupLink, formData);
+                    passwordConfirmation: 'password'
+                });
             });
         });
     });
