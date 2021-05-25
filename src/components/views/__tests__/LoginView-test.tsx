@@ -47,7 +47,7 @@ describe('LoginView', () => {
             childContextTypes: { store: PropTypes.object.isRequired },
         };
         mount(<LoginView
-            loginLink={loginLink}
+            loginLink={undefined}
             loginRequestAction={loginRequestActionFn}
             getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();

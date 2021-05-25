@@ -45,7 +45,7 @@ describe('SignupView', () => {
             childContextTypes: { store: PropTypes.object.isRequired },
         };
         mount(<SignupView
-            signupLink={signupLink}
+            signupLink={undefined}
             signupRequestAction={signupRequestActionFn}
             getBaseResourcesRequestAction={getBaseResourcesRequestActionFn} />, options);
         expect(getBaseResourcesRequestActionFn).toBeCalled();

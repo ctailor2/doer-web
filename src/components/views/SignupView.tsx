@@ -11,7 +11,7 @@ import { ApplicationState } from '../../store';
 import Header from '../Header';
 
 export interface Props {
-    signupLink: Link;
+    signupLink?: Link;
     getBaseResourcesRequestAction(): GetBaseResourcesRequestAction;
     signupRequestAction(link: Link, signupInfo: SignupInfo): SignupRequestAction;
 }
@@ -71,7 +71,7 @@ export const SignupView = ({signupLink, getBaseResourcesRequestAction, signupReq
     }
 
     const handleClick = () => {
-        signupRequestAction(signupLink, signupInfo);
+        signupLink && signupRequestAction(signupLink, signupInfo);
     }
 
     return (

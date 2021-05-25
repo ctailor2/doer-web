@@ -11,7 +11,7 @@ import { ApplicationState } from '../../store';
 import Header from '../Header';
 
 export interface Props {
-    loginLink: Link;
+    loginLink?: Link;
     getBaseResourcesRequestAction(): GetBaseResourcesRequestAction;
     loginRequestAction(link: Link, loginInfo: LoginInfo): LoginRequestAction;
 }
@@ -53,7 +53,7 @@ export const LoginView = ({loginLink, getBaseResourcesRequestAction, loginReques
     }
 
     const handleClick = () => {
-        loginRequestAction(loginLink, loginInfo);
+        loginLink && loginRequestAction(loginLink, loginInfo);
     }
 
     return (

@@ -5,7 +5,7 @@ import { ActionTypes } from '../constants/actionTypes';
 
 const defaultState = {};
 
-export function links(state: { [name: string]: Link } = defaultState, action: ApplicationAction) {
+export function links(state: { [name: string]: Link | undefined } = defaultState, action: ApplicationAction) {
     let newState = _.clone(state);
     switch (action.type) {
         case ActionTypes.STORE_LINKS_ACTION:
