@@ -26,7 +26,7 @@ export const HistoryView = ({list, completedListLink, loadHistoryViewAction, get
         } else {
             loadHistoryViewAction();
         }
-    });
+    }, [completedListLink]);
     
     const renderView = () => {
         if (list !== null) {
