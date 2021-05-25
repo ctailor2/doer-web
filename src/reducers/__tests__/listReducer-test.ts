@@ -46,10 +46,11 @@ describe('list', () => {
                 completed: { href: '' },
             },
         };
+        const link = { href: 'someLink' };
         const storeListAction: StoreListAction = {
             type: ActionTypes.STORE_LIST_ACTION,
             list: myList,
-            listLink: { href: 'someLink' },
+            listLink: link,
         };
         const getListRequestAction: GetListRequestAction = {
             type: ActionTypes.GET_LIST_REQUEST_ACTION,
@@ -57,6 +58,6 @@ describe('list', () => {
             link: { href: 'someHref' },
         };
         const state = list(list(defaultState, storeListAction), getListRequestAction);
-        expect(state).toEqual({ listAndLink: null, selectedList: 'someName' });
+        expect(state).toEqual({ listAndLink: {list: myList, listLink: link}, selectedList: 'someName' });
     });
 });

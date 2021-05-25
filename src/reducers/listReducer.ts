@@ -20,7 +20,6 @@ export function list(state: ListState = defaultState, action: ApplicationAction)
             };
             break;
         case ActionTypes.GET_LIST_REQUEST_ACTION:
-            newState.listAndLink = null;
             newState.selectedList = action.name;
             break;
         default:
